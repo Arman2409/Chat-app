@@ -1,0 +1,40 @@
+.header_main{
+        height: 80px;
+       padding: 0px 50px;
+       background-color: blue; 
+       position: sticky; 
+       top: 0; 
+       z-index: 1;
+       width: 100%; 
+       display: flex;
+       align-items: center; 
+       .header_cont {
+                float: left;
+                width: 120px;
+                height: 31px;
+                margin: 16px 24px 16px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: blue;
+         }
+        .user_cont{
+          margin-left: auto;
+          cursor: pointer;
+          border: 1px solid green;
+          background-color: aquamarine;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px;
+          .user_name {
+            color:green;
+            margin-right: 10px;
+          }
+          .user_icon {
+            font-size: 30px;
+            color: red;
+            margin: 0 15px;
+           }
+        }
+}

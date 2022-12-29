@@ -1,0 +1,24 @@
+.owner_main{
+     width: 200px;
+     height: auto;
+     position: absolute;
+     top: 80px;
+     right: 0;
+     border: 1px solid aqua;
+     margin: 2px;
+}
+
+.owner_link{
+  cursor: pointer;
+  width: auto;
+  background-color: aquamarine;
+}
+
+.data_cont {
+  width: "100%";
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 0;
+}

@@ -1,0 +1,43 @@
+.chat_cont{
+    width: 60%;
+    position: relative;
+    height: 100%;
+    border: 1px solid red;
+}
+
+.inputs_cont {
+    position: absolute;
+    bottom: 0;
+    height:90px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .chat_textarea {
+        width: calc(100% - 135px);
+        height: 100%;
+    }
+    .smile_cont {
+        font-size: 20px;
+        margin: 10px;
+        color: orangered;
+    }
+    .smile_icon{
+        color: orangered;
+        position: absolute;
+        right: calc(80px + 20px)
+    }
+    .send_button{
+        position:absolute;
+        right: 0;
+        width: 80px;
+        margin: 10px;
+    }
+
+    .emoji_cont{
+        position: absolute;
+        border: 1px solid green;
+        bottom: 90px;
+        left: 0;
+    }
+    
+}

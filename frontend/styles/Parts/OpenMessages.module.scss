@@ -1,0 +1,12 @@
+.open_icon {
+    position: fixed;
+    right: 25px;
+    bottom: 95px;
+    font-size: 85px;
+    color: pink;
+    cursor: pointer;
+    z-index: 2;
+    & svg {
+        filter: drop-shadow( 0px 0px 20px rgba(121, 67, 104));
+    }
+}
