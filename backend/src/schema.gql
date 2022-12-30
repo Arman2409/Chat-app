@@ -2,7 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UserType {
+  name: String!
+  email: String!
+  password: String!
+  image: String!
+}
+
 type Query {
-  helloWorld: String!
-  addUser(name: String!, email: String!, password: String!): String!
+  SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
+  SignIn(email: String!, password: String!): UserType!
+  SignOut: String!
 }
