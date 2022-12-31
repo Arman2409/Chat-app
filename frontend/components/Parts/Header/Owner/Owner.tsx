@@ -1,16 +1,34 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Typography, Button } from "antd";
+import { useDispatch } from "react-redux";
 
 import styles from "../../../../styles/Parts/Header/Owner/Owner.module.scss";
 import SignInUp from "./SignInUp/SignInUp";
 import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";
+import handleGQLRequest from "../../../../requests/handleGQLRequest";
+import { setStoreUser } from "../../../../store/userSlice";
+import { Dispatch } from "@reduxjs/toolkit";
 
 const Owner = () => {
     const [signStatus, setSignStatus] = useState<string>("SignIn");
     const storeUser = useSelector<IRootState>((state) => state.user.user);
     const [user, setUser] = useState<UserType>(storeUser as UserType);
+    const dispatch: Dispatch = useDispatch();
+    const [message, setMessage] = useState<string>("");
+
+    async function signOut() {
+        const resp = await handleGQLRequest("SignOut");
+        if (resp.SignOut) {
+            if (resp.SignOut == "Signed Out") {
+                localStorage.removeItem("token");
+                dispatch(setStoreUser({ name: "", email: "", image: "" }))
+            }
+        } else {
+            setMessage("Error Occured");
+        }
+    };
 
     useEffect(() => {
         setUser(storeUser as UserType);
@@ -19,20 +37,27 @@ const Owner = () => {
     return (
         <>
             {user.name ?
-                <div className={styles.data_cont}>
-                    <Typography>
-                        {user.email}
-                    </Typography>
-                    <Button type="primary">
-                        Sign Out
-                    </Button>
-                </div> :
+                <>
+                    <div className={styles.data_cont}>
+                        <Typography>
+                            {user.email}
+                        </Typography>
+                        <Button type="primary" onClick={() => signOut()}>
+                            Sign Out
+                        </Button>
+                    </div>
+                    <div>
+                        <Typography>
+                            {message}
+                        </Typography>
+                    </div>
+                </> :
                 <>
                     {signStatus == "SignUp" ?
-                        <SignInUp type={"SignUp"} />
+                        <SignInUp compType={"SignUp"} />
                         : null}
                     {signStatus == "SignIn" ?
-                        <SignInUp type={"SignIn"} />
+                        <SignInUp compType={"SignIn"} />
                         : null}
                     <div style={{
                         margin: "15px"

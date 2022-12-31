@@ -7,11 +7,10 @@ import { useState } from "react";
 import handleGQLRequest from "../../../../../requests/handleGQLRequest";
 
 import styles from "../../../../../styles/Parts/Header/Owner/SignInUp/SignInUp.module.scss";
-import { UserType } from "../../../../../types/types";
-
-interface props {
-    type: string
-}
+import { setStoreUser } from "../../../../../store/userSlice"; 
+import { useDispatch } from "react-redux";
+import { SignProps } from "../../../../../types/types";
+import { Dispatch } from "@reduxjs/toolkit";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -31,38 +30,44 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     return isJpgOrPng && isLt2M;
  };
 
-const SignInUp: React.FC<props> = ({ type }: props) => {
+const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
     const [message, setMessage] = useState<string>("");
-    const [user, setUser] = useState<UserType>({ name: "", email: "", image: "" });
+    const [type,setType] = useState(compType);
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const dispatch:Dispatch = useDispatch();
 
     const submit: Function = async (values: any) => {
 
         const { name, email, password, repeatPassword } = values;
 
         if (type == "SignIn") {
+
             const res = await handleGQLRequest("SignIn", { email, password });
+            console.log(res);
             if (res.message) {
                 setMessage(res.message);
                 return;
             };
-            setUser(res);
+            dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
+            if(repeatPassword !== password) {
+                setMessage("Password must be repeated")
+                return;
+            }
             const res = await handleGQLRequest("SignUp", { email, password, name, image:imageUrl });
             if (res.message) {
                 setMessage(res.message);
                 return;
             };
+            setType("SignIn");
         } else {
             return;
         }
     };
 
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
-        console.log(info.file);
-        
         if (info.file.status === 'uploading') {
           setLoading(true);
           return;
@@ -102,7 +107,6 @@ const SignInUp: React.FC<props> = ({ type }: props) => {
                               name="avatar"
                               listType="picture-card"
                               showUploadList={false}
-                            //   action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                               beforeUpload={beforeUpload}
                               onChange={handleChange}
                               className={styles.image_input}
@@ -134,6 +138,7 @@ const SignInUp: React.FC<props> = ({ type }: props) => {
                     name={"password"}>
                     <Input
                         placeholder="Password"
+                        type="password"
                         className={styles.sign_input} />
                 </Form.Item>
                 {type == "SignUp" ?
@@ -143,6 +148,7 @@ const SignInUp: React.FC<props> = ({ type }: props) => {
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"
+                            type="password"
                             className={styles.sign_input} />
                     </Form.Item>
                     : null}

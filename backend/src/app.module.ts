@@ -6,8 +6,9 @@ import { PrismaService } from "nestjs-prisma"
 import { join } from 'path';
 
 import { AuthModule } from './auth/auth.module';
-import { JwtService } from './jwt/jwt.service';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { JwtService } from './services/jwt/jwt.service';
+import { CloudinaryService } from './services/cloudinary/cloudinary.service';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: false
     }),
-     AuthModule],
+     AuthModule,
+     SearchModule],
      providers: [PrismaService, JwtService, CloudinaryService],
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
 import { Request } from "express" 
+import { Session } from "express-session"
 import { UserType } from "./graphqlTypes"
 
 export interface UserReq  extends Request{ 
-    user:Omit<UserType, "password"> 
+    session:Session & {user:Omit<UserType, "password"> }
 }

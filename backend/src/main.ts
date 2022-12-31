@@ -15,9 +15,8 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
   app.use(bodyParser.text({ limit: '200mb' }));
   app.use((req:Request, res:Response, next:Function) => {
-    const parsed = parse(req.url);
-    console.log(req.url);
-    console.log(req.body);
+    // console.log(req.url);
+    // console.log(req.body);
      next();
   });
   app.setGlobalPrefix("api");

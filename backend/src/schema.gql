@@ -9,8 +9,18 @@ type UserType {
   image: String!
 }
 
+type TokenType {
+  token: String!
+}
+
+type SearchType {
+  users: [UserType!]!
+  total: Float!
+}
+
 type Query {
   SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
-  SignIn(email: String!, password: String!): UserType!
+  SignIn(email: String!, password: String!): TokenType!
   SignOut: String!
+  SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
 }

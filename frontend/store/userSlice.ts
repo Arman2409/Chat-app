@@ -10,9 +10,8 @@ const userSlice:Slice = createSlice({
   name:  "userSlice",
   initialState,
   reducers: {
-    setUser: (state, action) => {
+    setStoreUser: (state, action) => {
         state.user = action.payload;
-        console.log(state.user);
     },
     setUserWindow: (state, action) => {
         state.userWindow = action.payload;
@@ -20,5 +19,5 @@ const userSlice:Slice = createSlice({
   }
 });
 
-export const {setUserWindow} = userSlice.actions;
+export const {setUserWindow, setStoreUser} = userSlice.actions;
 export default userSlice.reducer;

@@ -69,7 +69,7 @@ const AppHeader: React.FunctionComponent = () => {
 
   useEffect(() => {
     setUser(storeUser as UserType);
-}, [storeUser]);
+  }, [storeUser]);
 
   return (
     <Header className={styles.header_main}>
