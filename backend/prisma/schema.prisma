@@ -10,10 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Users {
   id    Int     @default(autoincrement()) @id
   email String  @unique
-  name  String?
+  name  String
   password String
   image String  @default("")
+  friends Int[] @default([])
+  active Boolean @default(false)
+  friendRequests Int[] @default([])
 }

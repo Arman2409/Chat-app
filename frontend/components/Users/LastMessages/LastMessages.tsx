@@ -1,12 +1,24 @@
 import { Pagination, Typography } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import UsersMapper from "../UsersList/UsersList";
+import UsersMapper from "../UsersMapper/UsersMapper";
 import users from "../../../users";
 import globalStyles from "../../../styles/globalClasses.module.scss";
+import { useRouter } from "next/router";
+import { UserType } from "../../../types/types";
+import handleGQLRequest from "../../../requests/handleGQLRequest";
 
 const LastMessages:React.FC = () => {
-   const [current, setCurrent] = useState(1);
+   const [current, setCurrent] = useState<number>(1);
+   const router:any = useRouter();
+   const [currentUser, setCurrentUser] = useState<UserType>(router.query.name ? router.query : {});
+    
+
+   useEffect(() => {
+       const lastMessagesData = handleGQLRequest("GetLastMessages", {page: current, perPage: 10});
+       console.log(lastMessagesData);
+       
+   }, [current])
 
     return (
        <div style={{

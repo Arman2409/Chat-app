@@ -3,10 +3,14 @@
 # ------------------------------------------------------
 
 type UserType {
+  id: Float!
   name: String!
   email: String!
   password: String!
   image: String!
+  friends: [Float!]!
+  active: Boolean!
+  friendRequests: [Float!]!
 }
 
 type TokenType {
@@ -14,7 +18,7 @@ type TokenType {
 }
 
 type SearchType {
-  users: [UserType!]!
+  users: [UserType!]
   total: Float!
 }
 
@@ -23,4 +27,8 @@ type Query {
   SignIn(email: String!, password: String!): TokenType!
   SignOut: String!
   SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
+  SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
+  GetOnlineFriends(page: Float!, perPage: Float!): SearchType!
+  AddFriend(id: Float!): String!
+  GetLastMessages(page: Float!, perPage: Float!): SearchType!
 }

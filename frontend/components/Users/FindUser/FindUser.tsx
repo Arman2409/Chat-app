@@ -1,5 +1,5 @@
 import { Input, Pagination, Radio } from "antd";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { theme } from "antd";
 import { useDebounce, useUpdateEffect } from "usehooks-ts";
@@ -8,67 +8,125 @@ const { useToken } = theme;
 const { Search } = Input;
 
 import styles from "../../../styles/Users/FindUser.module.scss";
-import UsersMapper from "../UsersList/UsersList";
+import UsersMapper from "../UsersMapper/UsersMapper";
 // import users from "../../../users";
 import globalStyles from "../../../styles/globalClasses.module.scss";
 import { ChangeType, SearchOptions, UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
+import Loading from "../../Parts/Loading/Loading";
 
 const SearchUser: React.FC = () => {
     const [current, setCurrent] = useState<number>(1);
     const [searchType, setSearchType] = useState<string>("friends");
-    const [searchOptions, setSearchOptions] = useState<SearchOptions>({ args: ""});
+    const [searchOptions, setSearchOptions] = useState<SearchOptions>({ args: "" });
     const [users, setUsers] = useState<UserType[]>([]);
     const [total, setTotal] = useState<number>(1);
+    const [name, setName] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const searchOptionsRef = useRef<any>();
     // const token:any = useToken();
 
-    const debouncedSearch = useDebounce(searchOptions,1000);
+    const debouncedSearch = useDebounce(searchOptionsRef.current, 1000);
 
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 481px)" });
     // const isMiddle:boolean = useMediaQuery({ query: "(max-width: 768px)" });
 
+    const getSeachResults = () => {
+        (async function () {
+            setLoading(true);
+            const usersData = await handleGQLRequest(searchOptionsRef.current.type == "all" ? "SearchInAll" :
+                "SearchInFriends", {page: searchOptionsRef.current.page, name: searchOptionsRef.current.name});
+            if (usersData.SearchInAll) {
+                if (usersData.SearchInAll.users) {
+                    setUsers(usersData.SearchInAll.users.splice(0, 9));
+                    setLoading(false)
+                } else {
+                    setUsers([]);
+                    setLoading(false)
+                }
+                if (usersData.SearchInAll.total) {
+                    setLoading(false)
+                    setTotal(usersData.SearchInAll.total);
+                } else {
+                    setTotal(1);
+                    setLoading(false)
+                }
+            } else if (usersData.SearchInFriends) {
+                if (usersData.SearchInFriends.users) {
+                    setUsers(usersData.SearchInFriends.users.splice(0, 9));
+                    setLoading(false)
+                } else {
+                    setUsers([]);
+                    setLoading(false)
+                }
+                if (usersData.SearchInFriends.total) {
+                    setLoading(false)
+                    setTotal(usersData.SearchInFriends.total);
+                } else {
+                    setTotal(1);
+                    setLoading(false)
+                }
+            } else {
+                setTotal(1);
+                setLoading(false);
+            }
+        })();
+    };
+
     const search: Function = (e: string) => {
-        console.log(e);
+        setName(e);
+        const args:any = {
+            page: current,
+            name: e,
+            type: searchType
+        }
+        searchOptionsRef.current = args;
+        setSearchOptions({
+            args
+        })
     };
 
     const searchChange: Function = (e: any) => {
+        setName(e.target.value);
+        const args:any = {
+            page: current,
+            name: e.target.value,
+            type: searchType
+        }
+        searchOptionsRef.current = args;
         setSearchOptions({
-            args: {
-                page: current,
-                name: e.target.value
-            }
+            args
         })
     };
 
     const changePage: Function = (e: any) => {
         setCurrent(e);
+        const args:any = {
+            page: current,
+            name: name,
+            type: searchType
+        }
+        searchOptionsRef.current = args;
+        setSearchOptions({
+            args
+        })
     };
 
-    const newSearchType:Function = (e:ChangeType) => {
-       setSearchType(e.target.value);
+    const newSearchType: Function = (e: ChangeType) => {
+        setSearchType(e.target.value);
+        const args:any = {
+            page: current,
+            name: name,
+            type: e.target.value
+        }
+        searchOptionsRef.current = args;
+        setSearchOptions({
+            args
+        })
     };
 
     useUpdateEffect(() => {
-        (async function() {
-          const usersData = await handleGQLRequest(searchType == "all" ? "SearchInAll" :
-                                           "SearchInFriends", searchOptions.args);
-         if(usersData.SearchInAll) {
-            if (usersData.SearchInAll.users) {
-                setUsers(usersData.SearchInAll.users.splice(0, 9));
-            } else {
-                setUsers([]);
-            }
-            if (usersData.SearchInAll.total) {
-                console.log(usersData.SearchInAll.total);
-                
-                setTotal(usersData.SearchInAll.total);
-            } else {
-                setTotal(100);
-            }
-         }
-
-        })();
-        
+        getSeachResults();
     }, [debouncedSearch])
 
     return (
@@ -79,18 +137,19 @@ const SearchUser: React.FC = () => {
             }}
             className={styles.find_user_container}
         >
+            {loading && <Loading />}
             <Search
                 allowClear={true}
                 className={styles.user_search}
-                placeholder= {searchType == "friends" ? "Search in Friends" : "Search"}
+                placeholder={searchType == "friends" ? "Search in Friends" : "Search"}
                 onChange={(e) => searchChange(e)}
                 onSearch={(e) => search(e)}
             />
-            <Radio.Group 
-              onChange={(e) => newSearchType(e)} 
-              value={searchType}
-              className={styles.search_radio}>
-                <Radio value={"friends"}>Friend</Radio>
+            <Radio.Group
+                onChange={(e) => newSearchType(e)}
+                value={searchType}
+                className={styles.search_radio}>
+                <Radio value={"friends"}>Friends</Radio>
                 <Radio value={"all"}>All</Radio>
             </Radio.Group>
             <div className={globalStyles.centered_users_cont}>

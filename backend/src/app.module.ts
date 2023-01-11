@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { JwtService } from './services/jwt/jwt.service';
 import { CloudinaryService } from './services/cloudinary/cloudinary.service';
 import { SearchModule } from './search/search.module';
+import { FriendsModule } from './friends/friends.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { SearchModule } from './search/search.module';
       debug: false
     }),
      AuthModule,
-     SearchModule],
+     SearchModule,
+     FriendsModule,
+     MessagesModule],
      providers: [PrismaService, JwtService, CloudinaryService],
 })
 export class AppModule {}

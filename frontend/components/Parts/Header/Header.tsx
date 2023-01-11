@@ -6,11 +6,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useRef } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useOnClickOutside } from "usehooks-ts";
+import jwtDecode from "jwt-decode";
 
 import { IRootState } from "../../../store/store";
 import styles from "../../../styles/Parts/Header/Header.module.scss";
 import Owner from "./Owner/Owner";
-import { setUserWindow } from "../../../store/userSlice";
+import { setStoreUser, setUserWindow } from "../../../store/userSlice";
 import { UserType } from "../../../types/types";
 import ownerStyles from "../../../styles/Parts/Header/Owner/Owner.module.scss";
 
@@ -23,8 +24,8 @@ const itemsArray = [
     route: "/dashboard"
   },
   {
-    label: "My Page",
-    route: "/userPage"
+    label: "My Friends",
+    route: "/myFriends"
   }
 ];
 
@@ -54,7 +55,7 @@ const AppHeader: React.FunctionComponent = () => {
       return;
     }
     dispatch(setUserWindow(false));
-  })
+  });
 
   useEffect(() => {
     setOwnerState(userWindow);
@@ -70,6 +71,13 @@ const AppHeader: React.FunctionComponent = () => {
   useEffect(() => {
     setUser(storeUser as UserType);
   }, [storeUser]);
+
+  useEffect(() => {
+     const token = localStorage.getItem("token");
+     if(token) {
+        dispatch(setStoreUser(jwtDecode(token)));
+     };
+  }, []);
 
   return (
     <Header className={styles.header_main}>

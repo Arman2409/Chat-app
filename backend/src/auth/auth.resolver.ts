@@ -27,8 +27,6 @@ export class AuthResolver {
                  @Args("password") password:string,
                  ): Promise<any> {         
          const user = await this.auth.findUser({email, password});
-         const req:UserReq = RequestContext.currentContext.req;
-         req.session.user = user;
          return {token: this.jwt.sign(user)};
    }
 

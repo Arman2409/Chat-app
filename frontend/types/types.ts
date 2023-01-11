@@ -21,3 +21,8 @@ export type ChangeType = ChangeEvent & {target: {value: any}}
 export interface SearchOptions {
   args: any
 }
+
+export interface MapperProps {
+  users: any[];
+  friends?: boolean
+}

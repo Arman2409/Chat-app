@@ -3,6 +3,9 @@ import { Field, ObjectType } from "@nestjs/graphql"
 @ObjectType()
 export class  UserType {
     @Field()
+    id?: number 
+
+    @Field()
     name: string
 
     @Field()
@@ -13,6 +16,15 @@ export class  UserType {
 
     @Field()
     image?: string
+
+    @Field(type => [Number])
+    friends?: number[]
+
+    @Field()
+    active?: Boolean
+
+    @Field(type => [Number])
+    friendRequests?: number[]
 }
 
 @ObjectType()
@@ -23,7 +35,7 @@ export class  TokenType {
 
 @ObjectType()
 export class  SearchType {
-    @Field(type => [UserType])
+    @Field(type => [UserType], {nullable: true})
     users: UserType[]
 
     @Field()

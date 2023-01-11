@@ -13,4 +13,12 @@ export class SearchResolver {
         @Args("perPage") perPage: number): Promise<SearchType> { 
         return await this.search.searchInAll(name, page, perPage);
     }
+
+    @Query(() => SearchType, { name: "SearchInFriends" })
+    async searchInFriends(
+        @Args("name") name: string,
+        @Args("page") page: number,
+        @Args("perPage") perPage: number): Promise<SearchType> { 
+        return await this.search.searchInFriends(name, page, perPage);
+    }
 }

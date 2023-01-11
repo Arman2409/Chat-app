@@ -4,6 +4,8 @@ import * as bcrypt from "bcrypt";
 import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
 import { CloudinaryService } from 'src/services/cloudinary/cloudinary.service';
+import { UserReq } from 'types/types';
+import { RequestContext } from 'nestjs-request-context';
 
 
 @Injectable()
@@ -11,10 +13,10 @@ export class AuthService {
     constructor(private readonly prisma: PrismaService,
                 private readonly cloudinary: CloudinaryService) { };
 
-    async addUser(user:UserType): Promise<any> {
+    async addUser(user:Omit<UserType, "active">): Promise<any> {
         const {name, email, password} = user;
         let {image} = user;
-        return await this.prisma.user.findUnique(
+        return await this.prisma.users.findUnique(
             {
                 where: {
                     email: email
@@ -40,7 +42,7 @@ export class AuthService {
                 const hashedPassword:string = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS));
 
                 // creating the user 
-                return this.prisma.user.create(
+                return this.prisma.users.create(
                     {
                         data: {
                             name,
@@ -58,10 +60,10 @@ export class AuthService {
     };
 
     
-    async findUser(user:Omit<UserType, "name">): Promise<any> {
+    async findUser(user:Omit<UserType, "active" | "name">): Promise<any> {
         const { email, password } = user;
-        let resp:Omit<UserType, "password">;
-        await this.prisma.user.findUnique(
+        let resp:Omit<UserType, "password" | "active">;
+        await this.prisma.users.findUnique(
             {
                 where: {
                     email: email
@@ -72,6 +74,8 @@ export class AuthService {
                     if(result) {
                         delete data.password;
                         resp = data;
+                        const req:UserReq = RequestContext.currentContext.req;
+                        req.session.user = data;
                         return data;
                     } else {
                         throw new GraphQLError("Wrong Password")

@@ -33,15 +33,44 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: { type: "Float!", value: page},
             perPage: { type: "Float!", value: 10}
         }
-        fields = [{"users": ["name", "image", "email"]}, "total"]
+        fields = [{"users": ["name", "image", "email", "active","id"]}, "total"]
     }
 
     if(operation == "SearchInFriends") {
-        // console.log(searchInFriends);
-        
-        return [];
+        const { name, page } = args
+        variables = {
+            name: { type: "String!", value: name },
+            page: { type: "Float!", value: page},
+            perPage: { type: "Float!", value: 10}
+        }
+        fields = [{"users": ["name", "image", "email", "active","id"]}, "total"]
     }
+    
+    if(operation == "GetOnlineFriends") {
+        const { perPage, page } = args
+        variables = {
+            page: {type: "Float!", value: page},
+            perPage: {type: "Float!", value: perPage}
+        }
+        fields = [{"users":["name", "id", "email", "active", "image"]}, "total"]
+    };
 
+    if(operation == "GetLastMessages") {
+        const { perPage, page } = args
+        variables = {
+            page: {type: "Float!", value: page},
+            perPage: {type: "Float!", value: perPage}
+        }
+        fields = [{"users":["name", "id", "email", "active", "image"]}, "total"]
+    };
+
+    if(operation == "AddFriend") {
+        const {id} = args;
+        variables = {
+            id: {type: "Float!", value: id}
+        }
+    }
+    
      return await axios.post("/graphql", query({
             operation,
             variables: variables,

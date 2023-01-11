@@ -1,10 +1,10 @@
 import { WechatFilled } from "@ant-design/icons"
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "../../../styles/Parts/OpenMessages.module.scss";
 
-const OpenMessages = () => {
+const OpenMessages:React.FC = () => {
      const router = useRouter();
      const [display, setDisplay] = useState(false);
 

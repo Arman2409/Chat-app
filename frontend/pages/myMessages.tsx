@@ -3,9 +3,13 @@ import { Layout, Row } from "antd";
 
 import MessagesChat from "../components/Chat/MessagesChat/MessagesChat";
 import LastMessages from "../components/Users/LastMessages/LastMessages";
+import { useEffect } from "react";
 const { Content } = Layout;
+import { useRouter } from "next/router";
 
-const myMessages:React.FC = () => {
+const MyMessages:React.FC = () => {
+    
+   
    return (
     <Content style={{
         height: "calc(100vh - 160px)",
@@ -24,4 +28,4 @@ const myMessages:React.FC = () => {
    )
 };
 
-export default myMessages;
+export default MyMessages;
