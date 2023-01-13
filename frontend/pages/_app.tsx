@@ -5,9 +5,9 @@ import { useEffect } from 'react'
 
 import '../styles/globals.scss'
 import theme from '../styles/theme'
-import AppHeader from '../components/Parts/Header/Header'
-import OpenMessages from '../components/Parts/OpenMessages/OpenMessages'
-import Footer from '../components/Parts/Footer/Footer'
+import AppHeader from '../components/Custom/Header/Header'
+import OpenMessages from '../components/Custom/OpenMessages/OpenMessages'
+import Footer from '../components/Custom/Footer/Footer'
 import store from '../store/store'
 
 export default function App({ Component, pageProps }: AppProps) {

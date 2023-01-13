@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Typography, Button } from "antd";
 import { useDispatch } from "react-redux";
 
-import styles from "../../../../styles/Parts/Header/Owner/Owner.module.scss";
+import styles from "../../../../styles/Custom/Header/Owner/Owner.module.scss";
 import SignInUp from "./SignInUp/SignInUp";
 import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";
@@ -23,7 +23,7 @@ const Owner = () => {
         if (resp.SignOut) {
             if (resp.SignOut == "Signed Out") {
                 localStorage.removeItem("token");
-                dispatch(setStoreUser({ name: "", email: "", image: "" }))
+                dispatch(setStoreUser({ name: "", email: "", image: "" , friendRequests: [], friends: [], active: false}));
             }
         } else {
             setMessage("Error Occured");

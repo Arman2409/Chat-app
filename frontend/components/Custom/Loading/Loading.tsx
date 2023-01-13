@@ -1,7 +1,7 @@
 import { Spin } from "antd";
-import styles from "../../../styles/Parts/Loading.module.scss";
+import styles from "../../../styles/Custom/Loading.module.scss";
 
-const Loading = () => {
+const Loading:React.FC = () => {
    return (
      <div className={styles.loading_cont}>
          <Spin tip="Loading" size="large">

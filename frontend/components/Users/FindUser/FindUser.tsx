@@ -1,5 +1,5 @@
 import { Input, Pagination, Radio } from "antd";
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent,useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { theme } from "antd";
 import { useDebounce, useUpdateEffect } from "usehooks-ts";
@@ -9,21 +9,22 @@ const { Search } = Input;
 
 import styles from "../../../styles/Users/FindUser.module.scss";
 import UsersMapper from "../UsersMapper/UsersMapper";
-// import users from "../../../users";
+import {IRootState} from "../../../store/store";
 import globalStyles from "../../../styles/globalClasses.module.scss";
 import { ChangeType, SearchOptions, UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
-import Loading from "../../Parts/Loading/Loading";
+import Loading from "../../Custom/Loading/Loading";
+import {useSelector} from "react-redux";
 
 const SearchUser: React.FC = () => {
     const [current, setCurrent] = useState<number>(1);
-    const [searchType, setSearchType] = useState<string>("friends");
-    const [searchOptions, setSearchOptions] = useState<SearchOptions>({ args: "" });
+    const [searchType, setSearchType] = useState<string>("all");
     const [users, setUsers] = useState<UserType[]>([]);
     const [total, setTotal] = useState<number>(1);
     const [name, setName] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const searchOptionsRef = useRef<any>();
+    const user = useSelector((state: IRootState) => state.user.user);
+    const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
     // const token:any = useToken();
 
     const debouncedSearch = useDebounce(searchOptionsRef.current, 1000);
@@ -81,9 +82,6 @@ const SearchUser: React.FC = () => {
             type: searchType
         }
         searchOptionsRef.current = args;
-        setSearchOptions({
-            args
-        })
     };
 
     const searchChange: Function = (e: any) => {
@@ -94,9 +92,6 @@ const SearchUser: React.FC = () => {
             type: searchType
         }
         searchOptionsRef.current = args;
-        setSearchOptions({
-            args
-        })
     };
 
     const changePage: Function = (e: any) => {
@@ -107,9 +102,6 @@ const SearchUser: React.FC = () => {
             type: searchType
         }
         searchOptionsRef.current = args;
-        setSearchOptions({
-            args
-        })
     };
 
     const newSearchType: Function = (e: ChangeType) => {
@@ -120,12 +112,9 @@ const SearchUser: React.FC = () => {
             type: e.target.value
         }
         searchOptionsRef.current = args;
-        setSearchOptions({
-            args
-        })
     };
 
-    useUpdateEffect(() => {
+    useEffect(() => {
         getSeachResults();
     }, [debouncedSearch])
 
@@ -149,7 +138,9 @@ const SearchUser: React.FC = () => {
                 onChange={(e) => newSearchType(e)}
                 value={searchType}
                 className={styles.search_radio}>
+                { user.name &&
                 <Radio value={"friends"}>Friends</Radio>
+                }
                 <Radio value={"all"}>All</Radio>
             </Radio.Group>
             <div className={globalStyles.centered_users_cont}>

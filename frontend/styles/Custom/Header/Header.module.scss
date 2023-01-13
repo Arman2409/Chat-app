@@ -18,8 +18,15 @@
                 justify-content: center;
                 background-color: blue;
          }
+          .requests_badge{
+            margin-left: auto;
+            .requests_icon {
+              font-size: 20px;
+              color:orange;
+            }
+          }
         .user_cont{
-          margin-left: auto;
+          margin-left: 10px;
           cursor: pointer;
           border: 1px solid green;
           background-color: aquamarine;

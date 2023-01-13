@@ -1,7 +1,7 @@
 import { Layout, Typography } from "antd";
 import React from "react";
 
-import styles from "../../../styles/Parts/Footer.module.scss";
+import styles from "../../../styles/Custom/Footer.module.scss";
 
 const { Footer } = Layout;
 
