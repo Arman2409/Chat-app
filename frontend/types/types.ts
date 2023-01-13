@@ -5,6 +5,9 @@ export interface UserType {
     email: string, 
     image: string,
     password?: string,
+    friendRequests: any[],
+    friends: any[],
+    active: boolean
 }
 
 export interface InitialState {
@@ -25,4 +28,8 @@ export interface SearchOptions {
 export interface MapperProps {
   users: any[];
   friends?: boolean
+}
+
+export interface  DemoProps {
+    message: string
 }

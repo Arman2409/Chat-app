@@ -2,7 +2,7 @@ import { createSlice, Slice } from "@reduxjs/toolkit";
 import {  InitialState } from "../types/types";
 
 const initialState:InitialState = {
-    user: {name: "", email: "", image: ""},
+    user: {name: "", email: "", image: "", friendRequests: [], friends: [], active: false},
     userWindow: false
 }
 

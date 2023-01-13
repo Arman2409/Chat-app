@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import handleGQLRequest from "../../../../../requests/handleGQLRequest";
 
-import styles from "../../../../../styles/Parts/Header/Owner/SignInUp/SignInUp.module.scss";
+import styles from "../../../../../styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss";
 import { setStoreUser } from "../../../../../store/userSlice"; 
 import { useDispatch } from "react-redux";
 import { SignProps } from "../../../../../types/types";
@@ -44,7 +44,6 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
         if (type == "SignIn") {
 
             const res = await handleGQLRequest("SignIn", { email, password });
-            console.log(res);
             if (res.message) {
                 setMessage(res.message);
                 return;
@@ -52,6 +51,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
+            console.log(repeatPassword, password)
             if(repeatPassword !== password) {
                 setMessage("Password must be repeated")
                 return;
@@ -61,6 +61,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
                 setMessage(res.message);
                 return;
             };
+            setMessage("Signed Up!");
             setType("SignIn");
         } else {
             return;

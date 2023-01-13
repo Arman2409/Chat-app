@@ -1,16 +1,29 @@
 import { SmileOutlined } from "@ant-design/icons";
 import { Input , Button} from "antd";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
-import { useState } from "react";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {useSelector} from "react-redux";
+
+import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
+import {IRootState} from "../../../store/store";
 
 const { TextArea } = Input;
 
-import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
-
 const MessagesChat:React.FC = () => {
   const [smileStatus, setSmileStatus] = useState(false);
+    const router:any = useRouter();
+    const user = useSelector((state:IRootState) => {
+        return state.user.user
+    });
 
-  return (
+    useEffect(() => {
+        if(!user.name) {
+            router.replace("/");
+        };
+    }, [])
+
+    return (
     <div className={messagesStyles.chat_cont}>
           <div className={messagesStyles.inputs_cont}>
               <TextArea className={messagesStyles.chat_textarea}

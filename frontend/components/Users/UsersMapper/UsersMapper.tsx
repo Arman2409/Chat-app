@@ -1,21 +1,33 @@
-import { List, Avatar, Typography, Badge } from "antd";
-import { MapperProps, UserType } from "../../../types/types";
+import { List, Avatar, Typography, Badge, message } from "antd";
 import React from "react";
+import {  useRouter } from "next/router";
 
 import styles from "../../../styles/Users/UsersMapper.module.scss";
-import {  useRouter } from "next/router";
-import { BaseRouter } from "next/dist/shared/lib/router/router";
+import { MapperProps } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
+import {useSelector} from "react-redux";
+import {IRootState} from "../../../store/store";
 
 const UsersMapper: React.FC<MapperProps> = ({ users, friends }: MapperProps) => {
    const router:any = useRouter();
+   const user = useSelector((state:IRootState) => {
+       return state.user.user
+   })
 
    console.log(users);
 
    const addFriend:Function = (e:number) => {
+
       (async function(){
-      const addStatus = await handleGQLRequest("AddFriend", {id:e});
-      console.log(addStatus);
+
+      if(user.name) {
+          const addStatus = await handleGQLRequest("AddFriend", {id:e});
+         if(addStatus.AddFriend == "Request Sent") {
+             message.success("Request Sent");
+         }
+      } else {
+          message.warning("Sing in to add friends");
+      }
       })()
    };
 

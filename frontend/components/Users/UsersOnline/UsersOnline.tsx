@@ -1,7 +1,9 @@
-import { Typography, theme, Pagination } from "antd";
+import { Typography, theme, Pagination, Modal } from "antd";
 import { useMediaQuery } from "react-responsive";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+
+import Demo from "../../Custom/Demo/Demo";
 import { IRootState } from "../../../store/store";
 
 const { useToken } = theme;
@@ -18,20 +20,23 @@ const UsersList:React.FunctionComponent = () => {
    const user: UserType = useSelector((state: IRootState) => state.user.user);
    const [users, setUsers] = useState<UserType[]>([]);
    const [total, setTotal] = useState<number>(1);
+   // const [demoStatus, setDemoStatus] = useState(true);
    // const isMiddle = useMediaQuery({ query: "(max-width: 768px)" });
    
    // const { token } = useToken();
 
-   const getOnlineFriends = () => { 
+   const getOnlineFriends = () => {
       (async function(){
          const onlineFriends = await handleGQLRequest("GetOnlineFriends", {page: current, perPage:10});
-         if(onlineFriends.GetOnlineFriends.users){
-           setUsers(onlineFriends.GetOnlineFriends.data);
-           setTotal(onlineFriends.GetOnlineFriends.total)
-         } else {
-           setUsers([]);
-           setTotal(1);
-         }
+          if(onlineFriends.GetOnlineFriends) {
+              if (onlineFriends.GetOnlineFriends.users) {
+                  setUsers(onlineFriends.GetOnlineFriends.data);
+                  setTotal(onlineFriends.GetOnlineFriends.total)
+              } else {
+                  setUsers([]);
+                  setTotal(1);
+              }
+          }
        })()
    }
 
@@ -41,7 +46,10 @@ const UsersList:React.FunctionComponent = () => {
    };
 
    useEffect(() => {
-     getOnlineFriends();
+       if(user.name) {
+           getOnlineFriends();
+           // setDemoStatus(false);
+       }
    }, [user])
 
    return (
@@ -50,6 +58,9 @@ const UsersList:React.FunctionComponent = () => {
       style={{
          width: isSmall ? "100%" :  "40%",
       }}>
+          {
+             user.name ? null :  <Demo message="Sign in to see friends online"/>
+          }
          <Typography >
             Friends Online
          </Typography>

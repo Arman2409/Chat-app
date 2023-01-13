@@ -37,7 +37,6 @@ export class FriendsService {
     async addFriend(id:number){
         const req:UserReq = RequestContext.currentContext.req;
         const currentUser = req.session.user;
-        currentUser.friends.unshift(id);
         const requestingUser = await this.prisma.users.findUnique({
            where: {
             id: Number(id)
