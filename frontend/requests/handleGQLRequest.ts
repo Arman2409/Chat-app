@@ -70,6 +70,15 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             id: {type: "Float!", value: id}
         }
     }
+
+
+    if(operation == "GetFriendRequestsUsers") {
+        const {ids} = args
+        variables = {
+            ids: { type: "[Float!]!", value: ids}
+        }
+        fields = ["name", "id", "email", "active", "image"]
+    }
     
      return await axios.post("/graphql", query({
             operation,

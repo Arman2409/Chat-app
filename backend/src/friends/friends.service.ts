@@ -67,4 +67,12 @@ export class FriendsService {
             throw new GraphQLError("Not Sent, Error Occured");
          }
     }
+
+    async findRequestUsers(arr) {
+       return this.prisma.users.findMany({
+         where:{
+           id: {in :arr}
+         }
+       })
+    }
 }

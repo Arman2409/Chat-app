@@ -16,7 +16,7 @@ import Owner from "./Owner/Owner";
 import { setStoreUser, setUserWindow } from "../../../store/userSlice";
 import { UserType } from "../../../types/types";
 import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
-import requestsStyles from "../../../styles/Custom/Header/Requests/Requests.module.scss";
+import FriendRequests from "./FriendRequests/FriendRequests";
 
 
 const { Header } = Layout;
@@ -116,7 +116,8 @@ const AppHeader: React.FunctionComponent = () => {
       </Row>
       {
         watchingRequests ?
-            <div className={requestsStyles.requests_main}> Hello </div> : null
+            <FriendRequests /> : null
+            // <div className={requestsStyles.requests_main}> Hello </div> : null
       }
       {ownerState ?
         <div
