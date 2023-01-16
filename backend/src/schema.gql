@@ -30,5 +30,6 @@ type Query {
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
   GetOnlineFriends(page: Float!, perPage: Float!): SearchType!
   AddFriend(id: Float!): String!
+  GetFriendRequestsUsers(ids: [Float!]!): [UserType!]!
   GetLastMessages(page: Float!, perPage: Float!): SearchType!
 }

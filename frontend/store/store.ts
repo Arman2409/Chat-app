@@ -13,6 +13,5 @@ const store:Store = configureStore({
     reducer:reducers
 })
 
-
 export default store;
 export type IRootState = ReturnType<typeof store.getState>; 
