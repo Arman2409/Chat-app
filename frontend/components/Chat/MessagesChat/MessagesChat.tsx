@@ -1,3 +1,4 @@
+import React from "react";
 import { SmileOutlined } from "@ant-design/icons";
 import { Input , Button} from "antd";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
@@ -7,6 +8,7 @@ import {useSelector} from "react-redux";
 
 import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
 import {IRootState} from "../../../store/store";
+import {io} from "socket.io-client";
 
 const { TextArea } = Input;
 
@@ -14,13 +16,17 @@ const MessagesChat:React.FC = () => {
   const [smileStatus, setSmileStatus] = useState(false);
     const router:any = useRouter();
     const user = useSelector((state:IRootState) => {
-        return state.user.user
+        return state.user.user;
     });
+
+    const socket = io("ws://localhost:4000");
 
     useEffect(() => {
         if(!user.name) {
             router.replace("/");
         };
+
+        socket.emit("connected", {id: user.id })
     }, [])
 
     return (

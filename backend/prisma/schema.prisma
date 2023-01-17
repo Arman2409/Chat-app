@@ -20,3 +20,7 @@ model Users {
   active Boolean @default(false)
   friendRequests Int[] @default([])
 }
+
+model ActiveUsers {
+  activeUsers Int[]
+}

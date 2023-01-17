@@ -5,42 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab57a864-e8e7-4538-80fd-869df535f8dc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend/src/modules/friends/friends.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/events.gateway.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/prisma/schema.prisma" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/auth/auth.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/auth/auth.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/auth/auth.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/auth/auth.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/auth/auth.service.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/auth/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/friends/friends.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/friends/friends.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/friends/friends.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/friends/friends.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/friends/friends.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/friends/friends.service.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/friends/friends.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/messages/messages.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/messages/messages.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/messages/messages.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/messages/messages.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/messages/messages.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/messages/messages.service.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/messages/messages.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/messages/messages.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/schema.gql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/search/search.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/search/search.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/search/search.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/search/search.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/search/search.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/search/search.service.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/search/search.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/search/search.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/sockets.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/sockets.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/Header/FriendRequests/FriendRequests.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/FriendRequests/FriendRequests.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/Loading/Loading.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Loading/Loading.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Users/UsersMapper/UsersMapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Users/UsersMapper/UsersMapper.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requests/handleGQLRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/requests/handleGQLRequest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/store/userSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/store/userSlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Header.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Owner/Owner.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Owner/Owner.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Requests/Requests.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Requests/Requests.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/myMessages.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/myMessages.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +62,7 @@
       <workItem from="1673863048005" duration="15000" />
       <workItem from="1673936266114" duration="2030000" />
       <workItem from="1673951352604" duration="1206000" />
+      <workItem from="1673959326121" duration="7718000" />
     </task>
     <servers />
   </component>
