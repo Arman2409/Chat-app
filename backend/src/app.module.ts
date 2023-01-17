@@ -5,12 +5,13 @@ import { ApolloDriver, ApolloDriverConfig,} from "@nestjs/apollo";
 import { PrismaService } from "nestjs-prisma"
 import { join } from 'path';
 
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { JwtService } from './services/jwt/jwt.service';
 import { CloudinaryService } from './services/cloudinary/cloudinary.service';
-import { SearchModule } from './search/search.module';
-import { FriendsModule } from './friends/friends.module';
-import { MessagesModule } from './messages/messages.module';
+import { SearchModule } from './modules/search/search.module';
+import { FriendsModule } from './modules/friends/friends.module';
+import { MessagesModule } from './modules/messages/messages.module';
+import { SocketsModule } from './modules/sockets/sockets.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { MessagesModule } from './messages/messages.module';
      AuthModule,
      SearchModule,
      FriendsModule,
-     MessagesModule],
+     MessagesModule,
+     SocketsModule],
      providers: [PrismaService, JwtService, CloudinaryService],
 })
 export class AppModule {}

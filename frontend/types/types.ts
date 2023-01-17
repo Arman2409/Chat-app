@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react"
 
 export interface UserType {
+    id: number,
     name: string,
     email: string, 
     image: string,
@@ -27,7 +28,9 @@ export interface SearchOptions {
 
 export interface MapperProps {
   users: any[];
-  friends?: boolean
+  friends?: boolean;
+
+  accept?:Function;
 }
 
 export interface  DemoProps {

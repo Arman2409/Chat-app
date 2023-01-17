@@ -7,7 +7,7 @@ export class FriendsResolver{
   constructor(private readonly service: FriendsService) {}
 
   @Query(() => SearchType, { name: 'GetOnlineFriends' })
-  async getFriends(
+  async getOnlineFriends(
     @Args('page') page: number,
     @Args('perPage') perPage: number,
   ) {
@@ -27,4 +27,12 @@ export class FriendsResolver{
   ) {
     return await this.service.findRequestUsers(arr);
   }
+
+  @Query(() => String, { name: "ConfirmFriend"})
+  async confirmFriend(
+      @Args( "friendId") id: number,
+  ) {
+    return this.service.confirmFriend(id);
+  }
+
 }

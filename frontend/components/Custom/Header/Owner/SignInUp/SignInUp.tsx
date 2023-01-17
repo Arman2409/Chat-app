@@ -11,6 +11,7 @@ import { setStoreUser } from "../../../../../store/userSlice";
 import { useDispatch } from "react-redux";
 import { SignProps } from "../../../../../types/types";
 import { Dispatch } from "@reduxjs/toolkit";
+import Loading from "../../../Loading/Loading";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -34,6 +35,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
     const [message, setMessage] = useState<string>("");
     const [type,setType] = useState(compType);
     const [loading, setLoading] = useState(false);
+    const [loadingRequest, setLoadingRequest] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>("");
     const dispatch:Dispatch = useDispatch();
 
@@ -42,12 +44,13 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
         const { name, email, password, repeatPassword } = values;
 
         if (type == "SignIn") {
-
+            setLoadingRequest(true)
             const res = await handleGQLRequest("SignIn", { email, password });
             if (res.message) {
                 setMessage(res.message);
                 return;
             };
+            setLoadingRequest(false);
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
@@ -56,11 +59,13 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
                 setMessage("Password must be repeated")
                 return;
             }
+            setLoadingRequest(true)
             const res = await handleGQLRequest("SignUp", { email, password, name, image:imageUrl });
             if (res.message) {
                 setMessage(res.message);
                 return;
             };
+            setLoadingRequest(false);
             setMessage("Signed Up!");
             setType("SignIn");
         } else {
@@ -96,6 +101,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
             style={{
                 height: type == "SignIn" ? "270px" : "500px"
             }}>
+            {loadingRequest && <Loading />}
             <Form
                 onFinish={(values) => submit(values)}
                 className={styles.sign_form}>

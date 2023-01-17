@@ -1,10 +1,20 @@
 import Head from 'next/head';
+import { Row } from 'antd';
 
 import UsersList from '../components/Users/UsersOnline/UsersOnline';
 import SearchUser from '../components/Users/FindUser/FindUser';
-import { Row } from 'antd';
 
 export default function Home() {
+
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.addEventListener("open", () => {
+        // send a message to the server
+        socket.send(JSON.stringify({
+            type: "hello from client",
+            content: [ 3, "4" ]
+        }));
+    });
 
   return (
     <div style={{

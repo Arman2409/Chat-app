@@ -3,20 +3,23 @@ import { PrismaService } from 'nestjs-prisma';
 import { UserReq } from 'types/types';
 import { RequestContext } from 'nestjs-request-context';
 import { capitalizeFirstLetter, getStartEndTotal } from 'src/functions/functions';
+import { GraphQLError } from "graphql";
+import { UserType } from "../../../types/graphqlTypes";
 
 @Injectable()
 export class SearchService {
     constructor(private readonly prisma: PrismaService) { }
 
     async searchInAll(name: string, page: number, perPage: number) {
-        let data: any[] = [];
+        let data: any[];
         if (!name) {
             data = await this.prisma.users.findMany();
         } else {
             data = await this.prisma.users.findMany({
                 where: {
-                    name: { in: [name, name.toLowerCase(), capitalizeFirstLetter(name)] }
-                }
+                  name: {
+                    contains: name
+                  }                }
             });
         }
 
@@ -36,45 +39,44 @@ export class SearchService {
         const { startIndex, endIndex, total } = getStartEndTotal(page, perPage, data.length);
 
         data = data.splice(startIndex, endIndex);
-
         return { users: data, total };
     }
 
       
     async searchInFriends(name: string, page: number, perPage: number) {
-        let data: any[] = [];
-        if (!name) {
-            data = await this.prisma.users.findMany();
-        } else {
-            data = await this.prisma.users.findMany({
-                where: {
-                    name: { in: [name, name.toLowerCase(), capitalizeFirstLetter(name)] }
-                }
-            });
-        }
-        
         const req: UserReq = RequestContext.currentContext.req;
         if (req.session.user) {
             if (req.session.user.friends && req.session.user.friends.length) {
-                data =  data.filter((el: any) => {
-                    console.log(req.session.user.friends);
-                    if (req.session.user.friends.includes(el.id)) {
-                        console.log("true");
-                        
-                        if (el.name.toLowerCase() == name.toLowerCase()) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-                const { startIndex, endIndex, total } = getStartEndTotal(page, perPage, data.length);
-                data = data.splice(startIndex, endIndex);
-                return { users: data, total };
+               const friendsArray:number[] = req.session.user.friends;
+               let friends:UserType[]
+                 if (!name) {
+                    friends = await  this.prisma.users.findMany({
+                         where: {
+                             id: { in: friendsArray}
+                         }
+                     });
+                 } else if (name) {
+                     friends = await  this.prisma.users.findMany({
+                         where: {
+                             AND: [
+                                 {  id: { in: friendsArray} },
+                                 {  name: {
+                                   contains: name
+                                   } }
+                             ]
+                         }
+                     });
+                 }
+
+                const { startIndex, endIndex, total } = getStartEndTotal(page, perPage, friends.length);
+                friends = friends.splice(startIndex, endIndex);
+
+                return { users: friends, total };
             } else {
                 return { users: [], total: 1 }
             }
         } else {
-            return { users: [], total: 1 }
+            throw new GraphQLError("Not Signed In")
         };
 
     }

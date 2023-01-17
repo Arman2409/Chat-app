@@ -4,7 +4,10 @@
     border: 1px solid green;
     position: absolute;
     top: 80px;
-    right: 250px;
+    right: 210px;
     background-color: aquamarine;
     overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

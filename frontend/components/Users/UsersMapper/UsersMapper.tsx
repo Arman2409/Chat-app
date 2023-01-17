@@ -8,13 +8,18 @@ import handleGQLRequest from "../../../requests/handleGQLRequest";
 import {useSelector} from "react-redux";
 import {IRootState} from "../../../store/store";
 
-const UsersMapper: React.FC<MapperProps> = ({ users, friends }: MapperProps) => {
+const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperProps) => {
    const router:any = useRouter();
    const user = useSelector((state:IRootState) => {
        return state.user.user
    })
 
-   console.log(users);
+    const acceptRequest:Function = async (item:any) => {
+       const accepted = accept ? await accept(item.id) : null;
+       console.log(accepted);
+
+    }
+
 
    const addFriend:Function = (e:number) => {
 
@@ -49,7 +54,8 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends }: MapperProps) => 
          renderItem={(item) => (
             <List.Item
                actions={!friends ? [
-                  <a onClick={() => addFriend(item.id)}>Add Friend</a>] : undefined}
+                  <a onClick={() => addFriend(item.id)}>Add Friend</a>] : accept ?
+                   [<a onClick={() => acceptRequest(item)}>Accept</a>] : undefined}
                className={styles.list_item}
                >
                <List.Item.Meta

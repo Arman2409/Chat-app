@@ -83,6 +83,10 @@ const AppHeader: React.FunctionComponent = () => {
      };
   }, []);
 
+  const clickOutside = () => {
+    setWatchingRequests(false);
+  }
+
   return (
     <Header className={styles.header_main}>
       <Link href="/">
@@ -115,8 +119,8 @@ const AppHeader: React.FunctionComponent = () => {
           />}
       </Row>
       {
-        watchingRequests ?
-            <FriendRequests /> : null
+        user.name &&  watchingRequests ?
+            <FriendRequests clickOutside={clickOutside}/> : null
             // <div className={requestsStyles.requests_main}> Hello </div> : null
       }
       {ownerState ?
