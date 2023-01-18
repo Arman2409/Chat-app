@@ -15,6 +15,7 @@ const OpenMessages:React.FC = () => {
     const openMessages:Function = () => {
         if(!user.name) {
             message.warning("Sign in to message");
+            return;
         }
       router.replace("/myMessages");
     };

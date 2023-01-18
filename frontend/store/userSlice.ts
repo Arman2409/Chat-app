@@ -1,7 +1,7 @@
 import { createSlice, Slice } from "@reduxjs/toolkit";
-import {  InitialState } from "../types/types";
+import {  UserInitialState } from "../types/types";
 
-const initialState:InitialState = {
+const initialState:UserInitialState = {
     user: {id: 0,name: "", email: "", image: "", friendRequests: [], friends: [], active: false},
     userWindow: false
 }

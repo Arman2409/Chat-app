@@ -1,5 +1,5 @@
 import { Resolver , Query, Args} from "@nestjs/graphql";
-import { SearchType, UserType } from "types/graphqlTypes";
+import { SearchType, UserType, TokenType } from "types/graphqlTypes";
 import { FriendsService } from "./friends.service";
 
 @Resolver()
@@ -28,7 +28,7 @@ export class FriendsResolver{
     return await this.service.findRequestUsers(arr);
   }
 
-  @Query(() => String, { name: "ConfirmFriend"})
+  @Query(() => TokenType, { name: "ConfirmFriend"})
   async confirmFriend(
       @Args( "friendId") id: number,
   ) {

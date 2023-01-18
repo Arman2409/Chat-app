@@ -85,6 +85,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             friendId: {type: "Float!", value: friendId}
         }
+        fields = ["token"]
     }
     
      return await axios.post("/graphql", query({

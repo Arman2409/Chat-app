@@ -27,7 +27,7 @@ export class SearchService {
         if (req.session.user) {
             if (req.session.user.friends) {
                 data = data.filter((el: any) => {
-                    if (req.session.user.friends.includes(el.id)) {
+                    if (req.session.user.friends.includes(el.id) || el.id == req.session.user.id) {
                         return false;
                     }
                     return true;

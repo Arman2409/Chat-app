@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react"
+import {Reducer} from "@reduxjs/toolkit";
 
 export interface UserType {
     id: number,
@@ -11,9 +12,18 @@ export interface UserType {
     active: boolean
 }
 
-export interface InitialState {
+export interface UserInitialState {
   user: UserType
   userWindow: boolean
+};
+
+export interface  MessagesInitialState {
+    interlocutor: UserType
+}
+
+export interface Reducers {
+    user: Reducer,
+    messages: Reducer
 };
 
 export interface SignProps {

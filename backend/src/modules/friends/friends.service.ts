@@ -3,13 +3,14 @@ import { UserReq } from 'types/types';
 import { RequestContext } from 'nestjs-request-context';
 import { PrismaService } from 'nestjs-prisma';
 import { UserType } from 'types/graphqlTypes';
-
-import { getStartEndTotal } from 'src/functions/functions';
 import { GraphQLError } from 'graphql';
 
+import { getStartEndTotal } from 'src/functions/functions';
+import { JwtService } from "../../services/jwt/jwt.service";
 @Injectable()
 export class FriendsService {
-  constructor(private readonly prisma: PrismaService) {
+  constructor(private readonly prisma: PrismaService,
+              private readonly jwt:JwtService) {
   };
 
   async getOnlineFriends(page: number, perPage: number): Promise<any> {
@@ -105,6 +106,11 @@ export class FriendsService {
       }
     });
     console.log({ friend });
+    if(friend.friends.includes(id)) {
+      return new GraphQLError("Already have friend");
+    } else {
+
+    }
     friend.friends.push(currentUser.id);
     const updatingFriend: UserType = await this.prisma.users.update({
       where: {
@@ -115,9 +121,9 @@ export class FriendsService {
       }
     })
     if (updatingFriend) {
-      return "Friend Confirmed";
+      return {token: this.jwt.sign(currentUser)};
     } else {
-      return "Error Occured";
+      return new GraphQLError("Not Confirmed, Error Occured");
     }
   }
 }

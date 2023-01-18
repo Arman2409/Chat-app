@@ -4,37 +4,46 @@ import {
   OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  SubscribeMessage, MessageBody
+  SubscribeMessage, MessageBody, ConnectedSocket
 } from "@nestjs/websockets";
 import { Server, Socket, } from "socket.io";
 import { RequestContext, RequestContextMiddleware } from "nestjs-request-context";
 import { UsePipes } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
 
-const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
 @WebSocketGateway({ cors: "*"},)
 export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection{
   @WebSocketServer()  server: Server;
   constructor( private readonly prisma: PrismaService) {
   }
   activeUsers:number[] = [];
+  idAssociations:any[] = [];
+
   afterInit(server: Server): any {
-    console.log("init", server);
   }
 
   handleConnection(client: any, ...args): any {
-    console.log("connect", client, ...args);
-    console.log(client.handshake.query);
-    console.log(args);
   }
 
   handleDisconnect(client: any): any {
-    console.log("disconnect", client);
   }
 
   @SubscribeMessage("connected")
-  handleMessage(@MessageBody("id") id:number){
+  handle(@MessageBody("id") id:number,
+         @ConnectedSocket() client: Socket){
      this.activeUsers.push(id);
+     this.idAssociations.push({
+       [id]: client.id
+     })
+    return "received";
+  }
+
+  @SubscribeMessage("message")
+  handleMessage(@MessageBody("from") from:number ,
+                @MessageBody("to") to:number,
+                @ConnectedSocket() client: Socket){
+
+    return "received";
   }
 }
 

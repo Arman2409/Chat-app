@@ -15,6 +15,8 @@ import { ChangeType, SearchOptions, UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import Loading from "../../Custom/Loading/Loading";
 import {useSelector} from "react-redux";
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
 
 const SearchUser: React.FC = () => {
     const [current, setCurrent] = useState<number>(1);
@@ -27,14 +29,13 @@ const SearchUser: React.FC = () => {
     const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
     // const token:any = useToken();
 
-    const debouncedSearch = useDebounce(searchOptionsRef.current, 1000);
+    const debouncedSearch = useDebounce( loading, 1000);
 
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 481px)" });
-    // const isMiddle:boolean = useMediaQuery({ query: "(max-width: 768px)" });
 
     const getSeachResults = () => {
         (async function () {
-            setLoading(true);
+            // setLoading(true);
             const usersData = await handleGQLRequest(searchOptionsRef.current.type == "all" ? "SearchInAll" :
                 "SearchInFriends", {page: searchOptionsRef.current.page, name: searchOptionsRef.current.name});
             if (usersData.SearchInAll) {
@@ -75,23 +76,27 @@ const SearchUser: React.FC = () => {
     };
 
     const search: Function = (e: string) => {
+        console.log(loading)
+        if (loading || debouncedSearch) return;
         setName(e);
         const args:any = {
-            page: current,
+            ...searchOptionsRef.current,
             name: e,
-            type: searchType
         }
         searchOptionsRef.current = args;
+;
+        setLoading(true)
     };
 
     const searchChange: Function = (e: any) => {
+        if (loading || debouncedSearch) return;
         setName(e.target.value);
         const args:any = {
-            page: current,
+            ...searchOptionsRef.current,
             name: e.target.value,
-            type: searchType
         }
         searchOptionsRef.current = args;
+        setLoading(true)
     };
 
     const changePage: Function = (e: any) => {
@@ -102,6 +107,7 @@ const SearchUser: React.FC = () => {
             type: searchType
         }
         searchOptionsRef.current = args;
+        setLoading(true);
     };
 
     const newSearchType: Function = (e: ChangeType) => {
@@ -112,11 +118,18 @@ const SearchUser: React.FC = () => {
             type: e.target.value
         }
         searchOptionsRef.current = args;
+        setLoading(true);
     };
 
     useEffect(() => {
-        getSeachResults();
+        if(debouncedSearch) {
+            getSeachResults();
+        }
     }, [debouncedSearch])
+
+    useEffect(() => {
+        setLoading(true);
+    }, [user]);
 
     return (
         <div
@@ -126,7 +139,8 @@ const SearchUser: React.FC = () => {
             }}
             className={styles.find_user_container}
         >
-            {loading && <Loading />}
+            {loading || debouncedSearch &&
+                <Loading />}
             <Search
                 allowClear={true}
                 className={styles.user_search}
@@ -144,7 +158,8 @@ const SearchUser: React.FC = () => {
                 <Radio value={"all"}>All</Radio>
             </Radio.Group>
             <div className={globalStyles.centered_users_cont}>
-                <UsersMapper users={users} />
+                {searchType == "all" ?   <UsersMapper users={users} />
+                     : <UsersMapper users={users} friends={true} /> }
                 <Pagination
                     total={total}
                     current={current}

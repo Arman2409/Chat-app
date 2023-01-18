@@ -1,12 +1,11 @@
 import { configureStore, Reducer, Store} from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-
-interface Reducers {
-    user: Reducer
-};
+import messagesSlice from "./messagesSlice";
+import {Reducers} from "../types/types";
 
 const reducers:Reducers = {
     user: userReducer,
+    messages: messagesSlice
 }
 
 const store:Store = configureStore({

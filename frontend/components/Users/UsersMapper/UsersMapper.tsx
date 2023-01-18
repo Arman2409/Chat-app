@@ -5,11 +5,15 @@ import {  useRouter } from "next/router";
 import styles from "../../../styles/Users/UsersMapper.module.scss";
 import { MapperProps } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {IRootState} from "../../../store/store";
+import {UserType} from "../../../types/types";
+import {Dispatch} from "@reduxjs/toolkit";
+import {setInterlocutor} from "../../../store/messagesSlice";
 
 const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperProps) => {
    const router:any = useRouter();
+   const dispatch: Dispatch = useDispatch();
    const user = useSelector((state:IRootState) => {
        return state.user.user
    })
@@ -19,7 +23,6 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
        console.log(accepted);
 
     }
-
 
    const addFriend:Function = (e:number) => {
 
@@ -36,12 +39,14 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
       })()
    };
 
-   // const newChat:Function = (e: UserType) => {
-   //    router.push({
-   //       pathname: "/myMessages",
-   //       query: e
-   //    });
-   // };
+   const newChat:Function = (e: UserType) => {
+       if(!user.name) {
+           message.warning("Sign in to message");
+           return;
+       };
+       dispatch(setInterlocutor(e));
+       router.push("/myMessages");
+   };
 
    return (
       <List
@@ -53,6 +58,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
          }}
          renderItem={(item) => (
             <List.Item
+                onClick={() => newChat(item)}
                actions={!friends ? [
                   <a onClick={() => addFriend(item.id)}>Add Friend</a>] : accept ?
                    [<a onClick={() => acceptRequest(item)}>Accept</a>] : undefined}
