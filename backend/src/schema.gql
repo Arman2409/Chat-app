@@ -26,6 +26,7 @@ type Query {
   SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
   SignIn(email: String!, password: String!): TokenType!
   SignOut: String!
+  AlreadySigned(token: String!): String!
   SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
   GetOnlineFriends(page: Float!, perPage: Float!): SearchType!

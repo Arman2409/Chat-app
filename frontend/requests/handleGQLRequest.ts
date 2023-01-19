@@ -87,6 +87,13 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         }
         fields = ["token"]
     }
+
+    if(operation == "AlreadySigned") {
+        const { token } = args;
+        variables = {
+            token: {type: "String!", value: token}
+        };
+    }
     
      return await axios.post("/graphql", query({
             operation,
@@ -98,6 +105,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             if (res.data.data) {
                 if (operation == "SignIn") {
                     localStorage.setItem("token", res.data.data.SignIn.token)
+                    console.log(decode(res.data.data.SignIn.token))
                     return decode(res.data.data.SignIn.token);
                 }
                 return res.data.data;

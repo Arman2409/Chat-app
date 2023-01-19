@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { SignProps } from "../../../../../types/types";
 import { Dispatch } from "@reduxjs/toolkit";
 import Loading from "../../../Loading/Loading";
+import { socket} from "../../../../Chat/MessagesChat/MessagesChat";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -51,6 +52,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
                 return;
             };
             setLoadingRequest(false);
+            socket.emit("connected", {id: res.id});
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
@@ -65,6 +67,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
                 setMessage(res.message);
                 return;
             };
+            socket.emit("newUser", {id: res.id});
             setLoadingRequest(false);
             setMessage("Signed Up!");
             setType("SignIn");

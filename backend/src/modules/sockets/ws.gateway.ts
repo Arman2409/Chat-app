@@ -17,7 +17,9 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   constructor( private readonly prisma: PrismaService) {
   }
   activeUsers:number[] = [];
-  idAssociations:any[] = [];
+  idAssociations:any = {};
+
+  participants = new Map();
 
   afterInit(server: Server): any {
   }
@@ -28,22 +30,51 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   handleDisconnect(client: any): any {
   }
 
-  @SubscribeMessage("connected")
-  handle(@MessageBody("id") id:number,
+  @SubscribeMessage("newUser")
+  handleNew(@MessageBody("id") id:number,
          @ConnectedSocket() client: Socket){
-     this.activeUsers.push(id);
-     this.idAssociations.push({
-       [id]: client.id
-     })
+     this.idAssociations.id = client.id;
     return "received";
-  }
+  };
+
+  @SubscribeMessage("connected")
+  async handleConnect(@MessageBody("id") id:number,
+         @ConnectedSocket() client: Socket){
+    this.activeUsers.push(id);
+    const update = this.prisma.users.update({
+      where : { id },
+      data: {
+        active: true,
+      }
+    });
+    if(id == 1) client.join("112")
+    if (update) {
+      return "Connect";
+    } else {
+      return "Not Connected";
+    }
+  };
 
   @SubscribeMessage("message")
   handleMessage(@MessageBody("from") from:number ,
                 @MessageBody("to") to:number,
-                @ConnectedSocket() client: Socket){
+                @ConnectedSocket() socket: Socket){
+    console.log(socket.rooms);
+    this.server.local.to("112").emit("hello", {data: "blblbl"})
+    socket.local.emit("hello", {data: "cool data"})
+    // client.broadcast.to("112").emit("hello", {data: "313122"});
+    return "Received";
+  }
 
-    return "received";
+  @SubscribeMessage("hello")
+  got (
+    @MessageBody() data:any,
+    @ConnectedSocket() socket:Socket
+  ){
+    if(socket.id == this.idAssociations["1"]) {
+      console.log({ data }, "data");
+    }
+    console.log("helloed");
   }
 }
 

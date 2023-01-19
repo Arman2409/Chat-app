@@ -13,6 +13,8 @@ import {UserType} from "../../../types/types";
 
 const {TextArea} = Input;
 
+export const socket = io("ws://localhost:4000");
+
 const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
@@ -25,8 +27,6 @@ const MessagesChat: React.FC = () => {
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
     });
-
-    const socket = io("ws://localhost:4000");
 
     const send = () => {
         console.log("send");
@@ -47,7 +47,7 @@ const MessagesChat: React.FC = () => {
     }, [user])
 
     useEffect(() => {
-        socket.emit("connected", {id: user.id});
+
     }, [])
 
     useEffect(() => {

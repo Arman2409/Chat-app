@@ -6,11 +6,13 @@ import { GraphQLError } from 'graphql';
 import { CloudinaryService } from 'src/services/cloudinary/cloudinary.service';
 import { UserReq } from 'types/types';
 import { RequestContext } from 'nestjs-request-context';
+import { JwtService } from "../../services/jwt/jwt.service";
 
 
 @Injectable()
 export class AuthService {
     constructor(private readonly prisma: PrismaService,
+                private readonly jwt: JwtService,
                 private readonly cloudinary: CloudinaryService) { };
 
     async addUser(user:Omit<UserType, "active">): Promise<any> {
@@ -88,5 +90,15 @@ export class AuthService {
             throw new GraphQLError("User Not Found")
         });
         return resp;
+    };
+
+    async setSession(token) {
+        const req:UserReq = RequestContext.currentContext.req;
+        if (req.session.user) {
+            return "Done";
+        } else {
+            req.session.user =  this.jwt.authenticate(token);
+            return "Done";
+        }
     }
 }

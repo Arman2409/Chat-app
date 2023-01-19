@@ -36,4 +36,11 @@ export class AuthResolver {
          req.session.user = null;
          return "Signed Out";
       }
+
+      @Query( () => String, {name: "AlreadySigned"})
+        setSession(
+               @Args("token") token:string
+        ) {
+        return this.auth.setSession(token);
+      }
 }
