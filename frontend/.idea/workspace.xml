@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab57a864-e8e7-4538-80fd-869df535f8dc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/auth/auth.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/auth/auth.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/auth/auth.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/schema.gql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requests/handleGQLRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/requests/handleGQLRequest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Header.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/OpenMessages.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/OpenMessages.module.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +63,8 @@
       <workItem from="1674022846822" duration="7731000" />
       <workItem from="1674051385447" duration="6426000" />
       <workItem from="1674108587796" duration="3975000" />
-      <workItem from="1674115027485" duration="1987000" />
+      <workItem from="1674115027485" duration="2137000" />
+      <workItem from="1674126404646" duration="1700000" />
     </task>
     <servers />
   </component>

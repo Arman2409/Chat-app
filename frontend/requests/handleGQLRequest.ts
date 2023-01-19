@@ -23,7 +23,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             image: { type: "String!", value: image },
             name: { type: "String!", value: name }
         }
-        fields = ["name", "email"]
+        fields = ["name", "email", "id"]
     }
 
     if (operation == "SearchInAll") {

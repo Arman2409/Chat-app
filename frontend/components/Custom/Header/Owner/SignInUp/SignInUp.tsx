@@ -56,7 +56,6 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
-            console.log(repeatPassword, password)
             if(repeatPassword !== password) {
                 setMessage("Password must be repeated")
                 return;
@@ -67,6 +66,7 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
                 setMessage(res.message);
                 return;
             };
+            console.log(res, res.id)
             socket.emit("newUser", {id: res.id});
             setLoadingRequest(false);
             setMessage("Signed Up!");

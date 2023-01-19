@@ -19,9 +19,7 @@ import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 
-
 const {Header} = Layout;
-
 
 const AppHeader: React.FunctionComponent = () => {
     const [ownerState, setOwnerState] = useState<boolean>(false);
@@ -33,14 +31,6 @@ const AppHeader: React.FunctionComponent = () => {
     const ownerRef = useRef<any>(null);
     const userContRef = useRef<HTMLDivElement>(null);
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
-
-    const changePath: Function = (e: string): void => {
-        if (window.location.pathname == e) {
-            return;
-        }
-        ;
-        router.replace(e);
-    };
 
     const toggleUser: Function = (): void => {
         dispatch(setUserWindow(!userWindow));
@@ -69,7 +59,6 @@ const AppHeader: React.FunctionComponent = () => {
     }, [storeUser]);
 
     useEffect(() => {
-
         if (user) {
             if (user.friendRequests.length) {
 

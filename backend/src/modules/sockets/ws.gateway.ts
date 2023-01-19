@@ -7,8 +7,6 @@ import {
   SubscribeMessage, MessageBody, ConnectedSocket
 } from "@nestjs/websockets";
 import { Server, Socket, } from "socket.io";
-import { RequestContext, RequestContextMiddleware } from "nestjs-request-context";
-import { UsePipes } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
 
 @WebSocketGateway({ cors: "*"},)
@@ -18,8 +16,6 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   }
   activeUsers:number[] = [];
   idAssociations:any = {};
-
-  participants = new Map();
 
   afterInit(server: Server): any {
   }
@@ -33,7 +29,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   @SubscribeMessage("newUser")
   handleNew(@MessageBody("id") id:number,
          @ConnectedSocket() client: Socket){
-     this.idAssociations.id = client.id;
+    this.idAssociations[id] = client.id;
     return "received";
   };
 
@@ -47,7 +43,6 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
         active: true,
       }
     });
-    if(id == 1) client.join("112")
     if (update) {
       return "Connect";
     } else {
@@ -59,22 +54,18 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   handleMessage(@MessageBody("from") from:number ,
                 @MessageBody("to") to:number,
                 @ConnectedSocket() socket: Socket){
-    console.log(socket.rooms);
-    this.server.local.to("112").emit("hello", {data: "blblbl"})
-    socket.local.emit("hello", {data: "cool data"})
+    console.log(this.idAssociations);
+    console.log(from,to);
+    const sendingUserId = this.idAssociations[to];
+    console.log(sendingUserId);
+    socket.to(sendingUserId).emit("hello", {data: "bbgf"})
     // client.broadcast.to("112").emit("hello", {data: "313122"});
     return "Received";
   }
 
   @SubscribeMessage("hello")
-  got (
-    @MessageBody() data:any,
-    @ConnectedSocket() socket:Socket
-  ){
-    if(socket.id == this.idAssociations["1"]) {
-      console.log({ data }, "data");
-    }
-    console.log("helloed");
+  hello() {
+    console.log("hello");
   }
 }
 
