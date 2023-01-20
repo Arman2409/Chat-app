@@ -8,6 +8,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket, } from "socket.io";
 import { PrismaService } from "nestjs-prisma";
+import { SocketWIthHandshake } from "../../../types/types";
 
 @WebSocketGateway({ cors: "*"},)
 export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection{
@@ -20,31 +21,49 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   afterInit(server: Server): any {
   }
 
-  handleConnection(client: any, ...args): any {
+   handleConnection(client: any): any {
   }
 
-  handleDisconnect(client: any): any {
+  async handleDisconnect(client: SocketWIthHandshake):  Promise<any>  {
+    console.log("updated");
+    const {id, active} = client.handshake;
+    console.log(id, active);
+    if(!active) {
+      return;
+    }
+    this.activeUsers.splice(this.activeUsers.indexOf(id), 1);
+    client.handshake = false;
+    await this.prisma.users.update({
+      where : { id },
+      data: {
+        active: false,
+      }
+    });
   }
 
   @SubscribeMessage("newUser")
   handleNew(@MessageBody("id") id:number,
          @ConnectedSocket() client: Socket){
+    console.log(id);
     this.idAssociations[id] = client.id;
     return "received";
   };
 
   @SubscribeMessage("connected")
   async handleConnect(@MessageBody("id") id:number,
-         @ConnectedSocket() client: Socket){
+         @ConnectedSocket() client: SocketWIthHandshake){
     this.activeUsers.push(id);
-    const update = this.prisma.users.update({
+    const update = await this.prisma.users.update({
       where : { id },
       data: {
         active: true,
       }
     });
+    console.log("activated");
+    client.handshake.active = true;
+    client.handshake.id = id;
     if (update) {
-      return "Connect";
+      return "Connected";
     } else {
       return "Not Connected";
     }
@@ -54,19 +73,12 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   handleMessage(@MessageBody("from") from:number ,
                 @MessageBody("to") to:number,
                 @ConnectedSocket() socket: Socket){
-    console.log(this.idAssociations);
-    console.log(from,to);
+    console.log({ from }, { to });
     const sendingUserId = this.idAssociations[to];
-    console.log(sendingUserId);
-    socket.to(sendingUserId).emit("hello", {data: "bbgf"})
-    // client.broadcast.to("112").emit("hello", {data: "313122"});
+    socket.broadcast.emit("hello", {data: "bbgf"});
     return "Received";
   }
 
-  @SubscribeMessage("hello")
-  hello() {
-    console.log("hello");
-  }
 }
 
 export default WebSocketsGateway;

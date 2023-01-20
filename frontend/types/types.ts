@@ -27,7 +27,8 @@ export interface Reducers {
 };
 
 export interface SignProps {
-  compType: string
+  compType: string,
+    changeStatus: Function
 }
 
 export type ChangeType = ChangeEvent & {target: {value: any}}

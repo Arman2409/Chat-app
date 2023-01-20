@@ -36,11 +36,11 @@ const SearchUser: React.FC = () => {
     const getSeachResults = () => {
         (async function () {
             // setLoading(true);
-            const usersData = await handleGQLRequest(searchOptionsRef.current.type == "all" ? "SearchInAll" :
+            const usersData:any = await handleGQLRequest(searchOptionsRef.current.type == "all" ? "SearchInAll" :
                 "SearchInFriends", {page: searchOptionsRef.current.page, name: searchOptionsRef.current.name});
             if (usersData.SearchInAll) {
                 if (usersData.SearchInAll.users) {
-                    setUsers(usersData.SearchInAll.users.splice(0, 9));
+                    setUsers(usersData.SearchInAll.users);
                     setLoading(false)
                 } else {
                     setUsers([]);
@@ -55,7 +55,7 @@ const SearchUser: React.FC = () => {
                 }
             } else if (usersData.SearchInFriends) {
                 if (usersData.SearchInFriends.users) {
-                    setUsers(usersData.SearchInFriends.users.splice(0, 9));
+                    setUsers(usersData.SearchInFriends.users);
                     setLoading(false)
                 } else {
                     setUsers([]);
@@ -76,7 +76,6 @@ const SearchUser: React.FC = () => {
     };
 
     const search: Function = (e: string) => {
-        console.log(loading)
         if (loading || debouncedSearch) return;
         setName(e);
         const args:any = {
@@ -84,7 +83,6 @@ const SearchUser: React.FC = () => {
             name: e,
         }
         searchOptionsRef.current = args;
-;
         setLoading(true)
     };
 
@@ -102,7 +100,7 @@ const SearchUser: React.FC = () => {
     const changePage: Function = (e: any) => {
         setCurrent(e);
         const args:any = {
-            page: current,
+            page: e,
             name: name,
             type: searchType
         }

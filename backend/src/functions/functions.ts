@@ -1,5 +1,5 @@
 export const getStartEndTotal = (page:number, perPage:number, length:number) => {
-    const total = length / perPage;
+    const total = Math.ceil(length / perPage) * 10;
     const startIndex = page * perPage - perPage;
     const endIndex = page * perPage
     return {startIndex, endIndex, total}

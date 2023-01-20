@@ -32,7 +32,7 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     return isJpgOrPng && isLt2M;
  };
 
-const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
+const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) => {
     const [message, setMessage] = useState<string>("");
     const [type,setType] = useState(compType);
     const [loading, setLoading] = useState(false);
@@ -47,8 +47,10 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
         if (type == "SignIn") {
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignIn", { email, password });
+            console.log(res);
             if (res.message) {
                 setMessage(res.message);
+                setLoadingRequest(false);
                 return;
             };
             setLoadingRequest(false);
@@ -64,13 +66,13 @@ const SignInUp: React.FC<SignProps> = ({ compType }: SignProps) => {
             const res = await handleGQLRequest("SignUp", { email, password, name, image:imageUrl });
             if (res.message) {
                 setMessage(res.message);
+                setLoadingRequest(false);
                 return;
             };
-            console.log(res, res.id)
-            socket.emit("newUser", {id: res.id});
+            socket.emit("newUser", {id: res.SignUp.id});
             setLoadingRequest(false);
             setMessage("Signed Up!");
-            setType("SignIn");
+            changeStatus();
         } else {
             return;
         }

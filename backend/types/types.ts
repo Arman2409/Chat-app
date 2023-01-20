@@ -7,3 +7,6 @@ export interface UserReq  extends Request{
     session:Session & {user:Omit<UserType, "password"> }
 }
 
+export interface SocketWIthHandshake extends Socket{
+    handshake: any
+}

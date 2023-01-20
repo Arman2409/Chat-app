@@ -29,15 +29,18 @@ const MessagesChat: React.FC = () => {
     });
 
     const send = () => {
-        console.log("send");
         if( !message) {
             return;
         }
-        socket.emit("message", {from: user.id, to: user.id}, (data:any ) => {
+        socket.emit("message", {from: user.id, to: interlocutor.id}, (data:any ) => {
             if(data == "received"){
 
             }
         });
+
+        socket.on("hello", (data:any) => {
+            console.log({data});
+        })
     }
 
     useEffect(() => {
@@ -46,9 +49,6 @@ const MessagesChat: React.FC = () => {
         }
     }, [user])
 
-    useEffect(() => {
-
-    }, [])
 
     useEffect(() => {
       setInterlocutor(storeInterlocutor);

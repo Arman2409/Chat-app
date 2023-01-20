@@ -97,7 +97,6 @@ const AppHeader: React.FunctionComponent = () => {
                     Chat Net
                 </div>
             </Link>
-            {/*<UserAddOutlined />*/}
             <Badge
                 dot={user ? Boolean(user.friendRequests.length) : false}
                 className={styles.requests_badge}>

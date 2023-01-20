@@ -1,5 +1,5 @@
 import { List, Avatar, Typography, Badge, message } from "antd";
-import React from "react";
+import React, {useRef} from "react";
 import {  useRouter } from "next/router";
 
 import styles from "../../../styles/Users/UsersMapper.module.scss";
@@ -17,15 +17,15 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
    const user = useSelector((state:IRootState) => {
        return state.user.user
    })
+    const acceptLink = useRef<null|any>(null);
 
-    const acceptRequest:Function = async (item:any) => {
-       const accepted = accept ? await accept(item.id) : null;
-       console.log(accepted);
-
+    const acceptRequest:Function = async (item:any, e:Event) => {
+        e.stopPropagation();
+        accept ? await accept(item.id) : null;
     }
 
-   const addFriend:Function = (e:number) => {
-
+   const addFriend:Function = (e:number, event: Event) => {
+        event.stopPropagation();
       (async function(){
 
       if(user.name) {
@@ -60,8 +60,8 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
             <List.Item
                 onClick={() => newChat(item)}
                actions={!friends ? [
-                  <a onClick={() => addFriend(item.id)}>Add Friend</a>] : accept ?
-                   [<a onClick={() => acceptRequest(item)}>Accept</a>] : undefined}
+                  <a onClick={(e) => addFriend(item.id, e)}>Add Friend</a>] : accept ?
+                   [<a ref={acceptLink} onClick={(e) => acceptRequest(item,e)}>Accept</a>] : undefined}
                className={styles.list_item}
                >
                <List.Item.Meta

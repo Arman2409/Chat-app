@@ -38,7 +38,7 @@ export class SearchService {
 
         const { startIndex, endIndex, total } = getStartEndTotal(page, perPage, data.length);
 
-        data = data.splice(startIndex, endIndex);
+        data = data.slice(startIndex, endIndex);
         return { users: data, total };
     }
 

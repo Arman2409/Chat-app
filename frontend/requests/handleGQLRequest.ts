@@ -31,7 +31,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             name: { type: "String!", value: name },
             page: { type: "Float!", value: page},
-            perPage: { type: "Float!", value: 10}
+            perPage: { type: "Float!", value: 6}
         }
         fields = [{"users": ["name", "image", "email", "active","id"]}, "total"]
     }
@@ -41,7 +41,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             name: { type: "String!", value: name },
             page: { type: "Float!", value: page},
-            perPage: { type: "Float!", value: 10}
+            perPage: { type: "Float!", value: 6}
         }
         fields = [{"users": ["name", "image", "email", "active","id"]}, "total"]
     }

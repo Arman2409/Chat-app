@@ -15,8 +15,6 @@ export class FriendsService {
 
   async getOnlineFriends(page: number, perPage: number): Promise<any> {
     const req: UserReq = RequestContext.currentContext.req;
-    console.log({ user: req.session.user });
-
     if (req.session.user) {
 
       if (req.session.user.friends.length) {
@@ -105,7 +103,6 @@ export class FriendsService {
         id
       }
     });
-    console.log({ friend });
     if(friend.friends.includes(id)) {
       return new GraphQLError("Already have friend");
     } else {
