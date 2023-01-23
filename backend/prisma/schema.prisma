@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Users {
-  id    Int     @default(autoincrement()) @id
+  id    Int   @id  @default(autoincrement())
   email String  @unique
   name  String
   password String
@@ -22,5 +22,6 @@ model Users {
 }
 
 model ActiveUsers {
-  activeUsers Int[]
+  id Int @id
+  ids Int[]
 }

@@ -1,4 +1,4 @@
-import {Layout, Typography, Row, Avatar, message} from "antd";
+import {Layout, Typography, Row, Avatar, message, Badge} from "antd";
 import {useRouter} from "next/router";
 import Link from "next/link";
 import {UserOutlined} from "@ant-design/icons";
@@ -8,7 +8,6 @@ import {Dispatch} from "@reduxjs/toolkit";
 import {useOnClickOutside} from "usehooks-ts";
 import jwtDecode from "jwt-decode";
 import {HiOutlineUserAdd} from "react-icons/hi";
-import {Badge} from "antd";
 
 import {IRootState} from "../../../store/store";
 import styles from "../../../styles/Custom/Header/Header.module.scss";
@@ -31,6 +30,7 @@ const AppHeader: React.FunctionComponent = () => {
     const ownerRef = useRef<any>(null);
     const userContRef = useRef<HTMLDivElement>(null);
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
+    const addRef = useRef<any>([]);
 
     const toggleUser: Function = (): void => {
         dispatch(setUserWindow(!userWindow));
@@ -58,13 +58,6 @@ const AppHeader: React.FunctionComponent = () => {
         setUser(storeUser as UserType);
     }, [storeUser]);
 
-    useEffect(() => {
-        if (user) {
-            if (user.friendRequests.length) {
-
-            }
-        }
-    }, [user]);
 
     useEffect(() => {
         const token: string | null = localStorage.getItem("token");
@@ -84,9 +77,14 @@ const AppHeader: React.FunctionComponent = () => {
         ;
     }, []);
 
-    const clickOutside = () => {
-        setWatchingRequests(false);
-    }
+    const clickOutside = (e:Event) => {
+        console.log(e)
+        console.log(addRef.current)
+        if(e.target == addRef.current || addRef.current?.contains(e.target)) {
+            return;
+        }
+        if( watchingRequests)  setWatchingRequests(false);
+    };
 
     return (
         <Header className={styles.header_main}>
@@ -101,9 +99,12 @@ const AppHeader: React.FunctionComponent = () => {
                 dot={user ? Boolean(user.friendRequests.length) : false}
                 className={styles.requests_badge}>
                 {user.name &&
-                    <HiOutlineUserAdd
-                        onClick={() => setWatchingRequests(current => !current)}
-                        className={styles.requests_icon}/>}
+                    <div ref={addRef}>
+                        <HiOutlineUserAdd
+                            onClick={() => { setWatchingRequests(current => !current)}}
+                            className={styles.requests_icon}/>
+                      </div>
+                }
             </Badge>
             <Row
                 className={styles.user_cont}
@@ -121,7 +122,6 @@ const AppHeader: React.FunctionComponent = () => {
             {
                 user.name && watchingRequests ?
                     <FriendRequests clickOutside={clickOutside}/> : null
-                // <div className={requestsStyles.requests_main}> Hello </div> : null
             }
             {ownerState ?
                 <div

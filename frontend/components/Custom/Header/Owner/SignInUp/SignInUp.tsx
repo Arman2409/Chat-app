@@ -54,7 +54,10 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
                 return;
             };
             setLoadingRequest(false);
-            socket.emit("connected", {id: res.id});
+            socket.emit("connected", {id: res.id}, (data: any) => {
+                console.log(data)
+                console.log("connected");
+            });
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
@@ -128,7 +131,7 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
                         </Form.Item>
                         <Form.Item
                             className={styles.form_item}
-                            rules={[{ required: true, min: 5 }]}
+                            rules={[{ required: true, min: 3 }]}
                             name="name" >
                             <Input
                                 placeholder="Name"

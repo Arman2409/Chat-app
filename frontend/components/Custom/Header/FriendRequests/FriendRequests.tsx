@@ -64,8 +64,8 @@ const FriendRequests = ({clickOutside}: any) => {
        }
    }, [user])
 
-    useOnClickOutside( requestsRef, () => {
-        clickOutside();
+    useOnClickOutside( requestsRef, (e) => {
+        clickOutside(e);
     })
 
     return (

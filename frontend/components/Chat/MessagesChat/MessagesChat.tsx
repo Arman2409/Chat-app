@@ -32,13 +32,13 @@ const MessagesChat: React.FC = () => {
         if( !message) {
             return;
         }
-        socket.emit("message", {from: user.id, to: interlocutor.id}, (data:any ) => {
-            if(data == "received"){
-
+        socket.emit("message", {from: user.id, to: interlocutor.id,  message}, (data:any ) => {
+            if(data == "Send"){
+                console.log("Send")
             }
         });
 
-        socket.on("hello", (data:any) => {
+        socket.on("message", (data:any) => {
             console.log({data});
         })
     }

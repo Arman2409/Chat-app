@@ -15,8 +15,10 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   @WebSocketServer()  server: Server;
   constructor( private readonly prisma: PrismaService) {
   }
-  activeUsers:number[] = [];
-  idAssociations:any = {};
+  private activeUsers:number[] = [];
+  private idAssociations:any = {};
+
+  private allMessages = [];
 
   afterInit(server: Server): any {
   }
@@ -72,11 +74,35 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   @SubscribeMessage("message")
   handleMessage(@MessageBody("from") from:number ,
                 @MessageBody("to") to:number,
+                @MessageBody("message") message:string,
                 @ConnectedSocket() socket: Socket){
-    console.log({ from }, { to });
-    const sendingUserId = this.idAssociations[to];
-    socket.broadcast.emit("hello", {data: "bbgf"});
-    return "Received";
+    console.log({ from }, { to }, { message });
+    const sendingUserId:string = this.idAssociations[to];
+    let alreadyMessaged:boolean = false;
+    let messageData:any = {};
+    this.allMessages.map((e) => {
+      if (e.between.includes(from) && e.between.includes(to)) {
+        alreadyMessaged = true;
+         messageData  = {
+          between: e.between,
+          messages: [...e.messages, message],
+          lastDate: new Date().getDate(),
+        }
+         return messageData;
+      } else {
+        return e;
+      }
+    })
+    if (!alreadyMessaged) {
+      messageData  = {
+        between: [ from, to ],
+        lastDate: new Date().getDate(),
+        messages: [...message]
+      }
+      this.allMessages.push(messageData);
+    }
+    socket.broadcast.to(sendingUserId).emit("message", messageData);
+    return "Send";
   }
 
 }
