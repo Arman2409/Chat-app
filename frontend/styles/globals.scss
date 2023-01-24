@@ -15,3 +15,23 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.users_pagination{
+  position: absolute;
+  bottom: 75px;
+}
+
+.centered_users_cont {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
+.error-cont{
+  width: 100%;
+  height: calc(100vh - 160px);
+  display: flex;
+  alignItems: center;
+  justifyContent: center
+}

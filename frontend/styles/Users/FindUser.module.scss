@@ -1,7 +1,9 @@
+@import "../variables";
+
 .find_user_container {
     display: flex;
     flex-direction: column;
-    background-color: gray;
+    background-color:$color2 ;
     padding: 5px;
     position: relative;
 }
@@ -11,7 +13,7 @@
     align-self: center;
 }
 
-.search_radio {
+.search_switch {
     align-self: center;
-    padding: 5px;
+    margin: 5px;
 }

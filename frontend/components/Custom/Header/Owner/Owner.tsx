@@ -4,13 +4,13 @@ import { Typography, Button } from "antd";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 
-import {socket} from "../../../Chat/MessagesChat/MessagesChat";
 import styles from "../../../../styles/Custom/Header/Owner/Owner.module.scss";
 import SignInUp from "./SignInUp/SignInUp";
 import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";
 import handleGQLRequest from "../../../../requests/handleGQLRequest";
 import { setStoreUser } from "../../../../store/userSlice";
+import {socket} from "../../../../pages/_app";
 
 const Owner = () => {
     const [signStatus, setSignStatus] = useState<string>("SignIn");

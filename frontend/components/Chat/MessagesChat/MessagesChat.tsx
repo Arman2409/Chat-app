@@ -8,12 +8,10 @@ import {useSelector} from "react-redux";
 
 import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
 import {IRootState} from "../../../store/store";
-import {io} from "socket.io-client";
 import {UserType} from "../../../types/types";
+import {socket} from "../../../pages/_app";
 
 const {TextArea} = Input;
-
-export const socket = io("ws://localhost:4000");
 
 const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
@@ -32,6 +30,8 @@ const MessagesChat: React.FC = () => {
         if( !message) {
             return;
         }
+
+        console.log(user.id, interlocutor.id)
         socket.emit("message", {from: user.id, to: interlocutor.id,  message}, (data:any ) => {
             if(data == "Send"){
                 console.log("Send")
@@ -39,7 +39,7 @@ const MessagesChat: React.FC = () => {
         });
 
         socket.on("message", (data:any) => {
-            console.log({data});
+
         })
     }
 

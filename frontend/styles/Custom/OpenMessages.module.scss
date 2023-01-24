@@ -1,9 +1,11 @@
+@import "../variables";
+
 .open_icon {
     position: fixed;
     right: 25px;
     bottom: 95px;
     font-size: 85px;
-    color: pink;
+    color: $textColor1;
     cursor: pointer;
     z-index: 3;
     & svg {

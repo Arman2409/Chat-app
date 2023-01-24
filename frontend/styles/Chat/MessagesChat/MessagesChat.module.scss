@@ -1,8 +1,10 @@
+@import "../../variables";
+
 .chat_cont{
     width: 60%;
     position: relative;
     height: 100%;
-    border: 1px solid red;
+    border: 1px solid $borderColor;
 }
 
 .inputs_cont {
@@ -11,7 +13,7 @@
     height:90px;
     display: flex;
     align-items: center;
-    border: 1px solid pink;
+    border: 1px solid $borderColor;
     width: 100%;
     .chat_textarea {
         width: calc(100% - 135px);
@@ -20,10 +22,10 @@
     .smile_cont {
         font-size: 20px;
         margin: 10px;
-        color: orangered;
+        color: $color2;
     }
     .smile_icon{
-        color: orangered;
+        color: $color1;
         position: absolute;
         right: calc(80px + 20px)
     }
@@ -36,7 +38,7 @@
 
     .emoji_cont{
         position: absolute;
-        border: 1px solid green;
+        border: 1px solid $borderColor;
         bottom: 90px;
         left: 0;
     }

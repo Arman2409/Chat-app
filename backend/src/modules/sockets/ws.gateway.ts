@@ -24,10 +24,11 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   }
 
    handleConnection(client: any): any {
+     console.log("connection");
   }
 
   async handleDisconnect(client: SocketWIthHandshake):  Promise<any>  {
-    console.log("updated");
+    console.log("disconnected");
     const {id, active} = client.handshake;
     console.log(id, active);
     if(!active) {
@@ -75,7 +76,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   handleMessage(@MessageBody("from") from:number ,
                 @MessageBody("to") to:number,
                 @MessageBody("message") message:string,
-                @ConnectedSocket() socket: Socket){
+                @ConnectedSocket() socket: SocketWIthHandshake){
     console.log({ from }, { to }, { message });
     const sendingUserId:string = this.idAssociations[to];
     let alreadyMessaged:boolean = false;
@@ -86,7 +87,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
          messageData  = {
           between: e.between,
           messages: [...e.messages, message],
-          lastDate: new Date().getDate(),
+          lastDate: new Date(),
         }
          return messageData;
       } else {
@@ -96,8 +97,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     if (!alreadyMessaged) {
       messageData  = {
         between: [ from, to ],
-        lastDate: new Date().getDate(),
-        messages: [...message]
+        messages: [message]
       }
       this.allMessages.push(messageData);
     }

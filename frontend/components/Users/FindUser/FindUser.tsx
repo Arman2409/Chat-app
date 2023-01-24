@@ -1,5 +1,5 @@
-import { Input, Pagination, Radio } from "antd";
-import React, { ChangeEvent,useEffect, useRef, useState } from "react";
+import { Input, Pagination, Radio, Switch } from "antd";
+import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
 import { useMediaQuery } from "react-responsive";
 import { theme } from "antd";
 import { useDebounce, useUpdateEffect } from "usehooks-ts";
@@ -10,13 +10,12 @@ const { Search } = Input;
 import styles from "../../../styles/Users/FindUser.module.scss";
 import UsersMapper from "../UsersMapper/UsersMapper";
 import {IRootState} from "../../../store/store";
-import globalStyles from "../../../styles/globalClasses.module.scss";
-import { ChangeType, SearchOptions, UserType } from "../../../types/types";
+import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import Loading from "../../Custom/Loading/Loading";
 import {useSelector} from "react-redux";
 import {Simulate} from "react-dom/test-utils";
-import load = Simulate.load;
+import loadedData = Simulate.loadedData;
 
 const SearchUser: React.FC = () => {
     const [current, setCurrent] = useState<number>(1);
@@ -76,8 +75,9 @@ const SearchUser: React.FC = () => {
     };
 
     const search: Function = (e: string) => {
+        if (e !== name) setName(e);
         if (loading || debouncedSearch) return;
-        setName(e);
+        if (searchOptionsRef.current.name == e) return;
         const args:any = {
             ...searchOptionsRef.current,
             name: e,
@@ -87,8 +87,9 @@ const SearchUser: React.FC = () => {
     };
 
     const searchChange: Function = (e: any) => {
+        if (e !== name) setName(e.target.value);
         if (loading || debouncedSearch) return;
-        setName(e.target.value);
+        if (searchOptionsRef.current.name == e) return;
         const args:any = {
             ...searchOptionsRef.current,
             name: e.target.value,
@@ -108,12 +109,13 @@ const SearchUser: React.FC = () => {
         setLoading(true);
     };
 
-    const newSearchType: Function = (e: ChangeType) => {
-        setSearchType(e.target.value);
+    const newSearchType: Function = (e: boolean) => {
+        const type = (e ? "friends" : "all");
+        setSearchType(type);
         const args:any = {
             page: current,
             name: name,
-            type: e.target.value
+            type
         }
         searchOptionsRef.current = args;
         setLoading(true);
@@ -123,7 +125,10 @@ const SearchUser: React.FC = () => {
         if(debouncedSearch) {
             getSeachResults();
         }
-    }, [debouncedSearch])
+        if(!debouncedSearch && !loading && name !== searchOptionsRef.current.name) {
+            search(name);
+        }
+    }, [debouncedSearch,loading])
 
     useEffect(() => {
         setLoading(true);
@@ -138,7 +143,7 @@ const SearchUser: React.FC = () => {
             className={styles.find_user_container}
         >
             {loading || debouncedSearch &&
-                <Loading />}
+                <Loading  />}
             <Search
                 allowClear={true}
                 className={styles.user_search}
@@ -146,21 +151,19 @@ const SearchUser: React.FC = () => {
                 onChange={(e) => searchChange(e)}
                 onSearch={(e) => search(e)}
             />
-            <Radio.Group
-                onChange={(e) => newSearchType(e)}
-                value={searchType}
-                className={styles.search_radio}>
-                { user.name &&
-                <Radio value={"friends"}>Friends</Radio>
-                }
-                <Radio value={"all"}>All</Radio>
-            </Radio.Group>
-            <div className={globalStyles.centered_users_cont}>
+            <Switch
+                checkedChildren="Friends"
+                unCheckedChildren="All"
+                className={styles.search_switch}
+                onChange={(e: boolean) => newSearchType(e)}
+                defaultChecked />
+            <div className="centered_users_cont">
                 {searchType == "all" ?   <UsersMapper users={users} />
                      : <UsersMapper users={users} friends={true} /> }
                 <Pagination
                     total={total}
                     current={current}
+                    className="users_pagination"
                     onChange={(e) => changePage(e)}
                     showSizeChanger={false} />
             </div>

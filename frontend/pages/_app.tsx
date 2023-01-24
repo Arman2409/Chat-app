@@ -1,23 +1,26 @@
 import type { AppProps } from 'next/app'
-import { ConfigProvider } from 'antd'
 import { Provider } from "react-redux"
 import { useEffect } from 'react'
 
 import '../styles/globals.scss'
-import theme from '../styles/theme'
 import AppHeader from '../components/Custom/Header/Header'
 import OpenMessages from '../components/Custom/OpenMessages/OpenMessages'
 import Footer from '../components/Custom/Footer/Footer'
 import store from '../store/store'
+import {io} from "socket.io-client";
 
-export default function App({ Component, pageProps }: AppProps) {
+let socket: any;
+function App({ Component, pageProps }: AppProps) {
 
-  useEffect(() => {
-     
-  }, [])
+    useEffect(() => {
+        socket = io("ws://localhost:4000");
+
+        return ()  => {
+            socket.disconnect();
+        }
+    }, [])
 
   return <>
-  <ConfigProvider theme={theme}>
     <Provider store={store}>
       <AppHeader />
       <OpenMessages />
@@ -28,6 +31,8 @@ export default function App({ Component, pageProps }: AppProps) {
       </div>
       <Footer />
      </Provider>
-   </ConfigProvider>
  </>
 }
+
+export  { socket };
+export default  App;

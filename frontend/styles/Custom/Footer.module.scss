@@ -1,7 +1,9 @@
+@import "../variables";
+
 .footer_cont {
    display: flex;
    align-items: center;
    justify-content: center;
    height: 80px;
-   background-color: aqua;
+   background-color: $color2;
 }

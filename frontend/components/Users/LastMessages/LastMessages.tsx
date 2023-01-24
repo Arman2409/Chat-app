@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 import UsersMapper from "../UsersMapper/UsersMapper";
 import users from "../../../users";
-import globalStyles from "../../../styles/globalClasses.module.scss";
 import { useRouter } from "next/router";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
@@ -27,7 +26,7 @@ const LastMessages:React.FC = () => {
          <Typography>
             Last Messages
          </Typography>
-         <div className={globalStyles.centered_users_cont}>
+         <div className="centered_users_cont">
             <UsersMapper users={users} />
             <Pagination 
               current={current} 

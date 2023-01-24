@@ -2,13 +2,7 @@ import { Typography } from "antd";
 
 const Page404:React.FC = () => {
     return (
-        <div style={{
-            width: "100%",
-            height: "calc(100vh - 160px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-        }}>
+        <div className="error-cont">
           <Typography style={{
             color: "brown"
           }}>

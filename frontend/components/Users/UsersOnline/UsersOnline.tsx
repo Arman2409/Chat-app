@@ -1,4 +1,4 @@
-import { Typography, theme, Pagination, Modal } from "antd";
+import { Typography, theme, Pagination } from "antd";
 import { useMediaQuery } from "react-responsive";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -10,7 +10,6 @@ const { useToken } = theme;
 
 import ListMaper from "../UsersMapper/UsersMapper";
 import styles from "../../../styles/Users/UsersOnline.module.scss";
-import globalStyles from "../../../styles/globalClasses.module.scss";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import { UserType } from "../../../types/types";
 
@@ -64,10 +63,11 @@ const UsersList:React.FunctionComponent = () => {
          <Typography >
             Friends Online
          </Typography>
-         <div className={globalStyles.centered_users_cont}>
+         <div className="centered_users_cont">
             <ListMaper users={users} />
             <Pagination 
-               total={total} 
+               total={total}
+               className="users_pagination"
                current={current} 
                onChange={(e) => changePage(e)}  
                showSizeChanger={false} />

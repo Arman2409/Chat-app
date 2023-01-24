@@ -1,3 +1,5 @@
+@import "../../../../variables";
+
 .sign_main {
   width: 100%;
   background-color: inherit;
@@ -20,11 +22,11 @@
       justify-content: center;
       .sign_button {
         width: auto;
-        background-color: blue;
+        background-color: $color2;
       }
       .sign_input {
         width: 95%;
-        border: 1px solid blue;
+        border: 1px solid $borderColor;
       }
       &_button {
         position: absolute;

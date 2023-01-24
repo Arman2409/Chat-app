@@ -5,14 +5,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab57a864-e8e7-4538-80fd-869df535f8dc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/prisma/schema.prisma" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/socket/socket.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/styles/variables.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/Header/FriendRequests/FriendRequests.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/FriendRequests/FriendRequests.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Custom/Header/Owner/Owner.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Owner/Owner.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Custom/Loading/Loading.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Loading/Loading.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Users/FindUser/FindUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Users/FindUser/FindUser.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Users/LastMessages/LastMessages.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Users/LastMessages/LastMessages.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Users/UsersOnline/UsersOnline.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Users/UsersOnline/UsersOnline.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/404.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/404.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/_app.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_app.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Chat/MessagesChat/MessagesChat.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Chat/MessagesChat/MessagesChat.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Demo.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Demo.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Footer.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Footer.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Header.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Owner/Owner.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Owner/Owner.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Header/Requests/Requests.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Header/Requests/Requests.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/Loading.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/Loading.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Custom/OpenMessages.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Custom/OpenMessages.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Users/FindUser.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Users/FindUser.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/Users/UsersOnline.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Users/UsersOnline.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/globalClasses.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/globals.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/theme.tsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +91,7 @@
       <workItem from="1674197270381" duration="13917000" />
       <workItem from="1674457289053" duration="51000" />
       <workItem from="1674484120290" duration="5614000" />
+      <workItem from="1674555298491" duration="1297000" />
     </task>
     <servers />
   </component>

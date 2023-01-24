@@ -1,21 +1,10 @@
 import Head from 'next/head';
 import { Row } from 'antd';
-import { io } from "socket.io-client";
 
 import UsersList from '../components/Users/UsersOnline/UsersOnline';
 import SearchUser from '../components/Users/FindUser/FindUser';
-import {useEffect} from "react";
-import {socket} from "../components/Chat/MessagesChat/MessagesChat";
 
 export default function Home() {
-
-    useEffect(() => {
-
-        return ()  => {
-            console.log("disconnected");
-            socket.emit("disconnected");
-        }
-    }, [])
 
   return (
     <div style={{

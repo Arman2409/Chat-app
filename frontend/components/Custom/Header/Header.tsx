@@ -62,12 +62,12 @@ const AppHeader: React.FunctionComponent = () => {
     useEffect(() => {
         const token: string | null = localStorage.getItem("token");
         if (token) {
-            const storeUser: UserType = jwtDecode(token);
-            if (storeUser.name) {
+            const localUser: UserType = jwtDecode(token);
+            if (localUser.name) {
                 (async () => {
                     const signStatus: any = await handleGQLRequest("AlreadySigned", {token});
                     if(signStatus.AlreadySigned == "Done") {
-                      dispatch(setStoreUser(storeUser));
+                      dispatch(setStoreUser(localUser));
                     } else {
                       message.error("Error Occured");
                     }
@@ -78,8 +78,6 @@ const AppHeader: React.FunctionComponent = () => {
     }, []);
 
     const clickOutside = (e:Event) => {
-        console.log(e)
-        console.log(addRef.current)
         if(e.target == addRef.current || addRef.current?.contains(e.target)) {
             return;
         }

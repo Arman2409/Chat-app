@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { SignProps } from "../../../../../types/types";
 import { Dispatch } from "@reduxjs/toolkit";
 import Loading from "../../../Loading/Loading";
-import { socket} from "../../../../Chat/MessagesChat/MessagesChat";
+import {socket} from "../../../../../pages/_app";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -47,17 +47,16 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
         if (type == "SignIn") {
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignIn", { email, password });
-            console.log(res);
             if (res.message) {
                 setMessage(res.message);
                 setLoadingRequest(false);
                 return;
             };
-            setLoadingRequest(false);
+            socket.connect();
             socket.emit("connected", {id: res.id}, (data: any) => {
-                console.log(data)
-                console.log("connected");
+                console.log("connected", {data});
             });
+            setLoadingRequest(false);
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
