@@ -1,7 +1,7 @@
 import { Pagination, Typography } from "antd";
 import { useEffect, useState } from "react";
 
-import UsersMapper from "../UsersMapper/UsersMapper";
+import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import users from "../../../users";
 import { useRouter } from "next/router";
 import { UserType } from "../../../types/types";

@@ -16,6 +16,7 @@ const {TextArea} = Input;
 const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
+    const [ messageData, setMessageData] = useState<any>({between: [], messages: []});
     const [interlocutor, setInterlocutor] = useState<UserType>({ id: 0 ,name: "", email: "", image:"", friendRequests: [], friends: [], active: false})
 
     const router: any = useRouter();
@@ -33,8 +34,8 @@ const MessagesChat: React.FC = () => {
 
         console.log(user.id, interlocutor.id)
         socket.emit("message", {from: user.id, to: interlocutor.id,  message}, (data:any ) => {
-            if(data == "Send"){
-                console.log("Send")
+            if(data.between){
+                setMessageData(data);
             }
         });
 
@@ -75,6 +76,7 @@ const MessagesChat: React.FC = () => {
                             height: "50px"
                         }} src={interlocutor.image} />
                     </div>
+                     {messageData.messages.map((e:string) => <p>{e}</p>)}
                     <div className={messagesStyles.inputs_cont}>
                         <TextArea
                            onChange={(e: any) => setMessage(e.target.value)}

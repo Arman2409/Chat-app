@@ -6,7 +6,7 @@ import requestsStyles from "../../../../styles/Custom/Header/Requests/Requests.m
 import {IRootState} from "../../../../store/store";
 import Loading from "../../Loading/Loading";
 import handleGQLRequest from "../../../../requests/handleGQLRequest";
-import UsersMapper from "../../../Users/UsersMapper/UsersMapper";
+import UsersMapper from "../../UsersMapper/UsersMapper";
 import {UserType} from "../../../../types/types";
 import { useOnClickOutside} from "usehooks-ts";
 import {Dispatch} from "@reduxjs/toolkit";

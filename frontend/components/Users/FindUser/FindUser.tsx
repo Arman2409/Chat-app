@@ -8,14 +8,13 @@ const { useToken } = theme;
 const { Search } = Input;
 
 import styles from "../../../styles/Users/FindUser.module.scss";
-import UsersMapper from "../UsersMapper/UsersMapper";
+import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import {IRootState} from "../../../store/store";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import Loading from "../../Custom/Loading/Loading";
 import {useSelector} from "react-redux";
 import {Simulate} from "react-dom/test-utils";
-import loadedData = Simulate.loadedData;
 
 const SearchUser: React.FC = () => {
     const [current, setCurrent] = useState<number>(1);
@@ -156,7 +155,8 @@ const SearchUser: React.FC = () => {
                 unCheckedChildren="All"
                 className={styles.search_switch}
                 onChange={(e: boolean) => newSearchType(e)}
-                defaultChecked />
+                disabled={user.name ? false : true}
+                defaultChecked={false} />
             <div className="centered_users_cont">
                 {searchType == "all" ?   <UsersMapper users={users} />
                      : <UsersMapper users={users} friends={true} /> }

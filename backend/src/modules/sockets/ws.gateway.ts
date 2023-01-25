@@ -97,12 +97,19 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     if (!alreadyMessaged) {
       messageData  = {
         between: [ from, to ],
-        messages: [message]
+        messages: [message],
+
       }
-      this.allMessages.push(messageData);
+      this.allMessages.push(
+          {...messageData,
+            lastDate: new Date()
+          }
+          );
     }
+    console.log(messageData);
+    console.log(this.allMessages);
     socket.broadcast.to(sendingUserId).emit("message", messageData);
-    return "Send";
+    return messageData;
   }
 
 }

@@ -105,8 +105,6 @@ export class FriendsService {
     });
     if(friend.friends.includes(id)) {
       return new GraphQLError("Already have friend");
-    } else {
-
     }
     friend.friends.push(currentUser.id);
     const updatingFriend: UserType = await this.prisma.users.update({

@@ -8,7 +8,7 @@ import { IRootState } from "../../../store/store";
 
 const { useToken } = theme;
 
-import ListMaper from "../UsersMapper/UsersMapper";
+import ListMaper from "../../Custom/UsersMapper/UsersMapper";
 import styles from "../../../styles/Users/UsersOnline.module.scss";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import { UserType } from "../../../types/types";

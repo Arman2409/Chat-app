@@ -17,6 +17,7 @@ import {UserType} from "../../../types/types";
 import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
+import {socket} from "../../../pages/_app";
 
 const {Header} = Layout;
 
@@ -67,7 +68,14 @@ const AppHeader: React.FunctionComponent = () => {
                 (async () => {
                     const signStatus: any = await handleGQLRequest("AlreadySigned", {token});
                     if(signStatus.AlreadySigned == "Done") {
-                      dispatch(setStoreUser(localUser));
+                        socket.connect();
+                        socket.emit("connected", {id: localUser.id}, (data: any) => {
+                            if( data !== "Connected") {
+                                message.error("Service Not Available, Please Try Later");
+                                return;
+                            }
+                            dispatch(setStoreUser(localUser))
+                        });
                     } else {
                       message.error("Error Occured");
                     }
