@@ -45,7 +45,7 @@ const Owner = () => {
             {user.name ?
                 <>
                     <div className={styles.data_cont}>
-                        <Typography>
+                        <Typography className={styles.owner_email}>
                             {user.email}
                         </Typography>
                         <Button type="primary" onClick={() => signOut()}>

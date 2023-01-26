@@ -11,6 +11,7 @@ type UserType {
   friends: [Float!]!
   active: Boolean!
   friendRequests: [Float!]!
+  lastVisited: String!
 }
 
 type TokenType {

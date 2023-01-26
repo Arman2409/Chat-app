@@ -9,11 +9,12 @@ import {
 import { Server, Socket, } from "socket.io";
 import { PrismaService } from "nestjs-prisma";
 import { SocketWIthHandshake } from "../../../types/types";
+import {SocketsService} from "./sockets.service";
 
 @WebSocketGateway({ cors: "*"},)
 export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection{
   @WebSocketServer()  server: Server;
-  constructor( private readonly prisma: PrismaService) {
+  constructor( private readonly prisma: PrismaService, private readonly service: SocketsService) {
   }
   private activeUsers:number[] = [];
   private idAssociations:any = {};
@@ -36,12 +37,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     }
     this.activeUsers.splice(this.activeUsers.indexOf(id), 1);
     client.handshake = false;
-    await this.prisma.users.update({
-      where : { id },
-      data: {
-        active: false,
-      }
-    });
+    await this.service.updateUserStatus(id, false);
   }
 
   @SubscribeMessage("newUser")
@@ -56,13 +52,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
   async handleConnect(@MessageBody("id") id:number,
          @ConnectedSocket() client: SocketWIthHandshake){
     this.activeUsers.push(id);
-    const update = await this.prisma.users.update({
-      where : { id },
-      data: {
-        active: true,
-      }
-    });
-    console.log("activated");
+    const update = this.service.updateUserStatus(id, true, true)
     client.handshake.active = true;
     client.handshake.id = id;
     if (update) {
@@ -81,13 +71,13 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     const sendingUserId:string = this.idAssociations[to];
     let alreadyMessaged:boolean = false;
     let messageData:any = {};
-    this.allMessages.map((e) => {
+    const newAllMessages = this.allMessages.map((e) => {
       if (e.between.includes(from) && e.between.includes(to)) {
         alreadyMessaged = true;
          messageData  = {
           between: e.between,
           messages: [...e.messages, message],
-          lastDate: new Date(),
+          lastDate: new Date().toString().slice(0,10),
         }
          return messageData;
       } else {
@@ -105,9 +95,11 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
             lastDate: new Date()
           }
           );
+    } else {
+      this.allMessages = newAllMessages;
     }
     console.log(messageData);
-    console.log(this.allMessages);
+    console.log(this.allMessages)
     socket.broadcast.to(sendingUserId).emit("message", messageData);
     return messageData;
   }

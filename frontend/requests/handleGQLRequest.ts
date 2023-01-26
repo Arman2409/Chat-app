@@ -33,7 +33,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: { type: "Float!", value: page},
             perPage: { type: "Float!", value: 6}
         }
-        fields = [{"users": ["name", "image", "email", "active","id"]}, "total"]
+        fields = [{"users": ["name","lastVisited", "image", "email", "active","id"]}, "total"]
     }
 
     if(operation == "SearchInFriends") {
@@ -43,7 +43,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: { type: "Float!", value: page},
             perPage: { type: "Float!", value: 6}
         }
-        fields = [{"users": ["name", "image", "email", "active","id"]}, "total"]
+        fields = [{"users": ["name","lastVisited", "image", "email", "active","id"]}, "total"]
     }
     
     if(operation == "GetOnlineFriends") {
@@ -52,7 +52,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: {type: "Float!", value: page},
             perPage: {type: "Float!", value: perPage}
         }
-        fields = [{"users":["name", "id", "email", "active", "image"]}, "total"]
+        fields = [{"users":["name", "id", "email","lastVisited", "active", "image"]}, "total"]
     };
 
     if(operation == "GetLastMessages") {
@@ -77,7 +77,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             ids: { type: "[Float!]!", value: ids}
         }
-        fields = ["name", "id", "email", "active", "image"]
+        fields = ["name", "id", "email", "lastVisited", "active", "image"]
     }
 
     if(operation == "ConfirmFriend") {

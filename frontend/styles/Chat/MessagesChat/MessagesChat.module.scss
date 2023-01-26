@@ -5,42 +5,75 @@
     position: relative;
     height: 100%;
     border: 1px solid $borderColor;
-}
-
-.inputs_cont {
-    position: absolute;
-    bottom: 0;
-    height:90px;
-    display: flex;
-    align-items: center;
-    border: 1px solid $borderColor;
-    width: 100%;
-    .chat_textarea {
-        width: calc(100% - 135px);
+    .choose_interlocutor_cont{
+        width: 100%;
         height: 100%;
-    }
-    .smile_cont {
-        font-size: 20px;
-        margin: 10px;
-        color: $color2;
-    }
-    .smile_icon{
-        color: $color1;
-        position: absolute;
-        right: calc(80px + 20px)
-    }
-    .send_button{
-        position:absolute;
-        right: 0;
-        width: 80px;
-        margin: 10px;
-    }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-color: $color2;
+        opacity: 0.6;
+        .choose_interlocutor{
+            font-size: 35px;
+            color: $textColor1;
+        }
+        .choose_interlocutor_icon{
+            font-size: 40px;
+            color: $textColor2;
+            animation-name: chat_icon;
+            animation-duration: 3s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
 
-    .emoji_cont{
-        position: absolute;
-        border: 1px solid $borderColor;
-        bottom: 90px;
-        left: 0;
+        @keyframes chat_icon  {
+            0% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(45deg);
+            }
+            50% {
+                transform: rotate(0deg);
+            }
+        }
     }
-    
+    .inputs_cont {
+        position: absolute;
+        bottom: 0;
+        height:90px;
+        display: flex;
+        align-items: center;
+        border: 1px solid $borderColor;
+        width: 100%;
+        .chat_textarea {
+            width: calc(100% - 135px);
+            height: 100%;
+        }
+        .smile_cont {
+            font-size: 20px;
+            margin: 10px;
+            color: $color2;
+        }
+        .smile_icon{
+            color: $color1;
+            position: absolute;
+            right: calc(80px + 20px)
+        }
+        .send_button{
+            position:absolute;
+            right: 0;
+            width: 80px;
+            margin: 10px;
+        }
+
+        .emoji_cont{
+            position: absolute;
+            border: 1px solid $borderColor;
+            bottom: 90px;
+            left: 0;
+        }
+
+    }
 }

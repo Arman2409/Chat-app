@@ -1,10 +1,11 @@
 import React from "react";
 import {SmileOutlined} from "@ant-design/icons";
-import {Input, Button, Avatar} from "antd";
+import {Input, Button, Avatar, Typography} from "antd";
 import EmojiPicker, {EmojiStyle} from "emoji-picker-react";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {useSelector} from "react-redux";
+import {WechatFilled} from "@ant-design/icons";
 
 import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
 import {IRootState} from "../../../store/store";
@@ -57,7 +58,7 @@ const MessagesChat: React.FC = () => {
 
     return (
         <div className={messagesStyles.chat_cont}>
-            {interlocutor ?
+            {interlocutor.name ?
                 <>
                     <div style={{
                         width: "100%",
@@ -101,7 +102,14 @@ const MessagesChat: React.FC = () => {
                             </div> : null}
                     </div>
                 </>
-                : null}
+                :
+                <div className={messagesStyles.choose_interlocutor_cont}>
+                    <WechatFilled className={messagesStyles.choose_interlocutor_icon}/>
+                    <Typography className={messagesStyles.choose_interlocutor}>
+                         Choose your interlocutor and start messaging
+                    </Typography>
+                </div>
+                }
         </div>
     )
 };

@@ -34,7 +34,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
              message.success("Request Sent");
          }
       } else {
-          message.warning("Sing in to add friends");
+          message.warning("Sign in to add friends");
       }
       })()
    };
@@ -59,7 +59,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
          renderItem={(item) => (
             <List.Item
                 onClick={() => newChat(item)}
-               actions={!friends ? [
+               actions={!friends && user.name ? [
                   <a onClick={(e) => addFriend(item.id, e)}>Add Friend</a>] : accept ?
                    [<a ref={acceptLink} onClick={(e) => acceptRequest(item,e)}>Accept</a>] : undefined}
                className={styles.list_item}
@@ -70,7 +70,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
                   </Badge>}
 
                   title={<Typography>{item.name}</Typography>}
-                  description={`${item.description}`}>
+                  description={`${item.lastVisited}`}>
                </List.Item.Meta>
             </List.Item>
          )}

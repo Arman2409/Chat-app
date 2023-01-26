@@ -6,8 +6,6 @@ import { useSelector } from "react-redux";
 import Demo from "../../Custom/Demo/Demo";
 import { IRootState } from "../../../store/store";
 
-const { useToken } = theme;
-
 import ListMaper from "../../Custom/UsersMapper/UsersMapper";
 import styles from "../../../styles/Users/UsersOnline.module.scss";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
@@ -19,10 +17,7 @@ const UsersList:React.FunctionComponent = () => {
    const user: UserType = useSelector((state: IRootState) => state.user.user);
    const [users, setUsers] = useState<UserType[]>([]);
    const [total, setTotal] = useState<number>(1);
-   // const [demoStatus, setDemoStatus] = useState(true);
-   // const isMiddle = useMediaQuery({ query: "(max-width: 768px)" });
-   
-   // const { token } = useToken();
+
 
    const getOnlineFriends = () => {
       (async function(){
@@ -58,7 +53,7 @@ const UsersList:React.FunctionComponent = () => {
          width: isSmall ? "100%" :  "40%",
       }}>
           {
-             user.name ? null :  <Demo message="Sign in to see friends online"/>
+             user.name ? null :  <Demo/>
           }
          <Typography >
             Friends Online

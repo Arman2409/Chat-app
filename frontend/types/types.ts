@@ -45,5 +45,6 @@ export interface MapperProps {
 }
 
 export interface  DemoProps {
-    message: string
+    message: string,
+
 }
