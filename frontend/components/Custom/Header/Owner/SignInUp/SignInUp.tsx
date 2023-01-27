@@ -139,7 +139,7 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
                     </>
                     : null}
                 <Form.Item
-                    rules={[{ required: true, type: "email" }]}
+                    rules={[{ required: true }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -166,7 +166,7 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
                             className={styles.sign_input} />
                     </Form.Item>
                     : null}
-                <Typography>
+                <Typography className={styles.sign_message}>
                     {message}
                 </Typography>
                 <Form.Item

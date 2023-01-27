@@ -11,14 +11,23 @@ import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.modul
 import {IRootState} from "../../../store/store";
 import {UserType} from "../../../types/types";
 import {socket} from "../../../pages/_app";
+import {getSlicedWithDots} from "../../../functions/functions";
 
 const {TextArea} = Input;
 
 const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
-    const [ messageData, setMessageData] = useState<any>({between: [], messages: []});
-    const [interlocutor, setInterlocutor] = useState<UserType>({ id: 0 ,name: "", email: "", image:"", friendRequests: [], friends: [], active: false})
+    const [messageData, setMessageData] = useState<any>({between: [], messages: []});
+    const [interlocutor, setInterlocutor] = useState<UserType>({
+        id: 0,
+        name: "",
+        email: "",
+        image: "",
+        friendRequests: [],
+        friends: [],
+        active: false
+    })
 
     const router: any = useRouter();
     const user = useSelector((state: IRootState) => {
@@ -29,20 +38,14 @@ const MessagesChat: React.FC = () => {
     });
 
     const send = () => {
-        if( !message) {
+        if (!message) {
             return;
         }
-
-        console.log(user.id, interlocutor.id)
-        socket.emit("message", {from: user.id, to: interlocutor.id,  message}, (data:any ) => {
-            if(data.between){
+        socket.emit("message", {from: user.id, to: interlocutor.id, message}, (data: any) => {
+            if (data.between) {
                 setMessageData(data);
             }
         });
-
-        socket.on("message", (data:any) => {
-
-        })
     }
 
     useEffect(() => {
@@ -51,37 +54,52 @@ const MessagesChat: React.FC = () => {
         }
     }, [user])
 
+    useEffect(() => {
+        socket.on("message", (data: any) => {
+            setMessageData(data);
+        })
+    }, [])
 
     useEffect(() => {
-      setInterlocutor(storeInterlocutor);
+        setInterlocutor(storeInterlocutor);
     }, [storeInterlocutor]);
 
     return (
         <div className={messagesStyles.chat_cont}>
             {interlocutor.name ?
                 <>
-                    <div style={{
-                        width: "100%",
-                        backgroundColor: "blue",
-                        height: "auto",
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        padding: 10
-                    }}>
-                        <h5>
-                            {interlocutor.name || ""}
+                    <div className={messagesStyles.interlocutor_cont}>
+                        <h5 className={messagesStyles.interlocutor_name}>
+                            {interlocutor.name ?
+                                interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
+                                : ""}
                         </h5>
                         <Avatar style={{
                             width: "50px",
                             height: "50px"
-                        }} src={interlocutor.image} />
+                        }} src={interlocutor.image}/>
                     </div>
-                     {messageData.messages.map((e:string) => <p>{e}</p>)}
+                    {messageData.messages.map((e: string, index: number) => {
+                        let isFirst;
+                        if (messageData.between.indexOf(Number(user.id)) == 0) {
+                            isFirst = true;
+                        }
+                        return (
+                            <div
+                                className={messagesStyles.message_cont}
+                                style={{
+                                    justifyContent: isFirst ? index % 2 == 0 ? "flex-end" : "flex-start" : index % 2 == 0 ? "flex-start" : "flex-end"
+                                }}>
+                                <div  className={messagesStyles.message_cont_text_cont}>
+                                    {e}
+                                </div>
+                            </div>
+                        )
+                    })}
                     <div className={messagesStyles.inputs_cont}>
                         <TextArea
-                           onChange={(e: any) => setMessage(e.target.value)}
                             className={messagesStyles.chat_textarea}
+                            onChange={(e: any) => setMessage(e.target.value)}
                         />
                         <SmileOutlined
                             size={50}
@@ -106,10 +124,10 @@ const MessagesChat: React.FC = () => {
                 <div className={messagesStyles.choose_interlocutor_cont}>
                     <WechatFilled className={messagesStyles.choose_interlocutor_icon}/>
                     <Typography className={messagesStyles.choose_interlocutor}>
-                         Choose your interlocutor and start messaging
+                        Choose your interlocutor and start messaging
                     </Typography>
                 </div>
-                }
+            }
         </div>
     )
 };

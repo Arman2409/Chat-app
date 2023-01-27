@@ -23,11 +23,11 @@ const LastMessages:React.FC = () => {
        <div style={{
          width: "40%"
        }}>
-         <Typography>
+         <Typography className={""}>
             Last Messages
          </Typography>
          <div className="centered_users_cont">
-            <UsersMapper users={users} />
+            <UsersMapper users={[]} />
             <Pagination 
               current={current} 
               onChange={(e) => setCurrent(e)} 

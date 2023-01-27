@@ -52,30 +52,27 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
       <List
          itemLayout="horizontal"
          dataSource={users}
-         style={{
-            width: "100%",
-            maxWidth: "550px",
-         }}
+        className={styles.list}
          renderItem={(item) => (
             <List.Item
                 onClick={() => newChat(item)}
                actions={!friends && user.name ? [
-                  <a onClick={(e) => addFriend(item.id, e)}>Add Friend</a>] : accept ?
-                   [<a ref={acceptLink} onClick={(e) => acceptRequest(item,e)}>Accept</a>] : undefined}
+              ] : accept ?
+                   [<a  className={styles.list_item_action} ref={acceptLink} onClick={(e) => acceptRequest(item,e)}>Accept</a>] : undefined}
                className={styles.list_item}
                >
-               <List.Item.Meta
-                  avatar={<Badge dot={item.active ? true : false}>
-                     <Avatar src={item.image} />
-                  </Badge>}
-
-                  title={<Typography>{item.name}</Typography>}
-                  description={`${item.lastVisited}`}>
-               </List.Item.Meta>
+                <Badge dot={item.active ? true : false}>
+                       <Avatar src={item.image} />
+                </Badge>
+                <div>
+                  <Typography>{item.name}</Typography>
+                    {!item.active && <Typography className="list_item_date">{item.lastVisited}</Typography>}
+                </div>
+                {!friends && user.name ? <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add Friend</a> : accept ?
+                    <a  className={styles.list_item_action} ref={acceptLink} onClick={(e) => acceptRequest(item,e)}>Accept</a> : null}
             </List.Item>
          )}
-      >
-      </List>
+      />
    )
 }
 

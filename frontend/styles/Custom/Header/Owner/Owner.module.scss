@@ -14,7 +14,8 @@
 .owner_link{
   cursor: pointer;
   width: auto;
-  background-color: $color1;
+  text-decoration: underline;
+  color: $color1;
 }
 
 .data_cont {

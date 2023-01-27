@@ -73,10 +73,11 @@ export class FriendsService {
     }
   }
 
-  async findRequestUsers(arr) {
+  async findRequestUsers() {
+    const req: UserReq = RequestContext.currentContext.req;
     return await this.prisma.users.findMany({
       where: {
-        id: { in: arr }
+        id: { in: req.session.user.friendRequests }
       }
     })
   };
@@ -96,7 +97,9 @@ export class FriendsService {
         friends: currentUser.friends
       }
     });
-    console.log({ updating });
+    if(!updating) {
+      throw new GraphQLError("Error Occured")
+    }
     req.session.user = currentUser;
     const friend: UserType = await this.prisma.users.findUnique({
       where: {

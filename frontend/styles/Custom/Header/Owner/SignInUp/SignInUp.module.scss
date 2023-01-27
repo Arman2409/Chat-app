@@ -14,6 +14,9 @@
     justify-content: center;
     position: relative;
     padding-bottom: 50px;
+    .sign_message {
+      color: darkred;
+    }
     .form_item {
       width: 80%;
       margin: 10px 0;
@@ -22,7 +25,8 @@
       justify-content: center;
       .sign_button {
         width: auto;
-        background-color: $color2;
+        background-color: $color2 !important;
+        color: $color2;
       }
       .sign_input {
         width: 95%;
