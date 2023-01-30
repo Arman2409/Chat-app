@@ -25,7 +25,7 @@ export class FriendsResolver{
   async getRequests(
     @Args('ids',{ type: () => [Number] }) arr: number[],
   ) {
-    return await this.service.findRequestUsers(arr);
+    return await this.service.findRequestUsers();
   }
 
   @Query(() => TokenType, { name: "ConfirmFriend"})

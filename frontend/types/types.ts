@@ -27,7 +27,7 @@ export interface Reducers {
 };
 
 export interface SignProps {
-  compType: string,
+  type: string,
     changeStatus: Function
 }
 

@@ -50,7 +50,7 @@ const UsersList:React.FunctionComponent = () => {
       <div 
       className={styles.users_online_cont}
       style={{
-         width: isSmall ? "100%" :  "40%",
+         width: isSmall ? "100%" :  "50%",
       }}>
           {
              user.name ? null :  <Demo/>

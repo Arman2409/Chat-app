@@ -60,10 +60,10 @@ const Owner = () => {
                 </> :
                 <>
                     {signStatus == "SignUp" ?
-                        <SignInUp changeStatus={changeSignStatus} compType={"SignUp"} />
+                        <SignInUp changeStatus={changeSignStatus} type={"SignUp"} />
                         : null}
                     {signStatus == "SignIn" ?
-                        <SignInUp  changeStatus={changeSignStatus} compType={"SignIn"} />
+                        <SignInUp  changeStatus={changeSignStatus} type={"SignIn"} />
                         : null}
                     <div style={{
                         margin: "15px"

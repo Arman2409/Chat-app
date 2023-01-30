@@ -56,9 +56,6 @@ const UsersMapper: React.FC<MapperProps> = ({ users, friends, accept }: MapperPr
          renderItem={(item) => (
             <List.Item
                 onClick={() => newChat(item)}
-               actions={!friends && user.name ? [
-              ] : accept ?
-                   [<a  className={styles.list_item_action} ref={acceptLink} onClick={(e) => acceptRequest(item,e)}>Accept</a>] : undefined}
                className={styles.list_item}
                >
                 <Badge dot={item.active ? true : false}>

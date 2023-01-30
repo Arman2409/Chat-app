@@ -36,7 +36,8 @@ export class AuthService {
                         } else {
                             image = "";
                         }
-                    } 
+                    }
+                    console.log(uploadDetails)
                 } else {
                     image = "";
                 };

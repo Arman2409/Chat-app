@@ -20,12 +20,6 @@ const Demo:React.FC = () => {
             <Typography className={styles.demo_main_text}>
                 Sign in to see friends online
             </Typography>
-            <Button
-                type="primary"
-                className={styles.demo_main_button}
-                    onClick={openSignIn}>
-                Sign In
-            </Button>
         </div>
     )
 }

@@ -13,6 +13,7 @@ import { SignProps } from "../../../../../types/types";
 import { Dispatch } from "@reduxjs/toolkit";
 import Loading from "../../../Loading/Loading";
 import {socket} from "../../../../../pages/_app";
+import {getSlicedWithDots} from "../../../../../functions/functions";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -32,9 +33,8 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     return isJpgOrPng && isLt2M;
  };
 
-const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) => {
+const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
     const [message, setMessage] = useState<string>("");
-    const [type,setType] = useState(compType);
     const [loading, setLoading] = useState(false);
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -48,7 +48,7 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignIn", { email, password });
             if (res.message) {
-                setMessage(res.message);
+                setMessage(getSlicedWithDots(res.message, 20));
                 setLoadingRequest(false);
                 return;
             };
@@ -67,7 +67,7 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignUp", { email, password, name, image:imageUrl });
             if (res.message) {
-                setMessage(res.message);
+                setMessage(getSlicedWithDots(res.message, 20));
                 setLoadingRequest(false);
                 return;
             };
@@ -86,7 +86,6 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
           return;
         }
         if (info.file.status === 'done') {
-          // Get this url from response in real world.
           getBase64(info.file.originFileObj as RcFile, (url) => {
             setLoading(false);
             setImageUrl(url);
@@ -111,6 +110,7 @@ const SignInUp: React.FC<SignProps> = ({ compType, changeStatus }: SignProps) =>
             {loadingRequest && <Loading />}
             <Form
                 onFinish={(values) => submit(values)}
+                onChange={() => { if (message) setMessage("")} }
                 className={styles.sign_form}>
                 {type == "SignUp" ?
                     <>
