@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import "./variables";
+
 html,
 body {
   padding: 0;
@@ -14,6 +17,7 @@ a {
 
 * {
   box-sizing: border-box;
+  font-family: $mainFamily;
 }
 
 .users_pagination{
@@ -32,6 +36,25 @@ a {
   width: 100%;
   height: calc(100vh - 160px);
   display: flex;
-  alignItems: center;
-  justifyContent: center
+  align-items: center;
+  justify-content: center
+}
+
+.ant-pagination {
+  & .ant-pagination-item {
+    width: 40px;
+    height: 40px;
+    padding: 5px 0;
+    font-size: 20px;
+    background-color: $textColor2;
+  }
+  & .ant-pagination-item-link path{
+    color: $textColor2;
+  }
+}
+
+.ant-message-notice-content {
+  background-color: $borderColor !important;
+  color: $textColor2;
+  box-shadow: inset -1px 3px 8px 5px #1F87FF, 2px 5px 16px 0px #0B325E, 5px 5px 15px 5px rgba(0,0,0,0);
 }

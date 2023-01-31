@@ -26,11 +26,14 @@
       .sign_button {
         width: auto;
         background-color: $color2 !important;
-        color: $color2;
+        & span {
+          color: $color2 !important;
+        }
       }
       .sign_input {
         width: 95%;
         border: 1px solid $borderColor;
+        font-family: $mainFamily;
       }
       &_button {
         position: absolute;

@@ -14,6 +14,9 @@ const OpenMessages:React.FC = () => {
      const user:UserType = useSelector((state:IRootState) => state.user.user);
     const openMessages:Function = () => {
         if(!user.name) {
+            message.config({
+                duration: 500
+            })
             message.warning("Sign in to message");
             return;
         }

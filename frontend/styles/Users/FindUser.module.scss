@@ -12,9 +12,29 @@
 .user_search{
     width: 250px;
     align-self: center;
+    border-radius: 25px;
+    span, input, div, button{
+        background-color: $color2;
+    }
+    & input {
+        color: $textColor1;
+        font-family: $mainFamily;
+        &::placeholder {
+            color: $textColor2;
+        }
+    }
+    & path{
+        color: $textColor2;
+    }
 }
 
 .search_switch {
     align-self: center;
     margin: 5px;
+    & span {
+        color: $textColor2 !important;
+    }
+    & div:before {
+        background-color: $color1 !important;
+    }
 }

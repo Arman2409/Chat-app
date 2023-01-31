@@ -137,7 +137,6 @@ const SearchUser: React.FC = () => {
         <div
             style={{
                 width: isSmall ? "100%" : "50%",
-                backgroundColor: "green"
             }}
             className={styles.find_user_container}
         >

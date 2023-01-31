@@ -12,8 +12,8 @@ import {io} from "socket.io-client";
 let socket: any;
 function App({ Component, pageProps }: AppProps) {
 
+    socket = io("ws://localhost:4000");
     useEffect(() => {
-        socket = io("ws://localhost:4000");
 
         return ()  => {
             socket.disconnect();
@@ -25,7 +25,7 @@ function App({ Component, pageProps }: AppProps) {
       <AppHeader />
       <OpenMessages />
       <div style={{
-        height: "calc(100vh - 160px)"
+        height: "calc(100vh - 180px)"
       }}>
           <Component {...pageProps} />
       </div>

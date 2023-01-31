@@ -5,5 +5,8 @@
    align-items: center;
    justify-content: center;
    height: 80px;
-   background-color: $color2;
+   background-color: $color1;
+   & article {
+      color: $textColor2;
+   }
 }

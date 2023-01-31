@@ -1,14 +1,16 @@
 import {Layout, Typography, Row, Avatar, message, Badge} from "antd";
 import {useRouter} from "next/router";
 import Link from "next/link";
-import {UserOutlined} from "@ant-design/icons";
 import {useSelector, useDispatch} from "react-redux";
 import {useEffect, useState, useRef} from "react";
 import {Dispatch} from "@reduxjs/toolkit";
 import {useOnClickOutside} from "usehooks-ts";
 import jwtDecode from "jwt-decode";
 import {HiOutlineUserAdd} from "react-icons/hi";
+import {IoPersonSharp} from "react-icons/io5";
+import Image from "next/image";
 
+import Logo from "/logo-files/svg/logo-no-background.svg";
 import {IRootState} from "../../../store/store";
 import styles from "../../../styles/Custom/Header/Header.module.scss";
 import Owner from "./Owner/Owner";
@@ -98,7 +100,7 @@ const AppHeader: React.FunctionComponent = () => {
                 <div
                     className={styles.header_cont}
                 >
-                    Chat Net
+                    <Image src={Logo} alt={"Talk Space"} width={200} height={200}/>
                 </div>
             </Link>
             <Badge
@@ -107,7 +109,7 @@ const AppHeader: React.FunctionComponent = () => {
                 {user.name &&
                     <div ref={addRef}>
                         <HiOutlineUserAdd
-                            onClick={() => { setWatchingRequests(current => !current)}}
+                            onClick={() => {setWatchingRequests(current => !current)}}
                             className={styles.requests_icon}/>
                       </div>
                 }
@@ -121,7 +123,7 @@ const AppHeader: React.FunctionComponent = () => {
                 </Typography>
                 {user.image ?
                     <Avatar src={user.image}/> :
-                    <UserOutlined
+                    <IoPersonSharp
                         className={styles.user_icon}
                     />}
             </Row>
