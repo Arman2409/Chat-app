@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { Row } from 'antd';
 
-import UsersList from '../components/Users/UsersOnline/UsersOnline';
 import SearchUser from '../components/Users/FindUser/FindUser';
+import Welcome from "../components/Welcome/Welcome";
 
 export default function Home() {
 
@@ -20,7 +20,7 @@ export default function Home() {
         width: "100%",
         height: "100%"
       }}>
-        <UsersList />
+        <Welcome />
         <SearchUser />
       </Row>
    </div>

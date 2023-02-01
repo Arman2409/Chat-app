@@ -54,7 +54,21 @@ a {
 }
 
 .ant-message-notice-content {
+  width: 200px;
+  height: 75px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   background-color: $borderColor !important;
   color: $textColor2;
-  box-shadow: inset -1px 3px 8px 5px #1F87FF, 2px 5px 16px 0px #0B325E, 5px 5px 15px 5px rgba(0,0,0,0);
+  box-shadow: -10px 0px 13px -7px $textColor1, 10px 0px 13px -7px $textColor1, 5px 5px 15px 5px $textColor1 !important;
+}
+
+.border_div{
+  width: 4px;
+  height: 50%;
+  top: calc(50% / 2);
+  position: absolute;
+  background-color: $gray;
+  right: 0;
 }

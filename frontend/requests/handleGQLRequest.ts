@@ -45,15 +45,6 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         }
         fields = [{"users": ["name","lastVisited", "image", "email", "active","id"]}, "total"]
     }
-    
-    if(operation == "GetOnlineFriends") {
-        const { perPage, page } = args
-        variables = {
-            page: {type: "Float!", value: page},
-            perPage: {type: "Float!", value: perPage}
-        }
-        fields = [{"users":["name", "id", "email","lastVisited", "active", "image"]}, "total"]
-    };
 
     if(operation == "GetLastMessages") {
         const { perPage, page } = args
@@ -93,6 +84,10 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             token: {type: "String!", value: token}
         };
+    }
+
+    if(operation == "GetWelcomeNews") {
+        fields = ["description", "title"]
     }
     
      return await axios.post("/graphql", query({

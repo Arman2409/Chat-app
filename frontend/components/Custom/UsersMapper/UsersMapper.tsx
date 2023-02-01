@@ -1,5 +1,5 @@
 import {List, Avatar, Typography, Badge, message, ConfigProvider} from "antd";
-import React, {useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
 
@@ -13,6 +13,7 @@ import {Dispatch} from "@reduxjs/toolkit";
 import {setInterlocutor} from "../../../store/messagesSlice";
 
 const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProps) => {
+    const [emptyText, setEmptyText] = useState<string>("");
     const router: any = useRouter();
     const dispatch: Dispatch = useDispatch();
     const user = useSelector((state: IRootState) => {
@@ -28,7 +29,6 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
     const addFriend: Function = (e: number, event: Event) => {
         event.stopPropagation();
         (async function () {
-
             if (user.name) {
                 const addStatus = await handleGQLRequest("AddFriend", {id: e});
                 if (addStatus.AddFriend == "Request Sent") {
@@ -50,11 +50,15 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
         router.push("/myMessages");
     };
 
+    useEffect(() => {
+        setEmptyText(friends ? "No Friends Found" : "No Users Found")
+    }, [users]);
+
     return (
         <ConfigProvider renderEmpty={() => (
             <div className={styles.empty_cont}>
                 <RiUserSearchFill className={styles.empty_icon}/>
-                <p className={styles.empty_text}>No Users Found</p>
+                <p className={styles.empty_text}>{emptyText}</p>
             </div>
         )}>
             <List

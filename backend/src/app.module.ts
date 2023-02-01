@@ -13,6 +13,7 @@ import { FriendsModule } from './modules/friends/friends.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { SocketsModule } from './modules/sockets/sockets.module';
 // import { WebSocketsGateway } from "./modules/sockets/sockets.module";
+import { WelcomeModule } from './modules/welcome/welcome.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { SocketsModule } from './modules/sockets/sockets.module';
      SearchModule,
      FriendsModule,
      SocketsModule,
-     MessagesModule],
+     MessagesModule,
+     WelcomeModule],
      providers: [PrismaService, JwtService, CloudinaryService],
 })
 export class AppModule {}

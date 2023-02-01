@@ -45,4 +45,13 @@ export class  SearchType {
     total: number
 }
 
+@ObjectType()
+export class NewsType {
+    @Field()
+    title: string
+
+    @Field()
+    description: string
+}
+
 

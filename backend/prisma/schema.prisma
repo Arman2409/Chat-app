@@ -21,3 +21,9 @@ model Users {
   friendRequests Int[] @default([])
   lastVisited String @default("")
 }
+
+model News {
+  id    Int   @id  @default(autoincrement())
+  title String
+  description String
+}

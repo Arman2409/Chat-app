@@ -6,14 +6,6 @@ import { FriendsService } from "./friends.service";
 export class FriendsResolver{
   constructor(private readonly service: FriendsService) {}
 
-  @Query(() => SearchType, { name: 'GetOnlineFriends' })
-  async getOnlineFriends(
-    @Args('page') page: number,
-    @Args('perPage') perPage: number,
-  ) {
-    return await this.service.getOnlineFriends(page, perPage);
-  }
-
   @Query(() => String, { name: 'AddFriend' })
   async addFriend(
     @Args('id') id: number

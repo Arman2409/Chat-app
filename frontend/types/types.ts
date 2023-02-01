@@ -39,3 +39,11 @@ export interface MapperProps {
 
   accept?:Function;
 }
+
+export interface NewsModalProps {
+    news: {
+        description: string,
+        title: string,
+    },
+    toggleModal: Function
+}

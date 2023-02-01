@@ -13,31 +13,6 @@ export class FriendsService {
               private readonly jwt:JwtService) {
   };
 
-  async getOnlineFriends(page: number, perPage: number): Promise<any> {
-    const req: UserReq = RequestContext.currentContext.req;
-    if (req.session.user) {
-
-      if (req.session.user.friends.length) {
-        let onlineFriends: UserType[] = await this.prisma.users.findMany({
-          where: {
-              AND: [
-                  { id: {in : req.session.user.friends}},
-                  { active: true}
-              ]
-            }
-        });
-        const { startIndex, endIndex, total } = getStartEndTotal(page, perPage, onlineFriends.length);
-        onlineFriends = onlineFriends.splice(startIndex, endIndex);
-
-        return { data: onlineFriends, total };
-      } else {
-        return { data: [], total: 1 };
-      }
-    } else {
-      return { data: [], total: 1 };
-    }
-  }
-
   async addFriend(id: number) {
     const req: UserReq = RequestContext.currentContext.req;
     const currentUser = req.session.user;
