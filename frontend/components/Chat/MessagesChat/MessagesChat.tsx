@@ -18,7 +18,7 @@ const {TextArea} = Input;
 const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
-    const [messageData, setMessageData] = useState<any>({between: [], messages: []});
+    const [messageData, setMessageData] = useState<any>({between: [], messages: [], sequence: []});
     const [interlocutor, setInterlocutor] = useState<UserType>({
         id: 0,
         name: "",
@@ -43,6 +43,8 @@ const MessagesChat: React.FC = () => {
         }
         socket.emit("message", {from: user.id, to: interlocutor.id, message}, (data: any) => {
             if (data.between) {
+                console.log(data);
+                console.log(socket.id);
                 setMessageData(data);
             }
         });
@@ -56,6 +58,7 @@ const MessagesChat: React.FC = () => {
 
     useEffect(() => {
         socket.on("message", (data: any) => {
+            console.log({gotData: data});
             setMessageData(data);
         })
     }, [])
@@ -63,6 +66,10 @@ const MessagesChat: React.FC = () => {
     useEffect(() => {
         setInterlocutor(storeInterlocutor);
     }, [storeInterlocutor]);
+
+    useEffect(() => {
+        setMessageData({between: [], messages: [], sequence: []});
+    }, [interlocutor])
 
     return (
         <div className={messagesStyles.chat_cont}>
@@ -80,15 +87,14 @@ const MessagesChat: React.FC = () => {
                         }} src={interlocutor.image}/>
                     </div>
                     {messageData.messages.map((e: string, index: number) => {
-                        let isFirst;
-                        if (messageData.between.indexOf(Number(user.id)) == 0) {
-                            isFirst = true;
-                        }
+                        const order:number = messageData.between.indexOf(Number(user.id));
+                        console.log({index, order }, messageData.sequence);
                         return (
                             <div
+                                key={index}
                                 className={messagesStyles.message_cont}
                                 style={{
-                                    justifyContent: isFirst ? index % 2 == 0 ? "flex-end" : "flex-start" : index % 2 == 0 ? "flex-start" : "flex-end"
+                                    justifyContent: messageData.sequence[index] == order ? "flex-end" : "flex-start",
                                 }}>
                                 <div  className={messagesStyles.message_cont_text_cont}>
                                     {e}

@@ -5,26 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab57a864-e8e7-4538-80fd-869df535f8dc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend/src/modules/welcome/welcome.resolver.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/Welcome/NewsModal/NewsModal.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/Welcome/Welcome.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/styles/Welcome/Welcome.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/friends/friends.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/friends/friends.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/friends/friends.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/friends/friends.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/schema.gql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/types/graphqlTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/types/graphqlTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/UsersMapper/UsersMapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/UsersMapper/UsersMapper.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Users/UsersOnline/UsersOnline.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions/functions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/functions/functions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requests/handleGQLRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/requests/handleGQLRequest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/Users/UsersOnline.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/globals.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/variables.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Header.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

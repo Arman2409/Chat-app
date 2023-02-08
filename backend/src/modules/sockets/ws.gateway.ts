@@ -40,13 +40,11 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     await this.service.updateUserStatus(id, false);
   }
 
-  @SubscribeMessage("newUser")
-  handleNew(@MessageBody("id") id:number,
-         @ConnectedSocket() client: Socket){
-    console.log(id);
-    this.idAssociations[id] = client.id;
-    return "received";
-  };
+  // @SubscribeMessage("newUser")
+  // handleNew(@MessageBody("id") id:number,
+  //        @ConnectedSocket() client: Socket){
+  //   return "received";
+  // };
 
   @SubscribeMessage("connected")
   async handleConnect(@MessageBody("id") id:number,
@@ -55,6 +53,9 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     const update = this.service.updateUserStatus(id, true, true)
     client.handshake.active = true;
     client.handshake.id = id;
+    console.log("connected", client.id);
+    client.join(id.toString());
+    // this.idAssociations[id] = client.id;
     if (update) {
       return "Connected";
     } else {
@@ -77,6 +78,7 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
          messageData  = {
           between: e.between,
           messages: [...e.messages, message],
+           sequence: [...e.sequence, e.between.indexOf(from)],
           lastDate: new Date().toString().slice(0,10),
         }
          return messageData;
@@ -87,20 +89,25 @@ export class WebSocketsGateway implements  OnGatewayInit, OnGatewayDisconnect, O
     if (!alreadyMessaged) {
       messageData  = {
         between: [ from, to ],
+        sequence: [ 0 ],
         messages: [message],
-
       }
       this.allMessages.push(
           {...messageData,
-            lastDate: new Date()
+            lastDate: new Date().toString().slice(0,10),
           }
           );
     } else {
       this.allMessages = newAllMessages;
     }
     console.log(messageData);
-    console.log(this.allMessages)
-    socket.broadcast.to(sendingUserId).emit("message", messageData);
+    console.log(this.allMessages);
+    console.log(from, to)
+    console.log(this.idAssociations);
+    console.log(sendingUserId)
+    console.log(socket.rooms);
+    this.server.sockets.in(to.toString()).emit("message", messageData);
+    // socket.broadcast.to(sendingUserId).emit("message", messageData);
     return messageData;
   }
 

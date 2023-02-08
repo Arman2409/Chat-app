@@ -70,7 +70,6 @@ const AppHeader: React.FunctionComponent = () => {
                 (async () => {
                     const signStatus: any = await handleGQLRequest("AlreadySigned", {token});
                     if(signStatus.AlreadySigned == "Done") {
-                        socket.connect();
                         socket.emit("connected", {id: localUser.id}, (data: any) => {
                             if( data !== "Connected") {
                                 message.error("Service Not Available, Please Try Later");
