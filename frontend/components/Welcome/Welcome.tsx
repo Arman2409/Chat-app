@@ -24,10 +24,12 @@ const Welcome: React.FunctionComponent = () => {
             setLoading(true);
             const data = await handleGQLRequest("GetWelcomeNews");
             if (data) {
-                if (data.GetWelcomeNews.errors) {
-                    setNews([]);
-                } else if (data.GetWelcomeNews) {
-                    setNews(data.GetWelcomeNews);
+                if (data.GetWelcomeNews) {
+                    if (data.GetWelcomeNews.errors) {
+                        setNews([]);
+                    } else if (data.GetWelcomeNews) {
+                        setNews(data.GetWelcomeNews);
+                    }
                 }
                 setLoading(false);
             } else {
@@ -43,7 +45,7 @@ const Welcome: React.FunctionComponent = () => {
             style={{
                 width: isSmall ? "100%" : "50%",
             }}>
-            {loading && <Loading />}
+            {loading && <Loading/>}
             {modalData &&
                 <NewsModal news={news[0]} toggleModal={toggleModal}/>
             }

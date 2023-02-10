@@ -34,6 +34,7 @@ const AppHeader: React.FunctionComponent = () => {
     const userContRef = useRef<HTMLDivElement>(null);
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
     const addRef = useRef<any>([]);
+    const [inPage, setInPage] = useState<boolean>(true);
 
     const toggleUser: Function = (): void => {
         dispatch(setUserWindow(!userWindow));
@@ -55,6 +56,11 @@ const AppHeader: React.FunctionComponent = () => {
             setOwnerState(false);
             dispatch(setUserWindow(false));
         }
+        if (router.pathname == "/404") {
+            setInPage(false);
+        } else {
+            setInPage(true);
+        }
     }, [router.pathname]);
 
     useEffect(() => {
@@ -69,16 +75,16 @@ const AppHeader: React.FunctionComponent = () => {
             if (localUser.name) {
                 (async () => {
                     const signStatus: any = await handleGQLRequest("AlreadySigned", {token});
-                    if(signStatus.AlreadySigned == "Done") {
-                        socket.emit("connected", {id: localUser.id}, (data: any) => {
-                            if( data !== "Connected") {
+                    if (signStatus.AlreadySigned == "Done") {
+                        socket.emit("connected", {id: localUser.id, socketID: socket.id}, (data: any) => {
+                            if (data !== "Connected") {
                                 message.error("Service Not Available, Please Try Later");
                                 return;
                             }
                             dispatch(setStoreUser(localUser))
                         });
                     } else {
-                      message.error("Error Occured");
+                        message.error("Error Occured");
                     }
                 })()
             }
@@ -86,11 +92,11 @@ const AppHeader: React.FunctionComponent = () => {
         ;
     }, []);
 
-    const clickOutside = (e:Event) => {
-        if(e.target == addRef.current || addRef.current?.contains(e.target)) {
+    const clickOutside = (e: Event) => {
+        if (e.target == addRef.current || addRef.current?.contains(e.target)) {
             return;
         }
-        if( watchingRequests)  setWatchingRequests(false);
+        if (watchingRequests) setWatchingRequests(false);
     };
 
     return (
@@ -102,30 +108,35 @@ const AppHeader: React.FunctionComponent = () => {
                     <Image src={Logo} alt={"Talk Space"} width={200} height={200}/>
                 </div>
             </Link>
-            <Badge
-                dot={user ? Boolean(user.friendRequests.length) : false}
-                className={styles.requests_badge}>
-                {user.name &&
-                    <div ref={addRef}>
-                        <HiOutlineUserAdd
-                            onClick={() => {setWatchingRequests(current => !current)}}
-                            className={styles.requests_icon}/>
-                      </div>
-                }
-            </Badge>
-            <Row
-                className={styles.user_cont}
-                ref={userContRef}
-                onClick={() => toggleUser()}>
-                <Typography className={styles.user_name}>
-                    {user.name ? user.name : "Sign In"}
-                </Typography>
-                {user.image ?
-                    <Avatar src={user.image}/> :
-                    <IoPersonSharp
-                        className={styles.user_icon}
-                    />}
-            </Row>
+            {inPage ?
+                <Badge
+                    dot={user ? Boolean(user.friendRequests.length) : false}
+                    className={styles.requests_badge}>
+                    {user.name &&
+                        <div ref={addRef}>
+                            <HiOutlineUserAdd
+                                onClick={() => {
+                                    setWatchingRequests(current => !current)
+                                }}
+                                className={styles.requests_icon}/>
+                        </div>
+                    }
+                </Badge>
+                : null}
+            {inPage ?
+                <Row
+                    className={styles.user_cont}
+                    ref={userContRef}
+                    onClick={() => toggleUser()}>
+                    <Typography className={styles.user_name}>
+                        {user.name ? user.name : "Sign In"}
+                    </Typography>
+                    {user.image ?
+                        <Avatar src={user.image}/> :
+                        <IoPersonSharp
+                            className={styles.user_icon}
+                        />}
+                </Row> : null}
             {
                 user.name && watchingRequests ?
                     <FriendRequests clickOutside={clickOutside}/> : null

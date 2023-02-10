@@ -24,7 +24,7 @@ const OpenMessages:React.FC = () => {
     };
 
     useEffect(() => {
-        if (router.pathname == "/myMessages") {
+        if (router.pathname == "/myMessages" || router.pathname == "/404") {
            setDisplay(false)
         } else {
           setDisplay(true);
