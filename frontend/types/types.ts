@@ -17,8 +17,15 @@ export interface UserInitialState {
   userWindow: boolean
 };
 
+export interface MessagesDataType {
+    between: any[],
+    sequence: any[],
+    messages: any[],
+}
+
 export interface  MessagesInitialState {
-    interlocutor: UserType
+    interlocutor: UserType,
+    messagesData: MessagesDataType
 }
 
 export interface Reducers {
@@ -30,8 +37,6 @@ export interface SignProps {
   type: string,
     changeStatus: Function
 }
-
-export type ChangeType = ChangeEvent & {target: {value: any}}
 
 export interface MapperProps {
   users: any[];

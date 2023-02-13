@@ -71,7 +71,6 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 setLoadingRequest(false);
                 return;
             };
-            socket.emit("newUser", {id: res.SignUp.id});
             setLoadingRequest(false);
             setMessage("Signed Up!");
             changeStatus();

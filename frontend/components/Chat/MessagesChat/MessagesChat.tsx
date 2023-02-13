@@ -57,13 +57,6 @@ const MessagesChat: React.FC = () => {
     }, [user])
 
     useEffect(() => {
-        socket.on("message", (data: any) => {
-            console.log({gotData: data});
-            setMessageData(data);
-        })
-    }, [])
-
-    useEffect(() => {
         setInterlocutor(storeInterlocutor);
     }, [storeInterlocutor]);
 

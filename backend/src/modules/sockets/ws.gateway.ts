@@ -19,7 +19,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     }
 
     private activeUsers: number[] = [];
-    private idAssociations: any = {};
 
     private allMessages = [];
 
@@ -32,38 +31,28 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     async handleDisconnect(client: SocketWIthHandshake): Promise<any> {
         console.log("disconnected");
+        console.log("disconnected");
         const {id, active} = client.handshake;
         console.log(id, active);
         if (!active) {
             return;
         }
         this.activeUsers.splice(this.activeUsers.indexOf(id), 1);
+        console.log(this.activeUsers);
         client.handshake = false;
         await this.service.updateUserStatus(id, false);
     }
-
-    // @SubscribeMessage("newUser")
-    // handleNew(@MessageBody("id") id:number,
-    //        @ConnectedSocket() client: Socket){
-    //   return "received";
-    // };
 
     @SubscribeMessage("connected")
     async handleConnect(
         @MessageBody("id") id: number,
         @MessageBody("socketId") socketId: number,
         @ConnectedSocket() client: SocketWIthHandshake) {
-        console.log("connected");
-        console.log(socketId);
         this.activeUsers.push(id);
         const update = this.service.updateUserStatus(id, true, true)
         client.handshake.active = true;
         client.handshake.id = id;
         client.join(id.toString());
-        this.idAssociations[id] = {
-            id: client.id,
-            socketId: socketId
-        };
         if (update) {
             return "Connected";
         } else {
@@ -108,15 +97,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         } else {
             this.allMessages = newAllMessages;
         }
-        console.log(messageData);
-        console.log(this.allMessages);
         console.log(from, to)
-        console.log(this.idAssociations);
-        const sendingUserId: string = this.idAssociations[to].socketId;
-        console.log(sendingUserId)
-        console.log(socket.rooms);
         this.server.sockets.in(to.toString()).emit("message", messageData);
-        socket.broadcast.to(sendingUserId).emit("message", messageData);
         return messageData;
     }
 
