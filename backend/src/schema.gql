@@ -35,6 +35,7 @@ type Query {
   AlreadySigned(token: String!): String!
   SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
+  FindUserById(id: Float!): UserType!
   AddFriend(id: Float!): String!
   GetFriendRequestsUsers(ids: [Float!]!): [UserType!]!
   ConfirmFriend(friendId: Float!): TokenType!

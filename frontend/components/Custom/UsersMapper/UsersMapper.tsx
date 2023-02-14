@@ -44,8 +44,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
         if (!user.name) {
             message.warning("Sign in to message");
             return;
-        }
-        ;
+        };
         dispatch(setInterlocutor(e));
         router.push("/myMessages");
     };

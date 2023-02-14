@@ -1,0 +1,13 @@
+@import "../variables";
+
+.message_alert_card {
+  background-color: $borderColor !important;
+  border: none !important;
+  cursor: pointer;
+  width: 200px;
+  height: 75px;
+
+  & .ant-card-body {
+    border: none !important;
+  }
+}

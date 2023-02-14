@@ -22,6 +22,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private allMessages = [];
 
+
+
     afterInit(server: Server): any {
     }
 

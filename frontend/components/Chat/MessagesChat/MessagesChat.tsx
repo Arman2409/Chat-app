@@ -1,17 +1,18 @@
-import React from "react";
+import React, {useRef} from "react";
 import {SmileOutlined} from "@ant-design/icons";
 import {Input, Button, Avatar, Typography} from "antd";
 import EmojiPicker, {EmojiStyle} from "emoji-picker-react";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {WechatFilled} from "@ant-design/icons";
 
 import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
 import {IRootState} from "../../../store/store";
-import {UserType} from "../../../types/types";
+import {MessagesDataType, UserType} from "../../../types/types";
 import {socket} from "../../../pages/_app";
-import {getSlicedWithDots} from "../../../functions/functions";
+import {getSendersId, getSlicedWithDots} from "../../../functions/functions";
+import {setMessagesData} from "../../../store/messagesSlice";
 
 const {TextArea} = Input;
 
@@ -19,6 +20,7 @@ const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [messageData, setMessageData] = useState<any>({between: [], messages: [], sequence: []});
+    const dispatch = useDispatch();
     const [interlocutor, setInterlocutor] = useState<UserType>({
         id: 0,
         name: "",
@@ -29,8 +31,10 @@ const MessagesChat: React.FC = () => {
         active: false
     })
 
+    const messagesRef = useRef<any>();
+
     const router: any = useRouter();
-    const user = useSelector((state: IRootState) => {
+    const user:UserType = useSelector((state: IRootState) => {
         return state.user.user;
     });
     const storeInterlocutor = useSelector((state: IRootState) => {
@@ -43,11 +47,10 @@ const MessagesChat: React.FC = () => {
         }
         socket.emit("message", {from: user.id, to: interlocutor.id, message}, (data: any) => {
             if (data.between) {
-                console.log(data);
-                console.log(socket.id);
                 setMessageData(data);
             }
         });
+        // setMessage("")
     }
 
     useEffect(() => {
@@ -64,6 +67,19 @@ const MessagesChat: React.FC = () => {
         setMessageData({between: [], messages: [], sequence: []});
     }, [interlocutor])
 
+    useEffect(() => {
+        socket.on("message", (data: MessagesDataType) => {
+            setMessageData(data);
+            const senderId = getSendersId(data.between, user.id);
+            console.log(senderId , interlocutor.id)
+            if(senderId == interlocutor.id) {
+                console.log("same")
+               return;
+            }
+            dispatch(setMessagesData(data));
+        })
+    },[]);
+
     return (
         <div className={messagesStyles.chat_cont}>
             {interlocutor.name ?
@@ -79,9 +95,9 @@ const MessagesChat: React.FC = () => {
                             height: "50px"
                         }} src={interlocutor.image}/>
                     </div>
+                    <div className={messagesStyles.messages_cont} ref={messagesRef}>
                     {messageData.messages.map((e: string, index: number) => {
                         const order:number = messageData.between.indexOf(Number(user.id));
-                        console.log({index, order }, messageData.sequence);
                         return (
                             <div
                                 key={index}
@@ -95,6 +111,7 @@ const MessagesChat: React.FC = () => {
                             </div>
                         )
                     })}
+                    </div>
                     <div className={messagesStyles.inputs_cont}>
                         <TextArea
                             className={messagesStyles.chat_textarea}

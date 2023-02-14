@@ -21,4 +21,10 @@ export class SearchResolver {
         @Args("perPage") perPage: number): Promise<SearchType> { 
         return await this.search.searchInFriends(name, page, perPage);
     }
+
+    @Query(() =>  UserType, { name: "FindUserById" })
+    async findUser(
+        @Args("id") id: number): Promise<UserType> {
+        return await this.search.findUserById(id);
+    }
 }

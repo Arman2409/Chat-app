@@ -1,107 +1,125 @@
 @import "../../variables";
 
-.chat_cont{
-    width: 60%;
-    position: relative;
-    height: 100%;
-    border: 1px solid $borderColor;
-    .interlocutor_cont {
-        width: 100%;
-        background-color: $color2;
+.chat_cont {
+  width: 60%;
+  position: relative;
+  height: 100%;
+  border: 1px solid $borderColor;
+
+  .interlocutor_cont {
+    width: 100%;
+    background-color: $color2;
+    height: 70px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+
+    .interlocutor_name {
+      color: $textColor2;
+      margin-right: 5px;
+      font-size: 18px;
+    }
+  }
+
+  .messages_cont {
+    overflow-y: scroll;
+    height: calc(100% - 160px);
+
+    .message_cont {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+
+      &_text_cont {
+        border: 1px solid red;
+        width: auto;
+        max-width: 150px;
+        border-radius: 5px;
+        line-break: anywhere;
         height: auto;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        padding: 10px;
-        .interlocutor_name {
-            color: $textColor2;
-            margin-right: 5px;
-            font-size: 18px;
-        }
+      }
     }
-    .message_cont{
-        position: relative;
-        display: flex;
-        alignItems: center;
-        &_text_cont {
-            border:1px solid red;
-            width: auto;
-            max-width: 150px;
-            border-radius: 5px;
-            line-break: anywhere;
-            height: auto;
-        }
-    }
-    .choose_interlocutor_cont{
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        background-color: $color2;
-        opacity: 0.6;
-        .choose_interlocutor{
-            font-size: 35px;
-            color: $textColor1;
-        }
-        .choose_interlocutor_icon{
-            font-size: 40px;
-            color: $textColor2;
-            animation-name: chat_icon;
-            animation-duration: 3s;
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-        }
+  }
 
-        @keyframes chat_icon  {
-            0% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(30deg);
-            }
-            50% {
-                transform: rotate(0deg);
-            }
-        }
-    }
-    .inputs_cont {
-        position: absolute;
-        bottom: 0;
-        height:90px;
-        display: flex;
-        align-items: center;
-        border: 1px solid $borderColor;
-        width: 100%;
-        .chat_textarea {
-            width: calc(100% - 135px);
-            height: 100%;
-            resize: none;
-        }
-        .smile_cont {
-            font-size: 20px;
-            margin: 10px;
-            color: $color2;
-        }
-        .smile_icon{
-            color: $color1;
-            position: absolute;
-            right: calc(80px + 20px)
-        }
-        .send_button{
-            position:absolute;
-            right: 0;
-            width: 80px;
-            margin: 10px;
-        }
+  .choose_interlocutor_cont {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: $color2;
+    opacity: 0.6;
 
-        .emoji_cont{
-            position: absolute;
-            border: 1px solid $borderColor;
-            bottom: 90px;
-            left: 0;
-        }
-
+    .choose_interlocutor {
+      font-size: 35px;
+      color: $textColor1;
     }
+
+    .choose_interlocutor_icon {
+      font-size: 40px;
+      color: $textColor2;
+      animation-name: chat_icon;
+      animation-duration: 3s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes chat_icon {
+      0% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(30deg);
+      }
+      50% {
+        transform: rotate(0deg);
+      }
+    }
+  }
+
+  .inputs_cont {
+    position: absolute;
+    bottom: 0;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    border: 1px solid $borderColor;
+    width: 100%;
+
+    .chat_textarea {
+      width: calc(100% - 135px);
+      height: 100%;
+      resize: none;
+    }
+
+    .smile_cont {
+      font-size: 20px;
+      margin: 10px;
+      color: $color2;
+    }
+
+    .smile_icon {
+      color: $color1;
+      position: absolute;
+      right: calc(80px + 20px)
+    }
+
+    .send_button {
+      position: absolute;
+      right: 0;
+      width: 80px;
+      margin: 10px;
+    }
+
+    .emoji_cont {
+      position: absolute;
+      border: 1px solid $borderColor;
+      bottom: 90px;
+      left: 0;
+    }
+
+  }
 }

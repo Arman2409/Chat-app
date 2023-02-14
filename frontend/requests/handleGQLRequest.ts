@@ -89,8 +89,17 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     if(operation == "GetWelcomeNews") {
         fields = ["description", "title"]
     }
-    
-     return await axios.post("/graphql", query({
+
+    if(operation == "FindUserById") {
+        const { id } = args;
+        variables = {
+            id: {type: "Float!", value: id}
+        };
+        fields = ["name", "id", "email", "lastVisited", "active", "image"]
+    }
+
+
+    return await axios.post("/graphql", query({
             operation,
             variables: variables,
             fields: fields

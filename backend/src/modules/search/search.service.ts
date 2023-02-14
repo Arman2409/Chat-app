@@ -80,4 +80,10 @@ export class SearchService {
         };
 
     }
+
+    async findUserById (id:number) {
+        return  this.prisma.users.findUnique( { where:
+                { id }
+        });
+    }
 }
