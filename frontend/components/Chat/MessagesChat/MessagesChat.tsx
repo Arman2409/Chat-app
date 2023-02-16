@@ -65,6 +65,9 @@ const MessagesChat: React.FC = () => {
 
     useEffect(() => {
         setMessageData({between: [], messages: [], sequence: []});
+        socket.emit("getMessages", {interlocuters: [user.id, interlocutor.id]}, (res:any) => {
+            setMessageData(res);
+        })
     }, [interlocutor])
 
     useEffect(() => {
@@ -90,10 +93,7 @@ const MessagesChat: React.FC = () => {
                                 interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
                                 : ""}
                         </h5>
-                        <Avatar style={{
-                            width: "50px",
-                            height: "50px"
-                        }} src={interlocutor.image}/>
+                        <Avatar className={messagesStyles.interlocutor_avatar} src={interlocutor.image}/>
                     </div>
                     <div className={messagesStyles.messages_cont} ref={messagesRef}>
                     {messageData.messages.map((e: string, index: number) => {

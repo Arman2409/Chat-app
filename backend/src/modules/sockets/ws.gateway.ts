@@ -22,7 +22,17 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private allMessages = [];
 
+    private previousAllMessages = [];
 
+   setUpdateTimeout() {
+       setTimeout(() => {
+
+           if(this.previousAllMessages !== this.allMessages) {
+
+           }
+           this.previousAllMessages = this.allMessages;
+       }, 1000)
+   }
 
     afterInit(server: Server): any {
     }
@@ -104,6 +114,10 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         return messageData;
     }
 
+      @SubscribeMessage("getMessages")
+     async handleGetMessages (@MessageBody("interlocuters") interlocuters: number[]) {
+          return await this.allMessages.filter(messages => messages.between.includes(interlocuters[0]) && messages.between.includes(interlocuters[0]))[0];
+      }
 }
 
 export default WebSocketsGateway;

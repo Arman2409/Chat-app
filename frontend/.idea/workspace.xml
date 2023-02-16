@@ -5,24 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab57a864-e8e7-4538-80fd-869df535f8dc" name="Changes" comment="Feat: Messages working almost normal, &quot;message&quot; listeners put in both pages,&#10;message alert unfinished yet.">
-      <change afterPath="$PROJECT_DIR$/styles/Custom/MessageAlert.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/search/search.resolver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/search/search.resolver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/search/search.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/search/search.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/schema.gql" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/schema.gql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/MessageAlert/MessageAlert.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/MessageAlert/MessageAlert.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/UsersMapper/UsersMapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/UsersMapper/UsersMapper.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions/functions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/functions/functions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/_app.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/_app.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requests/handleGQLRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/requests/handleGQLRequest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles/Chat/MessagesChat/MessagesChat.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Chat/MessagesChat/MessagesChat.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/globals.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +90,7 @@
       <workItem from="1676297624291" duration="8149000" />
       <workItem from="1676361783838" duration="2989000" />
       <workItem from="1676369728061" duration="17341000" />
+      <workItem from="1676561429465" duration="2650000" />
     </task>
     <task id="LOCAL-00001" summary="Some changes">
       <created>1676028704814</created>
