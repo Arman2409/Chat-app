@@ -27,3 +27,11 @@ model News {
   title String
   description String
 }
+
+model Messages {
+  id  Int  @id  @default(autoincrement())
+  between Int[]  @default([])
+  sequence Int[] @default([])
+  messages String[] @default([])
+  lastDate String @default("")
+}

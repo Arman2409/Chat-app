@@ -14,7 +14,7 @@ import {setInterlocutor} from "../../../store/messagesSlice";
 const MessageAlert = () => {
     const [messageApi, contextHolder] = message.useMessage()
     const storeUser: UserType = useSelector((state: IRootState) => state.user.user);
-    const data: MessagesDataType = useSelector((state: IRootState) => state.messages.messagesData);
+    const {messagesData: data , interlocutor}:any = useSelector((state: IRootState) => state.messages);
     const [fromUser, setFromUser] = useState<UserType>({} as UserType);
     const [loading, setLoading] = useState<boolean>(false);
     const dispatch: Dispatch = useDispatch();
@@ -58,6 +58,9 @@ const MessageAlert = () => {
             return;
         }
         const fromId = getSendersId(data.between, storeUser.id);
+        if(fromId === interlocutor.id) {
+            return;
+        }
         setLoading(true);
         (async function () {
             const response = await handleGQLRequest("FindUserById", {id: fromId});

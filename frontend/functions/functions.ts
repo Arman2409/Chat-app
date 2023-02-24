@@ -4,5 +4,5 @@ export const getSlicedWithDots:Function = (word: string, lettersCOunt: number) =
 };
 
 export const getSendersId:Function = (array: any[], userId:number) => {
-  return array.filter((id: string) => id !== userId.toString())[0]
+  return array.filter((id: string) => id.toString() !== userId.toString())[0]
 }

@@ -8,3 +8,12 @@ export const getStartEndTotal = (page:number, perPage:number, length:number) => 
 export function capitalizeFirstLetter(str:string):string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export function sortByActivesFirst(data):any[] {
+    return data.sort((first, second) => {
+        if(first.active) {
+            return -1;
+        }
+        return 1;
+    });
+}

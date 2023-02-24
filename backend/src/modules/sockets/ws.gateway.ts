@@ -7,7 +7,7 @@ import {
     SubscribeMessage, MessageBody, ConnectedSocket
 } from "@nestjs/websockets";
 import {Server, Socket,} from "socket.io";
-import {PrismaService} from "nestjs-prisma";
+import { PrismaService} from "nestjs-prisma";
 import {SocketWIthHandshake} from "../../../types/types";
 import {SocketsService} from "./sockets.service";
 
@@ -24,17 +24,16 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private previousAllMessages = [];
 
-   setUpdateTimeout() {
-       setTimeout(() => {
-
-           if(this.previousAllMessages !== this.allMessages) {
-
-           }
-           this.previousAllMessages = this.allMessages;
-       }, 1000)
-   }
+    private updateMessagesInterval;
 
     afterInit(server: Server): any {
+         this.updateMessagesInterval = setInterval(() => {
+            if (this.previousAllMessages !== this.allMessages) {
+                 this.prisma.messages.deleteMany();
+                 this.prisma.messages.createMany({data: this.allMessages as any}).then(resp => console.log(resp));
+            }
+            this.previousAllMessages = this.allMessages;
+        }, 5000);
     }
 
     handleConnection(client: any): any {
@@ -42,15 +41,11 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     }
 
     async handleDisconnect(client: SocketWIthHandshake): Promise<any> {
-        console.log("disconnected");
-        console.log("disconnected");
         const {id, active} = client.handshake;
-        console.log(id, active);
         if (!active) {
             return;
         }
         this.activeUsers.splice(this.activeUsers.indexOf(id), 1);
-        console.log(this.activeUsers);
         client.handshake = false;
         await this.service.updateUserStatus(id, false);
     }
@@ -109,13 +104,12 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         } else {
             this.allMessages = newAllMessages;
         }
-        console.log(from, to)
         this.server.sockets.in(to.toString()).emit("message", messageData);
         return messageData;
     }
 
       @SubscribeMessage("getMessages")
-     async handleGetMessages (@MessageBody("interlocuters") interlocuters: number[]) {
+      async handleGetMessages (@MessageBody("interlocuters") interlocuters: number[]) {
           return await this.allMessages.filter(messages => messages.between.includes(interlocuters[0]) && messages.between.includes(interlocuters[0]))[0];
       }
 }
