@@ -11,6 +11,7 @@ import {IRootState} from "../../../store/store";
 import {UserType} from "../../../types/types";
 import {Dispatch} from "@reduxjs/toolkit";
 import {setInterlocutor} from "../../../store/messagesSlice";
+import { setStoreUser } from "../../../store/userSlice";
 
 const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProps) => {
     const [emptyText, setEmptyText] = useState<string>("");
@@ -30,9 +31,12 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
         event.stopPropagation();
         (async function () {
             if (user.name) {
-                const addStatus = await handleGQLRequest("AddFriend", {id: e});
-                if (addStatus.AddFriend == "Request Sent") {
+                const addStatus = await handleGQLRequest("AddFriend", {id: e});        
+                if (addStatus?.AddFriend?.email) {
                     message.success("Request Sent");
+                    dispatch(setStoreUser(addStatus.AddFriend))
+                } else if(addStatus.errors) {
+                    message.error(addStatus.errors[0]);
                 }
             } else {
                 message.warning("Sign in to add friends");
@@ -80,7 +84,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
                             <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
                                 Friend</a> : accept ?
                                 <a className={styles.list_item_action} ref={acceptLink}
-                                   onClick={(e) => acceptRequest(item, e)}>Accept</a> : null}
+                                   onClick={(e) => acceptRequest(item, e)}>Accept</a> : user.sentRequests.includes(item.id) ? <p> Request sent</p> : null}
                     </List.Item>
                 )}
             />

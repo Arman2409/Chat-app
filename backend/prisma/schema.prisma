@@ -19,6 +19,7 @@ model Users {
   friends Int[] @default([])
   active Boolean @default(false)
   friendRequests Int[] @default([])
+  sentRequests Int[] @default([])
   lastVisited String @default("")
 }
 

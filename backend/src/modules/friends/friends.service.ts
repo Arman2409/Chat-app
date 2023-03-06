@@ -5,7 +5,6 @@ import { PrismaService } from 'nestjs-prisma';
 import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
 
-import { getStartEndTotal } from 'src/functions/functions';
 import { JwtService } from "../../services/jwt/jwt.service";
 @Injectable()
 export class FriendsService {
@@ -23,16 +22,29 @@ export class FriendsService {
     });
     if (!requestingUser) {
       throw new GraphQLError("Friend Request Not Send, Error Occurred");
-    }
-    ;
+    };
+
     const newRequests = requestingUser.friendRequests;
-    if (newRequests.includes(Number(currentUser.id))) {
-      return "Already Sent";
+    const sentRequests = currentUser.sentRequests;
+
+    if (newRequests.includes(Number(currentUser.id)) || sentRequests.includes(Number(id))) {
+      throw new GraphQLError( "Already Sent");
     }
-    if (newRequests.includes(Number(req.session.user.id))) {
-      return "Can't Send Request To Yourself";
+    if (id === Number(currentUser.id)) {
+      throw new GraphQLError("Can't Send Request To Yourself");
     }
-    newRequests.unshift(Number(req.session.user.id));
+
+    sentRequests.unshift(Number(id))
+    newRequests.unshift(Number(currentUser.id))
+
+    const updateCurrent = await this.prisma.users.update({
+      where: {
+        id: currentUser.id
+      },
+      data: {
+        sentRequests
+      }
+    })
     const update = await this.prisma.users.update({
       where: {
         id: Number(id)
@@ -41,8 +53,8 @@ export class FriendsService {
         friendRequests: newRequests
       }
     })
-    if (update) {
-      return "Request Sent";
+    if (update && updateCurrent) {
+      return updateCurrent;
     } else {
       throw new GraphQLError("Not Sent, Error Occured");
     }
@@ -57,18 +69,18 @@ export class FriendsService {
     })
   };
 
-  async confirmFriend(id) {
+  async confirmFriend(id: number) {
     const req: UserReq = RequestContext.currentContext.req;
     const currentUser: UserType = req.session.user;
     currentUser.friends.push(id);
-    const index: number = currentUser.friendRequests.indexOf(id);
-    currentUser.friendRequests.splice(index, 1);
+    const index: number = currentUser.sentRequests.indexOf(id);
+    const sentRequests =  currentUser.sentRequests.splice(index, 1);
     const updating = await this.prisma.users.update({
       where: {
         id: currentUser.id
       },
       data: {
-        friendRequests: currentUser.friendRequests,
+        sentRequests,
         friends: currentUser.friends
       }
     });
@@ -84,13 +96,15 @@ export class FriendsService {
     if(friend.friends.includes(id)) {
       return new GraphQLError("Already have friend");
     }
-    friend.friends.push(currentUser.id);
+    const friends = friend.friends.push(currentUser.id);
+    const friendRequests = friend.friendRequests.splice(currentUser.id, 1);
     const updatingFriend: UserType = await this.prisma.users.update({
       where: {
         id
       },
       data: {
-        friends: friend.friends
+        friends,
+
       }
     })
     if (updatingFriend) {

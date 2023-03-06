@@ -37,7 +37,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     }
 
     handleConnection(client: any): any {
-        console.log("connection");
     }
 
     async handleDisconnect(client: SocketWIthHandshake): Promise<any> {
@@ -50,7 +49,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         await this.service.updateUserStatus(id, false);
     }
 
-    @SubscribeMessage("connected")
+    @SubscribeMessage("signedIn")
     async handleConnect(
         @MessageBody("id") id: number,
         @MessageBody("socketId") socketId: number,

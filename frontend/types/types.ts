@@ -8,6 +8,7 @@ export interface UserType {
     image: string,
     password?: string,
     friendRequests: any[],
+    sentRequests: any[],
     friends: any[],
     active: boolean
 }

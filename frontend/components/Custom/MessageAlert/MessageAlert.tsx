@@ -54,9 +54,10 @@ const MessageAlert = () => {
 
     useEffect(() => {
         messageApi.destroy(fromUser.name);
-        if (!data.between) {
+        if (!data.between.length) {
             return;
         }
+        
         const fromId = getSendersId(data.between, storeUser.id);
         if(fromId === interlocutor.id) {
             return;

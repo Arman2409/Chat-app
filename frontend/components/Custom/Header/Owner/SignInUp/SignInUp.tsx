@@ -51,10 +51,8 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 setMessage(getSlicedWithDots(res.message, 20));
                 setLoadingRequest(false);
                 return;
-            }
-            ;
-            socket.connect();
-            socket.emit("connected", {id: res.id}, (data: any) => {
+            };
+            socket.emit("signedIn", {id: res.id}, (data: any) => {
                 console.log("connected", {data});
             });
             setLoadingRequest(false);

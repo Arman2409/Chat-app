@@ -3,6 +3,7 @@ import { query } from "gql-query-builder";
 import decode from "jwt-decode";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
+    const userFields = ["name","lastVisited", "image", "friendRequests", "email", "active","id"]
     let variables: any = {};
     let fields: any = [];
 
@@ -33,7 +34,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: { type: "Float!", value: page},
             perPage: { type: "Float!", value: 6}
         }
-        fields = [{"users": ["name","lastVisited", "image", "email", "active","id"]}, "total"]
+        fields = [{"users": userFields}, "total"]
     }
 
     if(operation == "SearchInFriends") {
@@ -43,7 +44,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: { type: "Float!", value: page},
             perPage: { type: "Float!", value: 6}
         }
-        fields = [{"users": ["name","lastVisited", "image", "email", "active","id"]}, "total"]
+        fields = [{"users": userFields}, "total"]
     }
 
     if(operation == "GetLastMessages") {
@@ -52,7 +53,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: {type: "Float!", value: page},
             perPage: {type: "Float!", value: perPage}
         }
-        fields = [{"users":["name", "id", "email", "active", "image"]}, "total"]
+        fields = [{"users":userFields}, "total"]
     };
 
     if(operation == "AddFriend") {
@@ -68,7 +69,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             ids: { type: "[Float!]!", value: ids}
         }
-        fields = ["name", "id", "email", "lastVisited", "active", "image"]
+        fields = userFields
     }
 
     if(operation == "ConfirmFriend") {
@@ -84,6 +85,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             token: {type: "String!", value: token}
         };
+        fields = userFields
     }
 
     if(operation == "GetWelcomeNews") {
@@ -95,7 +97,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             id: {type: "Float!", value: id}
         };
-        fields = ["name", "id", "email", "lastVisited", "active", "image"]
+        fields = userFields
     }
 
 
@@ -103,13 +105,10 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             operation,
             variables: variables,
             fields: fields
-        })).then((res) => {
-            console.log(res);
-            
+        })).then((res) => {            
             if (res.data.data) {
                 if (operation == "SignIn") {
                     localStorage.setItem("token", res.data.data.SignIn.token)
-                    console.log(decode(res.data.data.SignIn.token))
                     return decode(res.data.data.SignIn.token);
                 }
                 return res.data.data;

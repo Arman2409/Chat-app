@@ -11,6 +11,7 @@ type UserType {
   friends: [Float!]!
   active: Boolean!
   friendRequests: [Float!]!
+  sentRequests: [Float!]!
   lastVisited: String!
 }
 
@@ -32,7 +33,7 @@ type Query {
   SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
   SignIn(email: String!, password: String!): TokenType!
   SignOut: String!
-  AlreadySigned(token: String!): String!
+  AlreadySigned(token: String!): UserType!
   SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
   FindUserById(id: Float!): UserType!

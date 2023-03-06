@@ -26,6 +26,9 @@ export class  UserType {
     @Field(type => [Number])
     friendRequests?: number[]
 
+    @Field(type => [Number])
+    sentRequests?: number[]
+
     @Field()
     lastVisited?: string
 }

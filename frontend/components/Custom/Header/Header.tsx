@@ -74,15 +74,15 @@ const AppHeader: React.FunctionComponent = () => {
             const localUser: UserType = jwtDecode(token);
             if (localUser.name) {
                 (async () => {
-                    const signStatus: any = await handleGQLRequest("AlreadySigned", {token});
-                    if (signStatus.AlreadySigned == "Done") {
+                    const signedUser: any = await handleGQLRequest("AlreadySigned", {token});
+                    if (signedUser?.AlreadySigned?.email) { 
                         socket.emit("connected", {id: localUser.id, socketID: socket.id}, (data: any) => {
                             if (data !== "Connected") {
                                 message.error("Service Not Available, Please Try Later");
                                 return;
                             }
-                            dispatch(setStoreUser(localUser))
                         });
+                        dispatch(setStoreUser(signedUser?.AlreadySigned));
                     } else {
                         message.error("Error Occured");
                     }
