@@ -23,6 +23,7 @@ export class FriendsService {
     if (!requestingUser) {
       throw new GraphQLError("Friend Request Not Send, Error Occurred");
     };
+  
 
     const newRequests = requestingUser.friendRequests;
     const sentRequests = currentUser.sentRequests;
@@ -44,7 +45,8 @@ export class FriendsService {
       data: {
         sentRequests
       }
-    })
+    });
+    req.session.user = {...currentUser, sentRequests};
     const update = await this.prisma.users.update({
       where: {
         id: Number(id)
@@ -54,6 +56,8 @@ export class FriendsService {
       }
     })
     if (update && updateCurrent) {
+      console.log(updateCurrent);
+      
       return updateCurrent;
     } else {
       throw new GraphQLError("Not Sent, Error Occured");
@@ -73,14 +77,14 @@ export class FriendsService {
     const req: UserReq = RequestContext.currentContext.req;
     const currentUser: UserType = req.session.user;
     currentUser.friends.push(id);
-    const index: number = currentUser.sentRequests.indexOf(id);
-    const sentRequests =  currentUser.sentRequests.splice(index, 1);
+    const index: number = currentUser.friendRequests.indexOf(id);
+    const requests =  currentUser.friendRequests.splice(index, 1);
     const updating = await this.prisma.users.update({
       where: {
         id: currentUser.id
       },
       data: {
-        sentRequests,
+        friendRequests: requests,
         friends: currentUser.friends
       }
     });
@@ -97,14 +101,14 @@ export class FriendsService {
       return new GraphQLError("Already have friend");
     }
     const friends = friend.friends.push(currentUser.id);
-    const friendRequests = friend.friendRequests.splice(currentUser.id, 1);
+    const friendRequests = friend.sentRequests.splice(currentUser.id, 1);
     const updatingFriend: UserType = await this.prisma.users.update({
       where: {
         id
       },
       data: {
         friends,
-
+        sentRequests: friendRequests
       }
     })
     if (updatingFriend) {

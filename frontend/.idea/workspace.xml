@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab57a864-e8e7-4538-80fd-869df535f8dc" name="Changes" comment="Feat: Messages working almost normal, &quot;message&quot; listeners put in both pages,&#10;message alert unfinished yet.">
-      <change beforePath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/modules/sockets/ws.gateway.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Chat/MessagesChat/MessagesChat.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Custom/Header/Owner/SignInUp/SignInUp.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/Chat/MessagesChat/MessagesChat.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styles/Chat/MessagesChat/MessagesChat.module.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +86,20 @@
       <workItem from="1676297624291" duration="8149000" />
       <workItem from="1676361783838" duration="2989000" />
       <workItem from="1676369728061" duration="17341000" />
-      <workItem from="1676561429465" duration="2650000" />
+      <workItem from="1676561429465" duration="2745000" />
+      <workItem from="1676616413082" duration="274000" />
+      <workItem from="1676628852566" duration="601000" />
+      <workItem from="1676966284189" duration="1159000" />
+      <workItem from="1677047968060" duration="599000" />
+      <workItem from="1677077871088" duration="51000" />
+      <workItem from="1677239602443" duration="3822000" />
+      <workItem from="1677484374221" duration="648000" />
+      <workItem from="1677493351462" duration="1270000" />
+      <workItem from="1677495173565" duration="439000" />
+      <workItem from="1677495894384" duration="924000" />
+      <workItem from="1677496839890" duration="2402000" />
+      <workItem from="1677499682892" duration="704000" />
+      <workItem from="1677654465188" duration="2000" />
     </task>
     <task id="LOCAL-00001" summary="Some changes">
       <created>1676028704814</created>

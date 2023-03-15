@@ -6,7 +6,7 @@ import { FriendsService } from "./friends.service";
 export class FriendsResolver{
   constructor(private readonly service: FriendsService) {}
 
-  @Query(() => String, { name: 'AddFriend' })
+  @Query(() => UserType, { name: 'AddFriend' })
   async addFriend(
     @Args('id') id: number
   ) {

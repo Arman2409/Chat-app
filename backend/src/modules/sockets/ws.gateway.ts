@@ -24,7 +24,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private previousAllMessages = [];
 
-    private updateMessagesInterval;
+    private updateMessagesInterval = null;
 
     afterInit(server: Server): any {
          this.updateMessagesInterval = setInterval(() => {

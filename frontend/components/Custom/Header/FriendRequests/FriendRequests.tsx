@@ -14,7 +14,7 @@ import jwtDecode from "jwt-decode";
 import {setStoreUser} from "../../../../store/userSlice";
 
 const FriendRequests = ({clickOutside}: any) => {
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [users, setUsers] = useState<any[]>([]);
 
     const requestsRef = useRef<any>(null);
@@ -41,6 +41,8 @@ const FriendRequests = ({clickOutside}: any) => {
            if (confirmStatus.ConfirmFriend) {
                if (confirmStatus.ConfirmFriend.token) {
                    const newUser = jwtDecode(confirmStatus.ConfirmFriend.token);
+                   console.log(newUser);
+                   
                    dispatch(setStoreUser(newUser));
                    localStorage.setItem("token", confirmStatus.ConfirmFriend.token)
                }
@@ -78,8 +80,8 @@ const FriendRequests = ({clickOutside}: any) => {
                 justifyContent: "center",
             } : {}}>
             {loading  && <Loading />}
-            {user.friendRequests ? user.friendRequests.length ? <UsersMapper accept={accept} friends={true} users={users} /> :
-                "No requests found": "No requests found"}
+            {user.friendRequests?.length ?  <UsersMapper accept={accept} friends={true} users={users} /> :
+                 "No requests found"}
         </div>
     )
 }

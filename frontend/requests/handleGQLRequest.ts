@@ -61,6 +61,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             id: {type: "Float!", value: id}
         }
+        fields = userFields;
     }
 
 
