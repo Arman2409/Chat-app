@@ -56,8 +56,6 @@ export class FriendsService {
       }
     })
     if (update && updateCurrent) {
-      console.log(updateCurrent);
-      
       return updateCurrent;
     } else {
       throw new GraphQLError("Not Sent, Error Occured");

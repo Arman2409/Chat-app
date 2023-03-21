@@ -3,7 +3,8 @@ import { query } from "gql-query-builder";
 import decode from "jwt-decode";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
-    const userFields = ["name","lastVisited", "image", "friendRequests", "email", "active","id"]
+    const userFields = ["name","lastVisited", "image", "sentRequests", "friendRequests", "email", "active","id"];
+    const messageFields = ["id", "sequence", "between", "messages", "lastDate"];
     let variables: any = {};
     let fields: any = [];
 
@@ -53,7 +54,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: {type: "Float!", value: page},
             perPage: {type: "Float!", value: perPage}
         }
-        fields = [{"users":userFields}, "total"]
+        fields = messageFields;
     };
 
     if(operation == "AddFriend") {

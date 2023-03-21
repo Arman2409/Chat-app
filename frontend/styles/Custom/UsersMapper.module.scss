@@ -54,6 +54,12 @@
       &:hover {
         color: $textColor1
       }
+
+      &_disabled {
+          @extend .list_item_action;
+          color: $borderColor;
+          pointer-events: none;
+      }
     }
 
     &:hover {

@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react"
 import {Reducer} from "@reduxjs/toolkit";
 
 export interface UserType {
@@ -42,7 +41,7 @@ export interface SignProps {
 export interface MapperProps {
   users: any[];
   friends?: boolean;
-
+  friendRequests?: boolean;
   accept?:Function;
 }
 

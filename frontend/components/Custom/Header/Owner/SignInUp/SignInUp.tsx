@@ -53,16 +53,16 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 return;
             };
             socket.emit("signedIn", {id: res.id}, (data: any) => {
-                console.log("connected", {data});
+                console.log("connected");
             });
             setLoadingRequest(false);
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
-            // if(repeatPassword !== password) {
-            //     setMessage("Password must be repeated")
-            //     return;
-            // }
+            if(repeatPassword !== password) {
+                setMessage("Password must be repeated")
+                return;
+            }
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignUp", {email: name, password: "pass", name, image: imageUrl});
             if (res.message) {
@@ -140,7 +140,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                     </>
                     : null}
                 <Form.Item
-                    // rules={[{ required: true }]}
+                    rules={[{ required: true }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -149,7 +149,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
-                    // rules={[{ required: true, min: 8 }]}
+                    rules={[{ required: true, min: 8 }]}
                     name={"password"}>
                     <Input
                         placeholder="Password"
@@ -159,7 +159,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 {type == "SignUp" ?
                     <Form.Item
                         className={styles.form_item}
-                        // rules={[{ required: true, min: 8 }]}
+                        rules={[{ required: true, min: 8 }]}
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"

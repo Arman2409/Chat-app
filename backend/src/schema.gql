@@ -29,6 +29,14 @@ type NewsType {
   description: String!
 }
 
+type MessageType {
+  id: Float!
+  between: [Float!]!
+  sequence: [Float!]!
+  messages: [String!]!
+  lastDate: String!
+}
+
 type Query {
   SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
   SignIn(email: String!, password: String!): TokenType!
@@ -40,6 +48,6 @@ type Query {
   AddFriend(id: Float!): UserType!
   GetFriendRequestsUsers(ids: [Float!]!): [UserType!]!
   ConfirmFriend(friendId: Float!): TokenType!
-  GetLastMessages(page: Float!, perPage: Float!): SearchType!
+  GetLastMessages(page: Float!, perPage: Float!): [MessageType!]!
   GetWelcomeNews: [NewsType!]!
 }

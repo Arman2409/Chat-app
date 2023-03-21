@@ -2,7 +2,6 @@ import { Pagination, Typography } from "antd";
 import { useEffect, useState } from "react";
 
 import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
-import users from "../../../users";
 import { useRouter } from "next/router";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
@@ -14,9 +13,10 @@ const LastMessages:React.FC = () => {
     
 
    useEffect(() => {
-       const lastMessagesData = handleGQLRequest("GetLastMessages", {page: current, perPage: 10});
-       console.log(lastMessagesData);
-       
+      (async function() {
+        const lastMessagesData = await handleGQLRequest("GetLastMessages", {page: current, perPage: 10});
+        console.log(lastMessagesData);
+      })()
    }, [current])
 
     return (

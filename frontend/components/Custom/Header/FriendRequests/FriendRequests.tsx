@@ -80,7 +80,7 @@ const FriendRequests = ({clickOutside}: any) => {
                 justifyContent: "center",
             } : {}}>
             {loading  && <Loading />}
-            {user.friendRequests?.length ?  <UsersMapper accept={accept} friends={true} users={users} /> :
+            {user.friendRequests?.length ?  <UsersMapper friendRequests={true} accept={accept} friends={true} users={users} /> :
                  "No requests found"}
         </div>
     )

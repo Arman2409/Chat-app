@@ -13,7 +13,7 @@ import {Dispatch} from "@reduxjs/toolkit";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import { setStoreUser } from "../../../store/userSlice";
 
-const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProps) => {
+const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
     const router: any = useRouter();
     const dispatch: Dispatch = useDispatch();
@@ -37,6 +37,8 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
                 }
                 if (addStatus?.AddFriend?.email) {
                     message.success("Request Sent");
+                    console.log(addStatus?.AddFriend);
+                    
                     dispatch(setStoreUser(addStatus.AddFriend))
                 } else if(addStatus.errors) {
                     message.error(addStatus.errors[0]);
@@ -59,9 +61,6 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : "No Users Found")
     }, [users]);
-
-    console.log(user);
-    
     
     return (
         <ConfigProvider renderEmpty={() => (
@@ -74,7 +73,9 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
                 itemLayout="horizontal"
                 dataSource={users}
                 className={styles.list}
-                renderItem={(item) => (
+                renderItem={(item) => {
+                    if(!friendRequests && user?.friendRequests?.includes(item.id)) return <></>;
+                    return (
                     <List.Item
                         onClick={() => newChat(item)}
                         className={styles.list_item}
@@ -86,13 +87,13 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, accept}: MapperProp
                             <Typography>{item.name}</Typography>
                             {!item.active && <Typography className="list_item_date">{item.lastVisited}</Typography>}
                         </div>
-                        {!friends && user.name ? user.sentRequests?.includes(item.id) ? <a className="disabled" onClick={() => {}}>Request Sent</a> :
+                        {!friends && user.name ? user.sentRequests?.includes(item.id) ? <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
                             <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
                                 Friend</a> : accept ?
                                 <a className={styles.list_item_action} ref={acceptLink}
                                    onClick={(e) => acceptRequest(item, e)}>Accept</a> : user.sentRequests?.includes(item.id) ? <p> Request sent</p> : null}
                     </List.Item>
-                )}
+                )}}
             />
         </ConfigProvider>
     )

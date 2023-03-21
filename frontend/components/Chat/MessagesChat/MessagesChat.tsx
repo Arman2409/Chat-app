@@ -27,6 +27,7 @@ const MessagesChat: React.FC = () => {
         email: "",
         image: "",
         friendRequests: [],
+        sentRequests: [],
         friends: [],
         active: false
     })
@@ -74,9 +75,8 @@ const MessagesChat: React.FC = () => {
         socket.on("message", (data: MessagesDataType) => {
             setMessageData(data);
             const senderId = getSendersId(data.between, user.id);
-            console.log(senderId , interlocutor.id)
+
             if(senderId == interlocutor.id) {
-                console.log("same")
                return;
             }
             dispatch(setMessagesData(data));

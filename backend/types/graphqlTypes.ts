@@ -57,4 +57,20 @@ export class NewsType {
     description: string
 }
 
+@ObjectType()
+export class  MessageType {
+    @Field()
+    id:number
 
+    @Field(type => [Number])
+    between: number[]
+
+    @Field(type => [Number])
+    sequence:number[]
+
+    @Field(type => [String])
+    messages:string[]
+
+    @Field()
+    lastDate:string
+}

@@ -33,7 +33,6 @@ const SearchUser: React.FC = () => {
 
     const getSeachResults = () => {
         (async function () {
-            // setLoading(true);
             const usersData:any = await handleGQLRequest(searchOptionsRef.current.type == "all" ? "SearchInAll" :
                 "SearchInFriends", {page: searchOptionsRef.current.page, name: searchOptionsRef.current.name});
             if (usersData.SearchInAll) {
