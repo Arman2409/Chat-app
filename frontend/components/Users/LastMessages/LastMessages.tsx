@@ -9,6 +9,7 @@ import handleGQLRequest from "../../../requests/handleGQLRequest";
 const LastMessages:React.FC = () => {
    const [current, setCurrent] = useState<number>(1);
    const router:any = useRouter();
+   const [lastMessages, setLastMessages] = useState<any[]>([])
    const [currentUser, setCurrentUser] = useState<UserType>(router.query.name ? router.query : {});
     
 
@@ -16,6 +17,7 @@ const LastMessages:React.FC = () => {
       (async function() {
         const lastMessagesData = await handleGQLRequest("GetLastMessages", {page: current, perPage: 10});
         console.log(lastMessagesData);
+        setLastMessages(lastMessagesData?.GetLastMessages);
       })()
    }, [current])
 
@@ -27,7 +29,7 @@ const LastMessages:React.FC = () => {
             Last Messages
          </Typography>
          <div className="centered_users_cont">
-            <UsersMapper users={[]} />
+            <UsersMapper lastMessages={true} users={lastMessages} />
             <Pagination 
               current={current} 
               onChange={(e) => setCurrent(e)} 

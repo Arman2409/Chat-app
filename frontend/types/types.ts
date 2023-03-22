@@ -9,7 +9,8 @@ export interface UserType {
     friendRequests: any[],
     sentRequests: any[],
     friends: any[],
-    active: boolean
+    active: boolean,
+    lastMessage?: string
 }
 
 export interface UserInitialState {
@@ -39,10 +40,11 @@ export interface SignProps {
 }
 
 export interface MapperProps {
-  users: any[];
   friends?: boolean;
   friendRequests?: boolean;
+  lastMessages?: boolean
   accept?:Function;
+  users: any[];
 }
 
 export interface NewsModalProps {

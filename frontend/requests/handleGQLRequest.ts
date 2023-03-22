@@ -54,7 +54,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             page: {type: "Float!", value: page},
             perPage: {type: "Float!", value: perPage}
         }
-        fields = messageFields;
+        fields = [...userFields, "lastMessage"];
     };
 
     if(operation == "AddFriend") {

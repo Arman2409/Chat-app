@@ -31,6 +31,9 @@ export class  UserType {
 
     @Field()
     lastVisited?: string
+
+    @Field({ nullable: true})
+    lastMessage?: string
 }
 
 @ObjectType()

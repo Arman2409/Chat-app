@@ -13,7 +13,7 @@ import {Dispatch} from "@reduxjs/toolkit";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import { setStoreUser } from "../../../store/userSlice";
 
-const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessages, users,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
     const router: any = useRouter();
     const dispatch: Dispatch = useDispatch();
@@ -85,7 +85,9 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, acc
                         </Badge>
                         <div>
                             <Typography>{item.name}</Typography>
-                            {!item.active && <Typography className="list_item_date">{item.lastVisited}</Typography>}
+                            {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
+                            {lastMessages && <Typography>{item?.lastMessage}</Typography> }
+
                         </div>
                         {!friends && user.name ? user.sentRequests?.includes(item.id) ? <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
                             <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add

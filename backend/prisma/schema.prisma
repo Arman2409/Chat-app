@@ -21,6 +21,7 @@ model Users {
   friendRequests Int[] @default([])
   sentRequests Int[] @default([])
   lastVisited String @default("")
+  lastMesage String @default("")
 }
 
 model News {
