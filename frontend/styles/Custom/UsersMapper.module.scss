@@ -46,6 +46,21 @@
       color: $textColor2;
     }
 
+    &_message {
+       @extend  .list_item;
+       background-color: $textColor2;
+
+       & article:nth-child(1) {
+        margin-left: 15px;
+        color: $textColor1;
+      }
+  
+      & article:nth-child(2) {
+        margin-left: 15px;
+        color: $textColor2;
+      }
+    }
+
     &_action {
       position: absolute;
       right: 10px;
@@ -60,6 +75,14 @@
           color: $borderColor;
           pointer-events: none;
       }
+
+      &_message {
+        @extend .list_item_action;
+        color: $color2;
+        pointer-events: none;
+        color: $borderColor;
+      }
+
     }
 
     &:hover {

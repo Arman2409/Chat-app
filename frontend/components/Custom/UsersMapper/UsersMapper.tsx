@@ -61,7 +61,7 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : "No Users Found")
     }, [users]);
-    
+ 
     return (
         <ConfigProvider renderEmpty={() => (
             <div className={styles.empty_cont}>
@@ -78,7 +78,7 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
                     return (
                     <List.Item
                         onClick={() => newChat(item)}
-                        className={styles.list_item}
+                        className={lastMessages ? styles.list_item_message : styles.list_item}
                     >
                         <Badge dot={item.active ? true : false}>
                             <Avatar src={item.image}/>
@@ -86,10 +86,8 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
                         <div>
                             <Typography>{item.name}</Typography>
                             {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
-                            {lastMessages && <Typography>{item?.lastMessage}</Typography> }
-
                         </div>
-                        {!friends && user.name ? user.sentRequests?.includes(item.id) ? <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
+                        {!friends && user.name ? lastMessages ? <p className={styles.list_item_action_message}>{item.lastMessage}</p> : user.sentRequests?.includes(item.id) ? <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
                             <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
                                 Friend</a> : accept ?
                                 <a className={styles.list_item_action} ref={acceptLink}

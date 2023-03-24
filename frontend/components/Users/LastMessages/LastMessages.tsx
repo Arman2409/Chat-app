@@ -5,6 +5,7 @@ import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import { useRouter } from "next/router";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
+import styles from "../../../styles/Users/LastMessages.module.scss";
 
 const LastMessages:React.FC = () => {
    const [current, setCurrent] = useState<number>(1);
@@ -22,9 +23,7 @@ const LastMessages:React.FC = () => {
    }, [current])
 
     return (
-       <div style={{
-         width: "40%"
-       }}>
+       <div className={styles.lastMessages_cont}>
          <Typography className={""}>
             Last Messages
          </Typography>
