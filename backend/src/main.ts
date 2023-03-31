@@ -6,9 +6,8 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
 
-  console.log(process.env.DATABASE_URL_MONGODB);
-
   const app = await NestFactory.create(AppModule);
+
   // Middlewares 
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
