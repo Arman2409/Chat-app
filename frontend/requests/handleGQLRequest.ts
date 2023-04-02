@@ -4,7 +4,6 @@ import decode from "jwt-decode";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
     const userFields = ["name","lastVisited", "image", "sentRequests", "friendRequests", "email", "active","id"];
-    const messageFields = ["id", "sequence", "between", "messages", "lastDate"];
     let variables: any = {};
     let fields: any = [];
 
@@ -60,7 +59,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     if(operation == "AddFriend") {
         const {id} = args;
         variables = {
-            id: {type: "Float!", value: id}
+            id: {type: "String!", value: id}
         }
         fields = userFields;
     }
@@ -69,7 +68,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     if(operation == "GetFriendRequestsUsers") {
         const {ids} = args
         variables = {
-            ids: { type: "[Float!]!", value: ids}
+            ids: { type: "[String!]!", value: ids}
         }
         fields = userFields
     }
@@ -77,7 +76,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     if(operation == "ConfirmFriend") {
         const { friendId } = args;
         variables = {
-            friendId: {type: "Float!", value: friendId}
+            friendId: {type: "String!", value: friendId}
         }
         fields = ["token"]
     }
@@ -97,7 +96,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     if(operation == "FindUserById") {
         const { id } = args;
         variables = {
-            id: {type: "Float!", value: id}
+            id: {type: "String!", value: id}
         };
         fields = userFields
     }

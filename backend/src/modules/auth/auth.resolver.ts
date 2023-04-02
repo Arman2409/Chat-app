@@ -1,5 +1,4 @@
-import { Resolver, Args, Query } from "@nestjs/graphql"
-import { RequestContext } from "nestjs-request-context";
+import { Resolver, Args, Query, Context } from "@nestjs/graphql"
 
 import { AuthService } from "./auth.service";
 import { TokenType, UserType } from "types/graphqlTypes";
@@ -23,24 +22,26 @@ export class AuthResolver {
 
    @Query(() => TokenType, { name: "SignIn" })
    async signIn(
+      @Context() ctx:any,
       @Args("email") email: string,
       @Args("password") password: string,
    ): Promise<any> {
-      const user = await this.auth.findUser({ email, password });
+      const user = await this.auth.findUser(ctx, { email, password });
       return { token: this.jwt.sign(user) };
    }
 
    @Query(() => String, { name: "SignOut" })
-   signOut() {
-      const req: UserReq = RequestContext.currentContext.req;
+   signOut(@Context() ctx:any) {
+      const req: UserReq = ctx.req;
       req.session.user = null;
       return "Signed Out";
    }
 
    @Query(() => UserType, { name: "AlreadySigned" })
    setSession(
+      @Context() ctx:any,
       @Args("token") token: string
-   ) {
-      return this.auth.setSession(token);
+   ):any {
+      return this.auth.setSession(ctx, token);
    }
 }

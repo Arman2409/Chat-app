@@ -1,7 +1,7 @@
 import {Reducer} from "@reduxjs/toolkit";
 
 export interface UserType {
-    id: number,
+    id: string,
     name: string,
     email: string, 
     image: string,

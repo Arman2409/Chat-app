@@ -22,7 +22,7 @@ const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({between: [], messages: [], sequence: []});
     const dispatch = useDispatch();
     const [interlocutor, setInterlocutor] = useState<UserType>({
-        id: 0,
+        id: "",
         name: "",
         email: "",
         image: "",
@@ -51,7 +51,6 @@ const MessagesChat: React.FC = () => {
                 setMessageData(data);
             }
         });
-        // setMessage("")
     }
 
     useEffect(() => {

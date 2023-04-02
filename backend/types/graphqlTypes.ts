@@ -3,7 +3,7 @@ import { Field, ObjectType } from "@nestjs/graphql"
 @ObjectType()
 export class  UserType {
     @Field()
-    id?: number 
+    id?: string
 
     @Field()
     name: string
@@ -17,17 +17,17 @@ export class  UserType {
     @Field()
     image?: string
 
-    @Field(type => [Number])
-    friends?: number[]
+    @Field(type => [String])
+    friends?: any[]
 
     @Field()
     active?: Boolean
 
-    @Field(type => [Number])
-    friendRequests?: number[]
+    @Field(type => [String])
+    friendRequests?: any[]
 
-    @Field(type => [Number])
-    sentRequests?: number[]
+    @Field(type => [String])
+    sentRequests?: any[]
 
     @Field()
     lastVisited?: string
@@ -63,10 +63,10 @@ export class NewsType {
 @ObjectType()
 export class  MessageType {
     @Field()
-    id:number
+    id:string
 
-    @Field(type => [Number])
-    between: number[]
+    @Field(type => [String])
+    between: string[]
 
     @Field(type => [Number])
     sequence:number[]

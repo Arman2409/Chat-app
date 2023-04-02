@@ -62,7 +62,7 @@ export class AuthService {
     };
 
 
-    async findUser(user: Omit<UserType, "active" | "name">): Promise<any> {
+    async findUser(ctx:any ,user: Omit<UserType, "active" | "name">): Promise<any> {
         const { email, password } = user;
         let resp: Omit<UserType, "password" | "active">;
         await this.prisma.users.findUnique(
@@ -75,8 +75,9 @@ export class AuthService {
                     await bcrypt.compare(password, data.password).then((result) => {
                         if (result) {
                             delete data.password;
+                            data.id = String(data.id);
                             resp = data;
-                            const req: UserReq = RequestContext.currentContext.req;
+                            const req: UserReq = ctx.req;
                             req.session.user = data;
                             return data;
                         } else {
@@ -92,8 +93,8 @@ export class AuthService {
         return resp;
     };
 
-    async setSession(token: string) {
-        const req: UserReq = RequestContext.currentContext.req;
+    async setSession(ctx:any ,token: string):Promise<any> {
+        const req: UserReq = ctx.req;
         const userData = this.jwt.authenticate(token);
         return this.prisma.users.findUnique({
             where: {

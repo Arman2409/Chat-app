@@ -3,15 +3,15 @@
 # ------------------------------------------------------
 
 type UserType {
-  id: Float!
+  id: String!
   name: String!
   email: String!
   password: String!
   image: String!
-  friends: [Float!]!
+  friends: [String!]!
   active: Boolean!
-  friendRequests: [Float!]!
-  sentRequests: [Float!]!
+  friendRequests: [String!]!
+  sentRequests: [String!]!
   lastVisited: String!
   lastMessage: String
 }
@@ -37,10 +37,10 @@ type Query {
   AlreadySigned(token: String!): UserType!
   SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
-  FindUserById(id: Float!): UserType!
-  AddFriend(id: Float!): UserType!
-  GetFriendRequestsUsers(ids: [Float!]!): [UserType!]!
-  ConfirmFriend(friendId: Float!): TokenType!
+  FindUserById(id: String!): UserType!
+  AddFriend(id: String!): UserType!
+  GetFriendRequestsUsers(ids: [String!]!): [UserType!]!
+  ConfirmFriend(friendId: String!): TokenType!
   GetLastMessages(page: Float!, perPage: Float!): [UserType!]!
   GetWelcomeNews: [NewsType!]!
 }

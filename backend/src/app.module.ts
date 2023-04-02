@@ -19,6 +19,7 @@ import { WelcomeModule } from './modules/welcome/welcome.module';
   imports: [
      ConfigModule.forRoot(),
      GraphQLModule.forRoot<ApolloDriverConfig>({
+      context: ({ req, res }) => ({ req, res }),
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: false

@@ -1,4 +1,4 @@
-import { Args, Query, Resolver } from "@nestjs/graphql";
+import { Args, Context, Query, Resolver } from "@nestjs/graphql";
 import { UserType } from "types/graphqlTypes";
 import { MessagesService } from "./messages.service";
 
@@ -8,9 +8,10 @@ export class MessagesResolver {
 
     @Query(() => [UserType], {name: "GetLastMessages"})
     async lastMessages(
+        @Context() ctx:any,
         @Args("page") page:number,
         @Args("perPage") perPage:number
     ){
-        return await this.service.lastMessages(page,perPage);
+        return await this.service.lastMessages(ctx,page,perPage);
     }
 }

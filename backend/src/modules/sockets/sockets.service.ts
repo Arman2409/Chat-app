@@ -5,7 +5,7 @@ import {PrismaService} from "nestjs-prisma";
 export class SocketsService {
     constructor(private readonly prisma:PrismaService) {}
 
-    async updateUserStatus(id:number, status:boolean, lastVisited?:boolean) {
+    async updateUserStatus(id:any, status:boolean, lastVisited?:boolean):Promise<any> {
         if (lastVisited) {
             return  await this.prisma.users.update({
                 where : { id },

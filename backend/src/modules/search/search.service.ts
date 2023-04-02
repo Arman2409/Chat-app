@@ -1,18 +1,16 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from 'nestjs-prisma';
 import {UserReq} from 'types/types';
-import {RequestContext} from 'nestjs-request-context';
-import {capitalizeFirstLetter, getStartEndTotal, sortByActivesFirst} from 'src/functions/functions';
+import { getStartEndTotal, sortByActivesFirst} from 'src/functions/functions';
 import {GraphQLError} from "graphql";
-import {UserType} from "../../../types/graphqlTypes";
-import {elementAt} from "rxjs";
+
 
 @Injectable()
 export class SearchService {
     constructor(private readonly prisma: PrismaService) {
     }
 
-    async searchInAll(name: string, page: number, perPage: number) {
+    async searchInAll(ctx:any,name: string, page: number, perPage: number) {
         let data: any[];
         if (!name) {
             data = await this.prisma.users.findMany();
@@ -26,7 +24,9 @@ export class SearchService {
             });
         }
 
-        const req: UserReq = RequestContext.currentContext.req;
+        const req: UserReq = ctx.req;
+        console.log({req: req.session});
+        
         if (req.session.user) {
             if (req.session.user.friends) {
                 data = data.filter((el: any) => {
@@ -48,12 +48,12 @@ export class SearchService {
     }
 
 
-    async searchInFriends(name: string, page: number, perPage: number) {
-        const req: UserReq = RequestContext.currentContext.req;
+    async searchInFriends(ctx:any ,name: string, page: number, perPage: number) {
+        const req: UserReq = ctx.req;
         if (req.session.user) {
             if (req.session.user.friends && req.session.user.friends.length) {
-                const friendsArray: number[] = req.session.user.friends;
-                let friends: UserType[]
+                const friendsArray: any[] = req.session.user.friends;
+                let friends: any[]
                 if (!name) {
                     friends = await this.prisma.users.findMany({
                         where: {
@@ -89,7 +89,7 @@ export class SearchService {
 
     }
 
-    async findUserById(id: number) {
+    async findUserById(id: any):Promise<any> {
         return this.prisma.users.findUnique({
             where:
                 {id}

@@ -1,10 +1,9 @@
-import { Input, Pagination, Radio, Switch } from "antd";
-import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
+import { Input, Pagination, Switch } from "antd";
+import React, { useEffect, useRef, useState} from "react";
 import { useMediaQuery } from "react-responsive";
-import { theme } from "antd";
-import { useDebounce, useUpdateEffect } from "usehooks-ts";
+import { useDebounce } from "usehooks-ts";
+import {useSelector} from "react-redux";
 
-const { useToken } = theme;
 const { Search } = Input;
 
 import styles from "../../../styles/Users/FindUser.module.scss";
@@ -13,8 +12,6 @@ import {IRootState} from "../../../store/store";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import Loading from "../../Custom/Loading/Loading";
-import {useSelector} from "react-redux";
-import {Simulate} from "react-dom/test-utils";
 
 const SearchUser: React.FC = () => {
     const [current, setCurrent] = useState<number>(1);
@@ -25,7 +22,6 @@ const SearchUser: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const user = useSelector((state: IRootState) => state.user.user);
     const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
-    // const token:any = useToken();
 
     const debouncedSearch = useDebounce( loading, 1000);
 

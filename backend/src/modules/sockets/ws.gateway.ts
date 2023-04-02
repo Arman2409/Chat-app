@@ -24,13 +24,13 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private previousAllMessages = [];
 
-    private updateMessagesInterval = null;
-
-    afterInit(server: Server): any {
-         this.updateMessagesInterval = setInterval(() => {
+    afterInit(): any {
+         setInterval(() => {
             if (this.previousAllMessages !== this.allMessages) {
                  this.prisma.messages.deleteMany();
-                 this.prisma.messages.createMany({data: this.allMessages as any}).then(resp => console.log(resp));
+                 if (this.allMessages.length) {
+                    this.prisma.messages.createMany({data: this.allMessages as any}).then(resp => console.log(resp));
+                 }
             }
             this.previousAllMessages = this.allMessages;
         }, 5000);
@@ -52,7 +52,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     @SubscribeMessage("signedIn")
     async handleConnect(
         @MessageBody("id") id: number,
-        @MessageBody("socketId") socketId: number,
         @ConnectedSocket() client: SocketWIthHandshake) {
         this.activeUsers.push(id);
         const update = this.service.updateUserStatus(id, true, true)
@@ -70,38 +69,31 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     handleMessage(@MessageBody("from") from: number,
                   @MessageBody("to") to: number,
                   @MessageBody("message") message: string,
-                  @ConnectedSocket() socket: SocketWIthHandshake) {
-        console.log({from}, {to}, {message});
-        let alreadyMessaged: boolean = false;
-        let messageData: any = {};
-        const newAllMessages = this.allMessages.map((e) => {
-            if (e.between.includes(from) && e.between.includes(to)) {
-                alreadyMessaged = true;
-                messageData = {
-                    between: e.between,
-                    messages: [...e.messages, message],
-                    sequence: [...e.sequence, e.between.indexOf(from)],
-                    lastDate: new Date().toString().slice(0, 10),
-                }
-                return messageData;
-            } else {
-                return e;
-            }
-        })
+                  ) {
+        let alreadyMessaged: boolean = this.allMessages.every(elem => [from, to].indexOf(elem) > -1)
+        let messageData = {};
+        if (alreadyMessaged) {
+        const previousMessaging  = this.allMessages.filter(e => (e.between.includes(from) && e.between.includes(to)))[0];
+        messageData = {
+            ...previousMessaging,
+            messages: [...previousMessaging.messages, message],
+            sequence: [...previousMessaging.sequence, previousMessaging.between.indexOf(from)],
+            lastDate: new Date().toString().slice(0, 10),
+        } 
+        this.allMessages.unshift(messageData);
+        }
         if (!alreadyMessaged) {
             messageData = {
                 between: [from, to],
                 sequence: [0],
                 messages: [message],
             }
-            this.allMessages.push(
+            this.allMessages.unshift(
                 {
                     ...messageData,
                     lastDate: new Date().toString().slice(0, 10),
                 }
             );
-        } else {
-            this.allMessages = newAllMessages;
         }
         this.server.sockets.in(to.toString()).emit("message", messageData);
         return messageData;
