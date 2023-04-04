@@ -6,7 +6,7 @@ import {
     OnGatewayDisconnect,
     SubscribeMessage, MessageBody, ConnectedSocket
 } from "@nestjs/websockets";
-import {Server, Socket,} from "socket.io";
+import {Server} from "socket.io";
 import { PrismaService} from "nestjs-prisma";
 import {SocketWIthHandshake} from "../../../types/types";
 import {SocketsService} from "./sockets.service";
@@ -73,11 +73,15 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         let alreadyMessaged: boolean = this.allMessages.every(elem => [from, to].indexOf(elem) > -1)
         let messageData = {};
         if (alreadyMessaged) {
-        const previousMessaging  = this.allMessages.filter(e => (e.between.includes(from) && e.between.includes(to)))[0] || {};
+        const previousMessaging  = this.allMessages.filter(e => (e.between.includes(from) && e.between.includes(to)))[0] || {};;
+         
+        const lastMessages = previousMessaging.messages?.length ? previousMessaging.messages : [];
+        const lastSequence =   previousMessaging.sequence?.length ? Number(previousMessaging.between?.indexOf(from)) ? [...previousMessaging.sequence, Number(previousMessaging.between?.indexOf(from))] : [] : [];
+         
         messageData = {
-            ...previousMessaging,
-            messages: [...previousMessaging.messages, message],
-            sequence: [...previousMessaging.sequence, previousMessaging.between.indexOf(from)],
+            between:  previousMessaging.between,
+            messages: [... lastMessages, message],
+            sequence: [... lastSequence],
             lastDate: new Date().toString().slice(0, 10),
         } 
         this.allMessages[this.allMessages.indexOf(previousMessaging)] = messageData;

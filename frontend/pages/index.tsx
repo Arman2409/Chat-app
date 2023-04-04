@@ -16,9 +16,9 @@ export default function Home() {
     });
 
     useEffect(() => {
-        socket.on("message", (data: any) => {
-            dispatch(setMessagesData(data));
-        })
+        // socket.on("message", (data: any) => {
+        //     dispatch(setMessagesData(data));
+        // })
     }, [])
 
     return (

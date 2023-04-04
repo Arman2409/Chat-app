@@ -1,8 +1,8 @@
 import { createSlice, Slice } from "@reduxjs/toolkit";
-import {MessagesInitialState, UserInitialState} from "../types/types";
+import {MessagesInitialState,} from "../types/types";
 
 const initialState:MessagesInitialState = {
-    interlocutor: {id: 0,name: "", email: "", image: "", friendRequests: [], friends: [], active: false},
+    interlocutor: {id: "" ,name: "", email: "", image: "", friendRequests: [], sentRequests: [], friends: [], active: false},
     messagesData: { between: [], sequence: [], messages: []}
 }
 
