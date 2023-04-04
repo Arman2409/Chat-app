@@ -151,9 +151,10 @@ const SearchUser: React.FC = () => {
                 onChange={(e: boolean) => newSearchType(e)}
                 disabled={user.name ? false : true}
                 defaultChecked={false} />
-            <div className="centered_users_cont">
-                {searchType == "all" ?   <UsersMapper users={users} />
-                     : <UsersMapper users={users} friends={true} /> }
+              <div className="centered_users_cont">
+                 <UsersMapper 
+                   users={users} 
+                   friends={searchType == "friends"}/>
                 <Pagination
                     total={total}
                     current={current}

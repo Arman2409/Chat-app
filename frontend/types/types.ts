@@ -29,9 +29,15 @@ export interface  MessagesInitialState {
     messagesData: MessagesDataType
 }
 
+export interface  SocketInitialState {
+    socket:any
+}
+
+
 export interface Reducers {
     user: Reducer,
-    messages: Reducer
+    messages: Reducer,
+    socket: any,
 };
 
 export interface SignProps {

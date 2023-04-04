@@ -25,7 +25,6 @@ export class SearchService {
         }
 
         const req: UserReq = ctx.req;
-        console.log({req: req.session});
         
         if (req.session.user) {
             if (req.session.user.friends) {

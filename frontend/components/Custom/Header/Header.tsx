@@ -19,7 +19,8 @@ import {UserType} from "../../../types/types";
 import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
-import {socket} from "../../../pages/_app";
+import { setSocket } from "../../../store/socketSlice";
+import { io } from "socket.io-client";
 
 const {Header} = Layout;
 
@@ -76,12 +77,8 @@ const AppHeader: React.FunctionComponent = () => {
                 (async () => {
                     const signedUser: any = await handleGQLRequest("AlreadySigned", {token});
                     if (signedUser?.AlreadySigned?.email) { 
-                        socket.emit("connected", {id: localUser.id, socketID: socket.id}, (data: any) => {
-                            if (data !== "Connected") {
-                                message.error("Service Not Available, Please Try Later");
-                                return;
-                            }
-                        });
+                        let socket = io("ws://localhost:4000");
+                        dispatch(setSocket(socket));
                         dispatch(setStoreUser(signedUser?.AlreadySigned));
                     } else {
                         message.error("Error Occured");

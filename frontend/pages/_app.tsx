@@ -10,13 +10,11 @@ import Footer from '../components/Custom/Footer/Footer'
 import store from '../store/store'
 import MessageAlert from "../components/Custom/MessageAlert/MessageAlert";
 
-let socket: any;
-socket = io("ws://localhost:4000");
 function App({ Component, pageProps }: AppProps) {
 
     useEffect(() => {
         return ()  => {
-            socket.disconnect();
+            // socket.disconnect();
         }
     }, [])
 
@@ -35,5 +33,4 @@ function App({ Component, pageProps }: AppProps) {
  </>
 }
 
-export  { socket };
 export default  App;

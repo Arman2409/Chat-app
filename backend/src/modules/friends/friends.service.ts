@@ -76,13 +76,13 @@ export class FriendsService {
     const currentUser: UserType = req.session.user;
     currentUser.friends.push(id);
     const index: number = currentUser.friendRequests.indexOf(id);
-    const requests =  currentUser.friendRequests.splice(index, 1);
+    currentUser.friendRequests.splice(index, 1);
     const updating = await this.prisma.users.update({
       where: {
         id: currentUser.id
       },
       data: {
-        friendRequests: requests,
+        friendRequests: currentUser.friendRequests,
         friends: currentUser.friends
       }
     });

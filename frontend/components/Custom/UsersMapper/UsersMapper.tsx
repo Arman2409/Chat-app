@@ -2,16 +2,16 @@ import {List, Avatar, Typography, Badge, message, ConfigProvider} from "antd";
 import React, {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
+import {useDispatch, useSelector} from "react-redux";
+import {Dispatch} from "@reduxjs/toolkit";
 
 import styles from "../../../styles/Custom/UsersMapper.module.scss";
 import {MapperProps} from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
-import {useDispatch, useSelector} from "react-redux";
 import {IRootState} from "../../../store/store";
 import {UserType} from "../../../types/types";
-import {Dispatch} from "@reduxjs/toolkit";
 import {setInterlocutor} from "../../../store/messagesSlice";
-import { setStoreUser } from "../../../store/userSlice";
+import {setStoreUser} from "../../../store/userSlice";
 
 const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessages, users,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
@@ -37,9 +37,7 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
                 }
                 if (addStatus?.AddFriend?.email) {
                     message.success("Request Sent");
-                    console.log(addStatus?.AddFriend);
-                    
-                    dispatch(setStoreUser(addStatus.AddFriend))
+                    dispatch(setStoreUser(addStatus.AddFriend));
                 } else if(addStatus.errors) {
                     message.error(addStatus.errors[0]);
                 }
@@ -61,7 +59,7 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : "No Users Found")
     }, [users]);
- 
+
     return (
         <ConfigProvider renderEmpty={() => (
             <div className={styles.empty_cont}>
@@ -87,11 +85,12 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
                             <Typography>{item.name}</Typography>
                             {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
                         </div>
-                        {!friends && user.name ? lastMessages ? <p className={styles.list_item_action_message}>{item.lastMessage}</p> : user.sentRequests?.includes(item.id) ? <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
+                        {(!friends && user.name) ? lastMessages ? <p className={styles.list_item_action_message}>{item.lastMessage}</p> : user.sentRequests?.includes(item.id) ? 
+                        <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
                             <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
                                 Friend</a> : accept ?
                                 <a className={styles.list_item_action} ref={acceptLink}
-                                   onClick={(e) => acceptRequest(item, e)}>Accept</a> : user.sentRequests?.includes(item.id) ? <p> Request sent</p> : null}
+                                   onClick={(e) => acceptRequest(item, e)}>Accept</a> : ""}
                     </List.Item>
                 )}}
             />

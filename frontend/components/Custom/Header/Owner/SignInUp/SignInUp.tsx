@@ -5,15 +5,15 @@ import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
+import { io } from "socket.io-client";
 
 import handleGQLRequest from "../../../../../requests/handleGQLRequest";
-
 import styles from "../../../../../styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss";
 import {setStoreUser} from "../../../../../store/userSlice";
 import {SignProps} from "../../../../../types/types";
 import Loading from "../../../Loading/Loading";
-import {socket} from "../../../../../pages/_app";
 import {getSlicedWithDots} from "../../../../../functions/functions";
+import { setSocket } from "../../../../../store/socketSlice";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -52,9 +52,8 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 setLoadingRequest(false);
                 return;
             };
-            socket.emit("signedIn", {id: res.id}, (data: any) => {
-                console.log("connected");
-            });
+            let socket = io("ws://localhost:4000");
+            dispatch(setSocket(socket));
             setLoadingRequest(false);
             dispatch(setStoreUser(res));
         }

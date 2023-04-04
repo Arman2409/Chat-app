@@ -10,7 +10,6 @@ import {WechatFilled} from "@ant-design/icons";
 import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
 import {IRootState} from "../../../store/store";
 import {MessagesDataType, UserType} from "../../../types/types";
-import {socket} from "../../../pages/_app";
 import {getSendersId, getSlicedWithDots} from "../../../functions/functions";
 import {setMessagesData} from "../../../store/messagesSlice";
 
@@ -20,7 +19,6 @@ const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [messageData, setMessageData] = useState<any>({between: [], messages: [], sequence: []});
-    const dispatch = useDispatch();
     const [interlocutor, setInterlocutor] = useState<UserType>({
         id: "",
         name: "",
@@ -31,15 +29,18 @@ const MessagesChat: React.FC = () => {
         friends: [],
         active: false
     })
-
     const messagesRef = useRef<any>();
 
+    const dispatch = useDispatch();
     const router: any = useRouter();
     const user:UserType = useSelector((state: IRootState) => {
         return state.user.user;
     });
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
+    });
+    const socket = useSelector((state: IRootState) => {
+        return state.socket.socket;
     });
 
     const send = () => {

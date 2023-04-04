@@ -29,7 +29,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             if (this.previousAllMessages !== this.allMessages) {
                  this.prisma.messages.deleteMany();
                  if (this.allMessages.length) {
-                    this.prisma.messages.createMany({data: this.allMessages as any}).then(resp => console.log(resp));
+                    this.prisma.messages.createMany({data: this.allMessages as any});
                  }
             }
             this.previousAllMessages = this.allMessages;
@@ -73,14 +73,14 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         let alreadyMessaged: boolean = this.allMessages.every(elem => [from, to].indexOf(elem) > -1)
         let messageData = {};
         if (alreadyMessaged) {
-        const previousMessaging  = this.allMessages.filter(e => (e.between.includes(from) && e.between.includes(to)))[0];
+        const previousMessaging  = this.allMessages.filter(e => (e.between.includes(from) && e.between.includes(to)))[0] || {};
         messageData = {
             ...previousMessaging,
             messages: [...previousMessaging.messages, message],
             sequence: [...previousMessaging.sequence, previousMessaging.between.indexOf(from)],
             lastDate: new Date().toString().slice(0, 10),
         } 
-        this.allMessages.unshift(messageData);
+        this.allMessages[this.allMessages.indexOf(previousMessaging)] = messageData;
         }
         if (!alreadyMessaged) {
             messageData = {

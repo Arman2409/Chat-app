@@ -1,15 +1,19 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import Head from 'next/head';
 import {Row} from 'antd';
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import SearchUser from '../components/Users/FindUser/FindUser';
 import Welcome from "../components/Welcome/Welcome";
-import {socket} from "./_app";
 import {setMessagesData} from "../store/messagesSlice";
+import { IRootState } from "../store/store";
 
 export default function Home() {
    const dispatch = useDispatch();
+   const socket = useSelector((state: IRootState) => {
+     return state.socket.socket;
+    });
 
     useEffect(() => {
         socket.on("message", (data: any) => {
