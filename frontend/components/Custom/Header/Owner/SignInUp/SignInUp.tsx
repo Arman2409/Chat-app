@@ -53,6 +53,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 return;
             };
             let socket = io("ws://localhost:4000");
+            socket.emit("signedIn", {id: res.id});
             dispatch(setSocket(socket));
             setLoadingRequest(false);
             dispatch(setStoreUser(res));

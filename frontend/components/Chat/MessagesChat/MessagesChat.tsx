@@ -1,24 +1,24 @@
-import React, {useRef} from "react";
-import {SmileOutlined} from "@ant-design/icons";
-import {Input, Button, Avatar, Typography} from "antd";
-import EmojiPicker, {EmojiStyle} from "emoji-picker-react";
-import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {useDispatch, useSelector} from "react-redux";
-import {WechatFilled} from "@ant-design/icons";
+import React, { useRef } from "react";
+import { SmileOutlined } from "@ant-design/icons";
+import { Input, Button, Avatar, Typography } from "antd";
+import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { WechatFilled } from "@ant-design/icons";
 
 import messagesStyles from "../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
-import {IRootState} from "../../../store/store";
-import {MessagesDataType, UserType} from "../../../types/types";
-import {getSendersId, getSlicedWithDots} from "../../../functions/functions";
-import {setMessagesData} from "../../../store/messagesSlice";
+import { IRootState } from "../../../store/store";
+import { MessagesDataType, UserType } from "../../../types/types";
+import { getSendersId, getSlicedWithDots } from "../../../functions/functions";
+import { setMessagesData } from "../../../store/messagesSlice";
 
-const {TextArea} = Input;
+const { TextArea } = Input;
 
 const MessagesChat: React.FC = () => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
-    const [messageData, setMessageData] = useState<any>({between: [], messages: [], sequence: []});
+    const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
     const [interlocutor, setInterlocutor] = useState<UserType>({
         id: "",
         name: "",
@@ -33,7 +33,7 @@ const MessagesChat: React.FC = () => {
 
     const dispatch = useDispatch();
     const router: any = useRouter();
-    const user:UserType = useSelector((state: IRootState) => {
+    const user: UserType = useSelector((state: IRootState) => {
         return state.user.user;
     });
     const storeInterlocutor = useSelector((state: IRootState) => {
@@ -47,8 +47,10 @@ const MessagesChat: React.FC = () => {
         if (!message) {
             return;
         }
-        socket.emit("message", {from: user.id, to: interlocutor.id, message}, (data: any) => {
+        socket.emit("message", { from: user.id, to: interlocutor.id, message }, (data: any) => {
             if (data.between) {
+                console.log(data);
+
                 setMessageData(data);
             }
         });
@@ -65,23 +67,25 @@ const MessagesChat: React.FC = () => {
     }, [storeInterlocutor]);
 
     useEffect(() => {
-        setMessageData({between: [], messages: [], sequence: []});
-        socket.emit("getMessages", {interlocuters: [user.id, interlocutor.id]}, (res:any) => {
-            setMessageData(res);
-        })
-    }, [interlocutor])
+        setMessageData({ between: [], messages: [], sequence: [] });
+        if (socket) {
+            socket.emit("getMessages", { interlocuters: [user.id, interlocutor.id] }, (res: any) => {
+                setMessageData(res);
+            })
+        }
+    }, [interlocutor, socket])
 
     useEffect(() => {
         socket.on("message", (data: MessagesDataType) => {
             setMessageData(data);
             const senderId = getSendersId(data.between, user.id);
 
-            if(senderId == interlocutor.id) {
-               return;
+            if (senderId == interlocutor.id) {
+                return;
             }
             dispatch(setMessagesData(data));
         })
-    },[]);
+    }, []);
 
     return (
         <div className={messagesStyles.chat_cont}>
@@ -93,24 +97,24 @@ const MessagesChat: React.FC = () => {
                                 interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
                                 : ""}
                         </h5>
-                        <Avatar className={messagesStyles.interlocutor_avatar} src={interlocutor.image}/>
+                        <Avatar className={messagesStyles.interlocutor_avatar} src={interlocutor.image} />
                     </div>
                     <div className={messagesStyles.messages_cont} ref={messagesRef}>
-                    {messageData.messages.map((e: string, index: number) => {
-                        const order:number = messageData.between.indexOf(Number(user.id));
-                        return (
-                            <div
-                                key={index}
-                                className={messagesStyles.message_cont}
-                                style={{
-                                    justifyContent: messageData.sequence[index] == order ? "flex-end" : "flex-start",
-                                }}>
-                                <div  className={messagesStyles.message_cont_text_cont}>
-                                    {e}
+                        {messageData.messages.map((e: string, index: number) => {
+                            const order: number = messageData.between.indexOf(Number(user.id));
+                            return (
+                                <div
+                                    key={index}
+                                    className={messagesStyles.message_cont}
+                                    style={{
+                                        justifyContent: messageData.sequence[index] == order ? "flex-end" : "flex-start",
+                                    }}>
+                                    <div className={messagesStyles.message_cont_text_cont}>
+                                        {e}
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
                     </div>
                     <div className={messagesStyles.inputs_cont}>
                         <TextArea
@@ -120,7 +124,7 @@ const MessagesChat: React.FC = () => {
                         <SmileOutlined
                             size={50}
                             className={messagesStyles.smile_icon}
-                            onClick={() => setSmileStatus(status => !status)}/>
+                            onClick={() => setSmileStatus(status => !status)} />
                         <Button
                             type="primary"
                             className={messagesStyles.send_button}
@@ -132,13 +136,13 @@ const MessagesChat: React.FC = () => {
                             <div className={messagesStyles.emoji_cont}>
                                 <EmojiPicker
                                     searchDisabled
-                                    height={"300px"}/>
+                                    height={"300px"} />
                             </div> : null}
                     </div>
                 </>
                 :
                 <div className={messagesStyles.choose_interlocutor_cont}>
-                    <WechatFilled className={messagesStyles.choose_interlocutor_icon}/>
+                    <WechatFilled className={messagesStyles.choose_interlocutor_icon} />
                     <Typography className={messagesStyles.choose_interlocutor}>
                         Choose your interlocutor and start messaging
                     </Typography>

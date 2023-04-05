@@ -14,12 +14,17 @@ export default function Home() {
    const socket = useSelector((state: IRootState) => {
      return state.socket.socket;
     });
+    const user = useSelector((state: IRootState) => {
+        return state.user.user;
+       });
 
     useEffect(() => {
-        // socket.on("message", (data: any) => {
-        //     dispatch(setMessagesData(data));
-        // })
-    }, [])
+        if(user.name) {
+         socket.on("message", (data: any) => {
+             dispatch(setMessagesData(data));
+         })
+        }
+    }, [user])
 
     return (
         <div className="h-100">

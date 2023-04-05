@@ -3,7 +3,7 @@ import {message, Card, Avatar} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import router from "next/router";
 
-import {MessagesDataType, UserType} from "../../../types/types";
+import {UserType} from "../../../types/types";
 import {IRootState} from "../../../store/store";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import styles from "../../../styles/Custom/MessageAlert.module.scss";

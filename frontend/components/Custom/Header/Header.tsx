@@ -78,6 +78,7 @@ const AppHeader: React.FunctionComponent = () => {
                     const signedUser: any = await handleGQLRequest("AlreadySigned", {token});
                     if (signedUser?.AlreadySigned?.email) { 
                         let socket = io("ws://localhost:4000");
+                        socket.emit("signedIn", {id: signedUser?.AlreadySigned?.id});
                         dispatch(setSocket(socket));
                         dispatch(setStoreUser(signedUser?.AlreadySigned));
                     } else {
