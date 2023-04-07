@@ -9,4 +9,8 @@
     right: 210px;
     background-color: $color1;
     overflow: auto;
+
+    &_not_found {
+        color: $textColor2;
+    }
 }

@@ -152,7 +152,7 @@ const SearchUser: React.FC = () => {
                 disabled={user.name ? false : true}
                 defaultChecked={false} />
               <div className="centered_users_cont">
-                 <UsersMapper 
+                 <UsersMapper
                    users={users} 
                    friends={searchType == "friends"}/>
                 <Pagination

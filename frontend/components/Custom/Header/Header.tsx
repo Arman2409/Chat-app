@@ -9,6 +9,7 @@ import jwtDecode from "jwt-decode";
 import {HiOutlineUserAdd} from "react-icons/hi";
 import {IoPersonSharp} from "react-icons/io5";
 import Image from "next/image";
+import { io } from "socket.io-client";
 
 import Logo from "/logo-files/svg/logo-no-background.svg";
 import {IRootState} from "../../../store/store";
@@ -20,7 +21,6 @@ import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import { setSocket } from "../../../store/socketSlice";
-import { io } from "socket.io-client";
 
 const {Header} = Layout;
 

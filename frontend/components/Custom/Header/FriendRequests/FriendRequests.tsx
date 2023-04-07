@@ -14,13 +14,11 @@ import jwtDecode from "jwt-decode";
 import {setStoreUser} from "../../../../store/userSlice";
 
 const FriendRequests = ({clickOutside}: any) => {
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [users, setUsers] = useState<any[]>([]);
 
     const requestsRef = useRef<any>(null);
-
     const user: UserType = useSelector((state: IRootState) => state.user.user);
-
     const dispatch:Dispatch = useDispatch();
 
     const getRequests = async () => {
@@ -41,8 +39,6 @@ const FriendRequests = ({clickOutside}: any) => {
            if (confirmStatus.ConfirmFriend) {
                if (confirmStatus.ConfirmFriend.token) {
                    const newUser = jwtDecode(confirmStatus.ConfirmFriend.token);
-                   console.log(newUser);
-                   
                    dispatch(setStoreUser(newUser));
                    localStorage.setItem("token", confirmStatus.ConfirmFriend.token)
                }
@@ -63,6 +59,7 @@ const FriendRequests = ({clickOutside}: any) => {
    useEffect(() => {
        if(user.friendRequests.length) {
           getRequests();
+          setLoading(true);
        }
    }, [user])
 
@@ -81,7 +78,7 @@ const FriendRequests = ({clickOutside}: any) => {
             } : {}}>
             {loading  && <Loading />}
             {user.friendRequests?.length ?  <UsersMapper friendRequests={true} accept={accept} friends={true} users={users} /> :
-                 "No requests found"}
+                 <p className={requestsStyles.requests_main_not_found}>No requests found</p>}
         </div>
     )
 }

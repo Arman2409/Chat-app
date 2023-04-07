@@ -2,6 +2,7 @@ import {List, Avatar, Typography, Badge, message, ConfigProvider} from "antd";
 import React, {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
+import {TbListSearch} from "react-icons/tb";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
 
@@ -57,13 +58,13 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
     };
 
     useEffect(() => {
-        setEmptyText(friends ? "No Friends Found" : "No Users Found")
+        setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found")
     }, [users]);
 
     return (
         <ConfigProvider renderEmpty={() => (
             <div className={styles.empty_cont}>
-                <RiUserSearchFill className={styles.empty_icon}/>
+                {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
                 <p className={styles.empty_text}>{emptyText}</p>
             </div>
         )}>

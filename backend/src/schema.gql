@@ -41,6 +41,6 @@ type Query {
   AddFriend(id: String!): UserType!
   GetFriendRequestsUsers(ids: [String!]!): [UserType!]!
   ConfirmFriend(friendId: String!): TokenType!
-  GetLastMessages(page: Float!, perPage: Float!): [UserType!]!
+  GetLastMessages(page: Float!, perPage: Float!): SearchType!
   GetWelcomeNews: [NewsType!]!
 }
