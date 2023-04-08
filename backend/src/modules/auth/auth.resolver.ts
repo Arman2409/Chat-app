@@ -3,7 +3,7 @@ import { Resolver, Args, Query, Context } from "@nestjs/graphql"
 import { AuthService } from "./auth.service";
 import { TokenType, UserType } from "types/graphqlTypes";
 import { UserReq } from "types/types";
-import { JwtService } from "src/services/jwt/jwt.service";
+import { JwtService } from "src/middlewares/jwt/jwt.service";
 
 @Resolver()
 export class AuthResolver {

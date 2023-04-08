@@ -3,10 +3,10 @@ import { PrismaService } from 'nestjs-prisma';
 import * as bcrypt from "bcrypt";
 import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
-import { CloudinaryService } from 'src/services/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/middlewares/cloudinary/cloudinary.service';
 import { UserReq } from 'types/types';
 import { RequestContext } from 'nestjs-request-context';
-import { JwtService } from "../../services/jwt/jwt.service";
+import { JwtService } from "../../middlewares/jwt/jwt.service";
 
 
 @Injectable()
