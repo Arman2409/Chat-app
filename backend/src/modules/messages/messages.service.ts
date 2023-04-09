@@ -13,10 +13,11 @@ export class MessagesService {
     const req: UserReq = ctx.req;
     const currentUser = req.session.user;
     let length = 100;
+    
     let messages = await this.prisma.messages.findMany({
       where: {
         between: {
-          has: currentUser?.id
+          has: currentUser.id
         }
       },
       take: length

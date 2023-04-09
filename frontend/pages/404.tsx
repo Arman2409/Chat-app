@@ -3,9 +3,7 @@ import { Typography } from "antd";
 const Page404:React.FC = () => {
     return (
         <div className="error-cont">
-          <Typography style={{
-            color: "brown"
-          }}>
+          <Typography className="error-text">
              404 | Page Not Found!
           </Typography>
         </div>

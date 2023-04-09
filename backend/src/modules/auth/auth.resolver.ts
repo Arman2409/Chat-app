@@ -3,12 +3,10 @@ import { Resolver, Args, Query, Context } from "@nestjs/graphql"
 import { AuthService } from "./auth.service";
 import { TokenType, UserType } from "types/graphqlTypes";
 import { UserReq } from "types/types";
-import { JwtService } from "src/middlewares/jwt/jwt.service";
 
 @Resolver()
 export class AuthResolver {
-   constructor(private readonly auth: AuthService,
-      private readonly jwt: JwtService) { };
+   constructor(private readonly auth: AuthService) { };
 
    @Query(() => UserType, { name: "SignUp" })
    async signUp(
@@ -26,8 +24,8 @@ export class AuthResolver {
       @Args("email") email: string,
       @Args("password") password: string,
    ): Promise<any> {
-      const user = await this.auth.findUser(ctx, { email, password });
-      return { token: this.jwt.sign(user) };
+      return await this.auth.findUser(ctx, { email, password });
+      
    }
 
    @Query(() => String, { name: "SignOut" })

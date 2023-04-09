@@ -5,7 +5,6 @@ import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
 import { CloudinaryService } from 'src/middlewares/cloudinary/cloudinary.service';
 import { UserReq } from 'types/types';
-import { RequestContext } from 'nestjs-request-context';
 import { JwtService } from "../../middlewares/jwt/jwt.service";
 
 
@@ -64,33 +63,35 @@ export class AuthService {
 
     async findUser(ctx:any ,user: Omit<UserType, "active" | "name">): Promise<any> {
         const { email, password } = user;
-        let resp: Omit<UserType, "password" | "active">;
-        await this.prisma.users.findUnique(
+        let resp:any;
+
+         await this.prisma.users.findUnique(
             {
                 where: {
                     email: email
                 }
             }).then(async (data) => {
+                if(!data) {
+                    resp = {message: "User Not Found"}
+                }                
                 if (data) {
-                    await bcrypt.compare(password, data.password).then((result) => {
+                    await bcrypt.compare(password, data.password).then( async (result) => {
                         if (result) {
                             delete data.password;
-                            data.id = String(data.id);
-                            resp = data;
+                            data.id = String(data.id);                           
                             const req: UserReq = ctx.req;
-                            req.session.user = data;
-                            return data;
+                            req.session.user = data;                            
+                            resp = { token: await this.jwt.sign(data) };
                         } else {
-                            throw new GraphQLError("Wrong Password")
+                            resp = { message: "Wrong Password" }
                         }
                     })
-                } else {
-                    throw new GraphQLError("User Not Found")
-                }
+                };
             }).catch(() => {
-                throw new GraphQLError("User Not Found")
+                resp = {message: "User Not Found"}
             });
-        return resp;
+            return resp;
+            
     };
 
     async setSession(ctx:any ,token: string):Promise<any> {
@@ -104,7 +105,7 @@ export class AuthService {
             req.session.user = data;
             return data;
         }).catch((e) => {
-            throw new GraphQLError(e.message);
+             return {message: e.message};
         });
     }
 }

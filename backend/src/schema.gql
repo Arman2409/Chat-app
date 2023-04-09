@@ -17,7 +17,8 @@ type UserType {
 }
 
 type TokenType {
-  token: String!
+  token: String
+  message: String
 }
 
 type SearchType {

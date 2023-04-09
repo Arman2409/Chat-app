@@ -1,19 +1,20 @@
-import {Input, Button, Form, Typography, Upload, message} from "antd";
-import type {RcFile, UploadFile, UploadProps} from 'antd/es/upload/interface';
-import type {UploadChangeParam} from 'antd/es/upload';
-import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
-import {useState} from "react";
-import {useDispatch} from "react-redux";
-import {Dispatch} from "@reduxjs/toolkit";
+import { Input, Button, Form, Typography, Upload, message } from "antd";
+import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import type { UploadChangeParam } from 'antd/es/upload';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Dispatch } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
 
 import handleGQLRequest from "../../../../../requests/handleGQLRequest";
 import styles from "../../../../../styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss";
-import {setStoreUser} from "../../../../../store/userSlice";
-import {SignProps} from "../../../../../types/types";
+import { setStoreUser } from "../../../../../store/userSlice";
+import { SignProps } from "../../../../../types/types";
 import Loading from "../../../Loading/Loading";
-import {getSlicedWithDots} from "../../../../../functions/functions";
+import { getSlicedWithDots } from "../../../../../functions/functions";
 import { setSocket } from "../../../../../store/socketSlice";
+import useOpenAlert from "../../../../../hooks/useOpenAlert";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -22,18 +23,26 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
 };
 
 const beforeUpload = (file: RcFile) => {
+    const { setMessageOptions } = useOpenAlert();
+    
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
-        message.error('You can only upload JPG/PNG file!');
+        setMessageOptions({
+            message:'You can only upload JPG/PNG file!',
+            type: "error"
+        });
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
+        setMessageOptions({
+            message:'Image must smaller than 2MB!',
+            type: "error"
+        });
     }
     return isJpgOrPng && isLt2M;
 };
 
-const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
+const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
     const [message, setMessage] = useState<string>("");
     const [loading, setLoading] = useState(false);
     const [loadingRequest, setLoadingRequest] = useState(false);
@@ -42,18 +51,28 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
 
     const submit: Function = async (values: any) => {
 
-        const {name, email, password, repeatPassword} = values;
+        const { name, email, password, repeatPassword } = values;
 
         if (type == "SignIn") {
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignIn", {email, password: "pass"});
-            if (res.message) {
-                setMessage(getSlicedWithDots(res.message, 20));
-                setLoadingRequest(false);
+            const res = await handleGQLRequest("SignIn", { email, password: "pass" });
+            if (!res.email) {
+                if (res.SignIn?.message) {
+                    console.log("here 1");
+                    setMessage(getSlicedWithDots(res.SignIn?.message, 20));
+                    setLoadingRequest(false);
+                    return;
+                };
+                if (res.errors) {
+                    setMessage(getSlicedWithDots(res.erros[0], 20));
+                    setLoadingRequest(false);
+                    return;
+                };
+                setMessage("Not Found");
                 return;
-            };
+            }
             let socket = io("ws://localhost:4000");
-            socket.emit("signedIn", {id: res.id});
+            socket.emit("signedIn", { id: res.id });
             dispatch(setSocket(socket));
             setLoadingRequest(false);
             dispatch(setStoreUser(res));
@@ -64,13 +83,19 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                 return;
             }
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignUp", {email: name, password: "pass", name, image: imageUrl});
-            if (res.message) {
-                setMessage(getSlicedWithDots(res.message, 20));
-                setLoadingRequest(false);
-                return;
+            const res = await handleGQLRequest("SignUp", { email: name, password: "pass", name, image: imageUrl });
+            if (!res.email) {
+                if (res.SignUp?.message) {
+                    setMessage(getSlicedWithDots(res.message, 20));
+                    setLoadingRequest(false);
+                    return;
+                }
+                if (res.errors) {
+                    setMessage(getSlicedWithDots(res.erors[0], 20));
+                    setLoadingRequest(false);
+                    return;
+                }
             }
-            ;
             setLoadingRequest(false);
             setMessage("Signed Up!");
             changeStatus();
@@ -94,8 +119,8 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
 
     const uploadButton = (
         <div>
-            {loading ? <LoadingOutlined/> : <PlusOutlined/>}
-            <div style={{marginTop: 8}}>Upload</div>
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Upload</div>
         </div>
     );
 
@@ -106,7 +131,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
             style={{
                 height: type == "SignIn" ? "270px" : "500px"
             }}>
-            {loadingRequest && <Loading/>}
+            {loadingRequest && <Loading />}
             <Form
                 onFinish={(values) => submit(values)}
                 onChange={() => {
@@ -126,7 +151,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                                 onChange={handleChange}
                                 className={styles.image_input}
                             >
-                                {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
+                                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                             </Upload>
                         </Form.Item>
                         <Form.Item
@@ -135,7 +160,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                             name="name" >
                             <Input
                                 placeholder="Name"
-                                className={styles.sign_input}/>
+                                className={styles.sign_input} />
                         </Form.Item>
                     </>
                     : null}
@@ -145,7 +170,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                     name="email">
                     <Input
                         placeholder="Email"
-                        className={styles.sign_input}/>
+                        className={styles.sign_input} />
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
@@ -154,7 +179,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                     <Input
                         placeholder="Password"
                         type="password"
-                        className={styles.sign_input}/>
+                        className={styles.sign_input} />
                 </Form.Item>
                 {type == "SignUp" ?
                     <Form.Item
@@ -164,7 +189,7 @@ const SignInUp: React.FC<SignProps> = ({type, changeStatus}: SignProps) => {
                         <Input
                             placeholder="Repeat Password"
                             type="password"
-                            className={styles.sign_input}/>
+                            className={styles.sign_input} />
                     </Form.Item>
                     : null}
                 <Typography className={styles.sign_message}>

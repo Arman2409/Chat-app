@@ -21,6 +21,7 @@ import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import { setSocket } from "../../../store/socketSlice";
+import useOpenAlert from "../../../hooks/useOpenAlert";
 
 const {Header} = Layout;
 
@@ -36,6 +37,7 @@ const AppHeader: React.FunctionComponent = () => {
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
     const addRef = useRef<any>([]);
     const [inPage, setInPage] = useState<boolean>(true);
+    const { setMessageOptions } = useOpenAlert();
 
     const toggleUser: Function = (): void => {
         dispatch(setUserWindow(!userWindow));
@@ -82,7 +84,10 @@ const AppHeader: React.FunctionComponent = () => {
                         dispatch(setSocket(socket));
                         dispatch(setStoreUser(signedUser?.AlreadySigned));
                     } else {
-                        message.error("Error Occured");
+                       setMessageOptions({
+                         message: "Error occured",
+                         type: "error"
+                       })
                     }
                 })()
             }
@@ -108,7 +113,7 @@ const AppHeader: React.FunctionComponent = () => {
             </Link>
             {inPage ?
                 <Badge
-                    dot={user ? Boolean(user.friendRequests.length) : false}
+                    dot={user ? Boolean(user.friendRequests?.length) : false}
                     className={styles.requests_badge}>
                     {user.name &&
                         <div ref={addRef}>

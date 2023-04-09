@@ -22,11 +22,12 @@ export interface MessagesDataType {
     between: any[],
     sequence: any[],
     messages: any[],
+    lastDate: string,
 }
 
 export interface  MessagesInitialState {
     interlocutor: UserType,
-    messagesData: MessagesDataType
+    messagesData: MessagesDataType,
 }
 
 export interface  SocketInitialState {

@@ -21,7 +21,7 @@ export class SearchResolver {
         @Context() ctx:any,
         @Args("name") name: string,
         @Args("page") page: number,
-        @Args("perPage") perPage: number): Promise<SearchType> { 
+        @Args("perPage") perPage: number): Promise<any> { 
         return await this.search.searchInFriends(ctx ,name, page, perPage);
     }
 

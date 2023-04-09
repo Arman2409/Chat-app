@@ -7,7 +7,8 @@ import {
     SubscribeMessage, MessageBody, ConnectedSocket
 } from "@nestjs/websockets";
 import {Server} from "socket.io";
-import { PrismaService} from "nestjs-prisma";
+import {PrismaService} from "nestjs-prisma";
+
 import {SocketWIthHandshake} from "../../../types/types";
 import {SocketsService} from "./sockets.service";
 
@@ -41,7 +42,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     async handleDisconnect(client: SocketWIthHandshake): Promise<any> {
         const { id, active } = client.handshake;
-        if (!active) {
+        if (!active || !id) {
             return;
         }
         this.activeUsers.splice(this.activeUsers.indexOf(id), 1);
@@ -51,10 +52,12 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     @SubscribeMessage("signedIn")
     async handleConnect(
         @MessageBody("id") id: string,
-        @ConnectedSocket() client: SocketWIthHandshake) {
+        @ConnectedSocket() client: SocketWIthHandshake) {            
         this.activeUsers.push(id);
         const update = this.service.updateUserStatus(id, true, true)
-        client.join(id.toString());
+        client.join(id?.toString());
+        client.handshake.id = id;
+        client.handshake.active = true;
         if (update) {
             return "Connected";
         } else {
@@ -67,17 +70,20 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         @MessageBody("to") to: number,
         @MessageBody("message") message: string,
     ) {
-        let alreadyMessaged: boolean = !this.allMessages.every(elem => [from, to].indexOf(elem) > -1);
+        let alreadyMessaged: boolean = this.allMessages.filter(message => message.between.every(elem => [from, to].indexOf(elem) > -1))[0];
+        console.log(this.allMessages.filter(message => message.between.every(elem => [from, to].indexOf(elem) > -1))[0]);   
 
         let messageData = {};
+
         if (alreadyMessaged) {
             const previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
+            console.log({previousMessaging});
             delete this.allMessages[this.allMessages.indexOf(previousMessaging)]
-            this.allMessages.splice(1, this.allMessages.indexOf(previousMessaging));
             messageData = {
-                between: previousMessaging.between,
-                messages: [...previousMessaging.messages || [], message],
-                sequence: [...previousMessaging.sequence || [], previousMessaging.between?.indexOf(from)],
+                between: previousMessaging.between || [from, to],
+                messages: [...previousMessaging.messages || [message], message],
+                sequence: [...previousMessaging.sequence || [0], previousMessaging.between?.indexOf(from)],
+                lastDate: new Date().toString().slice(0, 10),
             }
         }
         else {
@@ -85,22 +91,24 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                 between: [from, to],
                 sequence: [0],
                 messages: [message],
+                lastDate: new Date().toString().slice(0, 10),
             }
         }
         this.allMessages.push(
             {
                 ...messageData,
-                lastDate: new Date().toString().slice(0, 10),
             }
         );
         this.server.sockets.in(to.toString()).emit("message", messageData);
+        console.log({messageData});
+        
         return messageData;
     }
 
     @SubscribeMessage("getMessages")
     async handleGetMessages(@MessageBody("interlocuters") interlocuters: number[]) {
-        return await this.allMessages.filter(messages => messages?.between?.includes(interlocuters[0]) && messages?.between?.includes(interlocuters[0]))[0];
-    }
+        return await this.allMessages.filter(messages => messages.between?.every(id => interlocuters.indexOf(id) > -1))[0];
+     }
 }
 
 export default WebSocketsGateway;

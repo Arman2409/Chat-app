@@ -38,8 +38,11 @@ export class  UserType {
 
 @ObjectType()
 export class  TokenType {
-    @Field()
-    token:string
+    @Field({nullable: true})
+    token?:string
+
+    @Field({nullable: true})
+    message?: string
 }
 
 @ObjectType()

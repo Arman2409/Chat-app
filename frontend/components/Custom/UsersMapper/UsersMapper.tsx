@@ -1,4 +1,4 @@
-import {List, Avatar, Typography, Badge, message, ConfigProvider} from "antd";
+import {List, Avatar, Typography, Badge, message, ConfigProvider, Button} from "antd";
 import React, {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
@@ -10,6 +10,7 @@ import styles from "../../../styles/Custom/UsersMapper.module.scss";
 import {MapperProps} from "../../../types/types";
 import handleGQLRequest from "../../../requests/handleGQLRequest";
 import {IRootState} from "../../../store/store";
+import useOpenAlert from "../../../hooks/useOpenAlert";
 import {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
@@ -18,39 +19,60 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
     const [emptyText, setEmptyText] = useState<string>("");
     const router: any = useRouter();
     const dispatch: Dispatch = useDispatch();
+    const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
+
     const user = useSelector((state: IRootState) => {
         return state.user.user
     })
     const acceptLink = useRef<null | any>(null);
 
+    const { setMessageOptions } = useOpenAlert();
+
     const acceptRequest: Function = async (item: any, e: Event) => {
         e.stopPropagation();
+        setButtonsDisabled(true);
         accept ? await accept(item.id) : null;
     }
 
-    const addFriend: Function = (e: number, event: Event) => {
+    const addFriend: Function = (id: string, event: Event) => {
         event.stopPropagation();
+        setButtonsDisabled(true);
         (async function () {
             if (user.email) {
-                const addStatus = await handleGQLRequest("AddFriend", {id: e});    
+                const addStatus = await handleGQLRequest("AddFriend", {id});    
                 if(addStatus.message) {
-                    message.error(addStatus.message);
+                    setMessageOptions({
+                        message: addStatus.message,
+                        type: "error"
+                    });
                 }
                 if (addStatus?.AddFriend?.email) {
-                    message.success("Request Sent");
+                    setMessageOptions({
+                        message: "Request Sent",
+                        type: "success"
+                    });
                     dispatch(setStoreUser(addStatus.AddFriend));
                 } else if(addStatus.errors) {
-                    message.error(addStatus.errors[0]);
+                    setMessageOptions({
+                        message: addStatus.errors[0],
+                        type: "error"
+                    });
                 }
             } else {
-                message.warning("Sign in to add friends");
+                setMessageOptions({
+                    message: "Sign in to add friends",
+                    type: "warning"
+                });
             }
         })()
     };
 
     const newChat: Function = (e: UserType) => {
         if (!user.name) {
-            message.warning("Sign in to message");
+            setMessageOptions({
+                message: "Sign in to message",
+                type: "warning"
+            });
             return;
         };
         dispatch(setInterlocutor(e));
@@ -58,7 +80,8 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
     };
 
     useEffect(() => {
-        setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found")
+        setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
+        setButtonsDisabled(false);
     }, [users]);
 
     return (
@@ -88,10 +111,10 @@ const UsersMapper: React.FC<MapperProps> = ({friends, friendRequests, lastMessag
                         </div>
                         {(!friends && user.name) ? lastMessages ? <p className={styles.list_item_action_message}>{item.lastMessage}</p> : user.sentRequests?.includes(item.id) ? 
                         <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
-                            <a className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
-                                Friend</a> : accept ?
-                                <a className={styles.list_item_action} ref={acceptLink}
-                                   onClick={(e) => acceptRequest(item, e)}>Accept</a> : ""}
+                            <Button disabled={buttonsDisabled} className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
+                                Friend</Button> : accept ?
+                                <Button className={styles.list_item_action} disabled={buttonsDisabled} ref={acceptLink}
+                                   onClick={(e) => acceptRequest(item, e)}>Accept</Button> : ""}
                     </List.Item>
                 )}}
             />

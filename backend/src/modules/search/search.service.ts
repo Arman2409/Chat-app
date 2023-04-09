@@ -82,7 +82,7 @@ export class SearchService {
                 return {users: [], total: 1}
             }
         } else {
-            throw new GraphQLError("Not Signed In")
+            return {message: "Not Signed In"}
         }
         ;
 

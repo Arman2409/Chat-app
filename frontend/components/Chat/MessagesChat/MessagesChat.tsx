@@ -29,7 +29,7 @@ const MessagesChat: React.FC = () => {
         friends: [],
         active: false
     })
-    const messagesRef = useRef<any>();
+    const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
     const router: any = useRouter();
@@ -48,9 +48,9 @@ const MessagesChat: React.FC = () => {
             return;
         }
         socket.emit("message", { from: user.id, to: interlocutor.id, message }, (data: any) => {
-            if (data.between) {
-                console.log(data);
+            console.log(data);
 
+            if (data.between) {
                 setMessageData(data);
             }
         });
@@ -63,6 +63,8 @@ const MessagesChat: React.FC = () => {
     }, [user])
 
     useEffect(() => {
+        console.log(storeInterlocutor);
+        
         setInterlocutor(storeInterlocutor);
     }, [storeInterlocutor]);
 
@@ -76,16 +78,25 @@ const MessagesChat: React.FC = () => {
     }, [interlocutor, socket])
 
     useEffect(() => {
+        setInterlocutor(storeInterlocutor);
+        if(socket) {
         socket.on("message", (data: MessagesDataType) => {
-            setMessageData(data);
-            const senderId = getSendersId(data.between, user.id);
-
-            if (senderId == interlocutor.id) {
+            console.log("get", data);    
+            const senderId = getSendersId(data?.between, user.id);            
+            if (senderId == interlocutor.id) { 
+                setMessageData(data);
                 return;
             }
             dispatch(setMessagesData(data));
         })
+        }
     }, []);
+
+    useEffect(() => {
+        if(messagesRef.current) {
+            messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+        }
+    }, [messageData])
 
     return (
         <div className={messagesStyles.chat_cont}>
@@ -100,8 +111,8 @@ const MessagesChat: React.FC = () => {
                         <Avatar className={messagesStyles.interlocutor_avatar} src={interlocutor.image} />
                     </div>
                     <div className={messagesStyles.messages_cont} ref={messagesRef}>
-                        {messageData.messages.map((e: string, index: number) => {
-                            const order: number = messageData.between.indexOf(Number(user.id));
+                        {messageData.messages && messageData.messages?.map((e: string, index: number) => {
+                            const order: number = messageData.between.indexOf(user.id);
                             return (
                                 <div
                                     key={index}

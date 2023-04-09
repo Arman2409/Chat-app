@@ -25,8 +25,8 @@ export class FriendsService {
     };
   
 
-    const newRequests = requestingUser.friendRequests;
-    const sentRequests = currentUser.sentRequests;
+    const newRequests = requestingUser?.friendRequests;
+    const sentRequests = currentUser?.sentRequests;
 
     if (newRequests.includes(currentUser.id) || sentRequests.includes(id)) {
       throw new GraphQLError( "Already Sent");
@@ -58,7 +58,7 @@ export class FriendsService {
     if (update && updateCurrent) {
       return updateCurrent;
     } else {
-      throw new GraphQLError("Not Sent, Error Occured");
+      throw {message: "Not Sent, Error Occured"};
     }
   }
 
@@ -66,7 +66,7 @@ export class FriendsService {
     const req: UserReq = ctx.req;
     return await this.prisma.users.findMany({
       where: {
-        id: { in: req.session.user.friendRequests }
+        id: { in: req.session?.user?.friendRequests }
       }
     })
   };
@@ -95,25 +95,20 @@ export class FriendsService {
         id
       }
     });
-    if(friend.friends.includes(id)) {
-      return new GraphQLError("Already have friend");
-    }
+    
     friend.friends.push(currentUser.id);
-    const friends = friend.friends;
-    const friendRequests = friend.sentRequests.splice(Number(currentUser.id), 1);
+    delete friend.sentRequests[friend.sentRequests?.indexOf(currentUser.id)];
+    delete friend.id;
     const updatingFriend: UserType = await this.prisma.users.update({
       where: {
         id
       },
-      data: {
-        friends,
-        sentRequests: friendRequests
-      }
+      data: friend as any
     })
     if (updatingFriend) {
       return {token: this.jwt.sign(currentUser)};
     } else {
-      return new GraphQLError("Not Confirmed, Error Occured");
+      return {message: "Not Confirmed, Error Occured"};
     }
   }
 }

@@ -1,5 +1,5 @@
 import { Input, Pagination, Switch } from "antd";
-import React, { useEffect, useRef, useState} from "react";
+import React, { useEffect, useMemo, useRef, useState} from "react";
 import { useMediaQuery } from "react-responsive";
 import { useDebounce } from "usehooks-ts";
 import {useSelector} from "react-redux";
@@ -22,9 +22,8 @@ const SearchUser: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const user = useSelector((state: IRootState) => state.user.user);
     const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
-
+    const listType = useMemo(() =>  searchType, [users])
     const debouncedSearch = useDebounce( loading, 1000);
-
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 481px)" });
 
     const getSeachResults = () => {
@@ -126,6 +125,11 @@ const SearchUser: React.FC = () => {
 
     useEffect(() => {
         setLoading(true);
+        if (user.email) {
+           newSearchType(true)
+        } else {
+           newSearchType(false);
+        }
     }, [user]);
 
     return (
@@ -147,6 +151,7 @@ const SearchUser: React.FC = () => {
             <Switch
                 checkedChildren="Friends"
                 unCheckedChildren="All"
+                checked={searchType === "friends"}
                 className={styles.search_switch}
                 onChange={(e: boolean) => newSearchType(e)}
                 disabled={user.name ? false : true}
@@ -154,7 +159,7 @@ const SearchUser: React.FC = () => {
               <div className="centered_users_cont">
                  <UsersMapper
                    users={users} 
-                   friends={searchType == "friends"}/>
+                   friends={listType === "friends"}/>
                 <Pagination
                     total={total}
                     current={current}

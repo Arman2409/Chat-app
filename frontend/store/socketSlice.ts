@@ -2,7 +2,7 @@ import { createSlice, Slice } from "@reduxjs/toolkit";
 import { SocketInitialState } from "../types/types";
 
 const initialState:SocketInitialState = {
-    socket: {}
+    socket: null
 }
 
 const socketSlice:Slice = createSlice({

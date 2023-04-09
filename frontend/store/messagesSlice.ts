@@ -3,7 +3,7 @@ import {MessagesInitialState,} from "../types/types";
 
 const initialState:MessagesInitialState = {
     interlocutor: {id: "" ,name: "", email: "", image: "", friendRequests: [], sentRequests: [], friends: [], active: false},
-    messagesData: { between: [], sequence: [], messages: []}
+    messagesData: {lastDate: "", between: [], sequence: [], messages: []},
 }
 
 const messagesSlice:Slice = createSlice({

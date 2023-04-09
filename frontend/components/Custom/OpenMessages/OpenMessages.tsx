@@ -2,22 +2,28 @@ import { WechatFilled } from "@ant-design/icons"
 import { message} from "antd/lib";
 import { useRouter} from "next/router";
 import React, { useEffect, useState } from "react";
-import {useSelector} from "react-redux";
+import { useSelector} from "react-redux";
 
 import styles from "../../../styles/Custom/OpenMessages.module.scss";
 import {UserType} from "../../../types/types";
 import {IRootState} from "../../../store/store";
+import useOpenAlert from "../../../hooks/useOpenAlert";
 
 const OpenMessages:React.FC = () => {
      const router:any = useRouter();
      const [display, setDisplay] = useState<Boolean>(false);
-     const user:UserType = useSelector((state:IRootState) => state.user.user);
+    const user:UserType = useSelector((state:IRootState) => state.user.user);
+    const {setMessageOptions} = useOpenAlert();
+
     const openMessages:Function = () => {
         if(!user.name) {
             message.config({
                 duration: 500
             })
-            message.warning("Sign in to message");
+            
+            setMessageOptions({
+              message: "Sign in to message", 
+              type: "warning"});
             return;
         }
       router.replace("/myMessages");

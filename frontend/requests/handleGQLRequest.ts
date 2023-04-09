@@ -4,6 +4,7 @@ import decode from "jwt-decode";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
     const userFields = ["name","lastVisited", "image", "sentRequests", "friendRequests", "email", "active","id"];
+    const perPage = 4;
     let variables: any = {};
     let fields: any = [];
 
@@ -13,7 +14,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             email: { type: "String!", value: email },
             password: { type: "String!", value: password }
         }
-        fields = ["token"]
+        fields = ["token", "message"]
     }
 
     if (operation == "SignUp") {
@@ -32,7 +33,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             name: { type: "String!", value: name },
             page: { type: "Float!", value: page},
-            perPage: { type: "Float!", value: 6}
+            perPage: { type: "Float!", value: perPage}
         }
         fields = [{"users": userFields}, "total"]
     }
@@ -42,7 +43,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             name: { type: "String!", value: name },
             page: { type: "Float!", value: page},
-            perPage: { type: "Float!", value: 6}
+            perPage: { type: "Float!", value: perPage}
         }
         fields = [{"users": userFields}, "total"]
     }
@@ -107,10 +108,12 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             variables: variables,
             fields: fields
         })).then((res) => {            
-            if (res.data.data) {
+            if (res.data?.data) {
                 if (operation == "SignIn") {
-                    localStorage.setItem("token", res.data.data.SignIn.token)
-                    return decode(res.data.data.SignIn.token);
+                    if (res.data?.data?.SignIn?.token) {
+                      localStorage.setItem("token", res.data?.data?.SignIn?.token)
+                      return decode(res.data?.data?.SignIn?.token);
+                     }
                 }
                 return res.data.data;
             } else if (res.data.errors) {
