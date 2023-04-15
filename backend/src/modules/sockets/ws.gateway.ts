@@ -64,8 +64,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     };
 
     @SubscribeMessage("message")
-    handleMessage(@MessageBody("from") from: number,
-        @MessageBody("to") to: number,
+    handleMessage(@MessageBody("from") from: string,
+        @MessageBody("to") to: string,
         @MessageBody("message") message: string,
     ) {
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
