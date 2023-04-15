@@ -1,11 +1,13 @@
 @import "../variables";
 
-.open_icon {
+.open_cont {
+
+ &_icon {
     position: fixed;
     right: 25px;
     bottom: 95px;
     font-size: 85px;
-    color: $textColor1;
+    color: $color3;
     cursor: pointer;
     z-index: 3;
     animation: chat_icon 3s ease-in-out infinite;
@@ -24,4 +26,5 @@
             transform: rotate(0deg);
         }
     }
+ }
 }

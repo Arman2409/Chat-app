@@ -2,11 +2,11 @@ import {Typography} from "antd";
 import {useMediaQuery} from "react-responsive";
 import React, {useState, useEffect} from "react";
 
-import styles from "../../styles/Welcome/Welcome.module.scss";
-import handleGQLRequest from "../../requests/handleGQLRequest";
-import {getSlicedWithDots} from "../../functions/functions";
+import styles from "../../../styles/Welcome/Welcome.module.scss";
+import handleGQLRequest from "../../../request/handleGQLRequest";
+import {getSlicedWithDots} from "../../../functions/functions";
 import NewsModal from "./NewsModal/NewsModal";
-import Loading from "../Custom/Loading/Loading";
+import Loading from "../../Custom/Loading/Loading";
 
 const Welcome: React.FunctionComponent = () => {
     const [news, setNews] = useState<any[]>([]);

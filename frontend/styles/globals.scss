@@ -17,7 +17,7 @@ a {
 
 * {
   box-sizing: border-box;
-  font-family: $mainFamily;
+  font-family: $mainFontFamily;
 }
 
 .users_pagination {
@@ -46,11 +46,11 @@ a {
     height: 40px;
     padding: 5px 0;
     font-size: 20px;
-    background-color: $textColor2;
+    background-color: $color4;
   }
 
   & .ant-pagination-item-link path {
-    color: $textColor2;
+    color: $color4;
   }
 }
 
@@ -63,9 +63,9 @@ a {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    background-color: $borderColor !important;
-    color: $textColor2;
-    box-shadow: -10px 0px 13px -7px $textColor1, 10px 0px 13px -7px $textColor1, 5px 5px 15px 5px $textColor1 !important;
+    background-color: $color5 !important;
+    color: $color4;
+    box-shadow: -10px 0px 13px -7px $color3, 10px 0px 13px -7px $color3, 5px 5px 15px 5px $color3 !important;
   }
 }
 
@@ -74,7 +74,7 @@ a {
   height: 50%;
   top: calc(50% / 2);
   position: absolute;
-  background-color: $gray;
+  background-color: $color6;
   right: 0;
 }
 
@@ -87,5 +87,22 @@ a {
 }
 
 .error-text {
-  color: $textColor2;
+  color: $color4;
+}
+
+.main_cont {
+  height: calc(100vh - 180px);
+}
+
+.not_ready_cont{
+  background-color: $color1;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  display: flex;
+  align-items:center;
+
+  h1 {
+    color: $color2
+  }
 }

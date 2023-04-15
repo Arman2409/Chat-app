@@ -1,34 +1,31 @@
 import type { AppProps } from 'next/app'
 import {Provider} from "react-redux"
-import {useEffect} from 'react'
-import {io} from "socket.io-client";
+import { useMediaQuery } from 'react-responsive'
 
 import '../styles/globals.scss'
-import AppHeader from '../components/Custom/Header/Header'
+import AppHeader from '../components/Parts/Header/Header'
 import OpenMessages from '../components/Custom/OpenMessages/OpenMessages'
-import Footer from '../components/Custom/Footer/Footer'
+import Footer from '../components/Parts/Footer/Footer'
 import store from '../store/store'
-import MessageAlert from "../components/Custom/MessageAlert/MessageAlert";
+import MessageAlert from "../components/Tools/MessageAlert/MessageAlert";
+import NotReady from '../components/Custom/NotReady/NotReady'
 
 function App({ Component, pageProps }: AppProps) {
 
-    useEffect(() => {
-        return ()  => {
-            // socket.disconnect();
-        }
-    }, [])
+  const isBig = useMediaQuery({query: '(min-width: 700px)'});  
 
   return <>
     <Provider store={store}>
+      {isBig ?
+      <>
       <AppHeader />
       <OpenMessages />
-      <div style={{
-        height: "calc(100vh - 180px)"
-      }}>
+      <div className="main_cont">
           <MessageAlert/>
           <Component {...pageProps} />
       </div>
       <Footer />
+      </> : <NotReady /> }
      </Provider>
  </>
 }

@@ -1,12 +1,13 @@
-import {Layout, Typography, Row, Avatar, message, Badge} from "antd";
+import {Layout, Typography, Row, Avatar, Badge} from "antd";
 import {useRouter} from "next/router";
 import Link from "next/link";
 import {useSelector, useDispatch} from "react-redux";
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useState, useRef, useCallback} from "react";
 import {Dispatch} from "@reduxjs/toolkit";
 import {useOnClickOutside} from "usehooks-ts";
 import jwtDecode from "jwt-decode";
 import {HiOutlineUserAdd} from "react-icons/hi";
+import {CiLogin} from "react-icons/ci"
 import {IoPersonSharp} from "react-icons/io5";
 import Image from "next/image";
 import { io } from "socket.io-client";
@@ -19,36 +20,30 @@ import {setStoreUser, setUserWindow} from "../../../store/userSlice";
 import {UserType} from "../../../types/types";
 import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
-import handleGQLRequest from "../../../requests/handleGQLRequest";
+import handleGQLRequest from "../../../request/handleGQLRequest";
 import { setSocket } from "../../../store/socketSlice";
-import useOpenAlert from "../../../hooks/useOpenAlert";
+import useOpenAlert from "../../Tools/hooks/useOpenAlert";
+import { getSlicedWithDots } from "../../../functions/functions";
 
 const {Header} = Layout;
 
 const AppHeader: React.FunctionComponent = () => {
     const [ownerState, setOwnerState] = useState<boolean>(false);
-    const storeUser = useSelector<IRootState>((state) => state.user.user);
-    const [user, setUser] = useState<UserType>(storeUser as UserType);
+    const [user, setUser] = useState<UserType>({} as UserType);
+    const [inPage, setInPage] = useState<boolean>(true);
+    const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
     const router: any = useRouter();
+    const storeUser = useSelector<IRootState>((state) => state.user.user);
     const userWindow: boolean = useSelector((state: IRootState) => state.user.userWindow);
     const dispatch: Dispatch = useDispatch();
-    const ownerRef = useRef<any>(null);
-    const userContRef = useRef<HTMLDivElement>(null);
-    const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
     const addRef = useRef<any>([]);
-    const [inPage, setInPage] = useState<boolean>(true);
+    const userContRef = useRef<HTMLDivElement>(null);
     const { setMessageOptions } = useOpenAlert();
 
-    const toggleUser: Function = (): void => {
-        dispatch(setUserWindow(!userWindow));
-    };
 
-    useOnClickOutside(ownerRef, (e) => {
-        if (e.target == userContRef.current || userContRef.current?.contains(e.target as Node)) {
-            return;
-        }
-        dispatch(setUserWindow(false));
-    });
+    const toggleUser = useCallback(() => {
+        dispatch(setUserWindow(!userWindow));
+    }, [dispatch, setUserWindow, userWindow]);
 
     useEffect(() => {
         setOwnerState(userWindow);
@@ -132,25 +127,20 @@ const AppHeader: React.FunctionComponent = () => {
                     ref={userContRef}
                     onClick={() => toggleUser()}>
                     <Typography className={styles.user_name}>
-                        {user.name ? user.name : "Sign In"}
+                        {user.name ? getSlicedWithDots(user.name, 15) : "Sign In"}
                     </Typography>
-                    {user.image ?
+                    {user.name ? user.image ?
                         <Avatar src={user.image}/> :
                         <IoPersonSharp
                             className={styles.user_icon}
-                        />}
+                        /> : <CiLogin  className={styles.user_icon} />
+                    }
                 </Row> : null}
             {
                 user.name && watchingRequests ?
                     <FriendRequests clickOutside={clickOutside}/> : null
             }
-            {ownerState ?
-                <div
-                    className={ownerStyles.owner_main}
-                    ref={ownerRef}>
-                    <Owner/>
-                </div> : null
-            }
+            {ownerState && <Owner userContRef={userContRef}/>}
         </Header>
     )
 }

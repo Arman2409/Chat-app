@@ -33,18 +33,18 @@
     text-align: center;
 
     & article {
-      color: $textColor1;
+      color: $color3;
       font-size: 40px;
     }
 
     .welcome_description {
-      color: $textColor2;
+      color: $color4;
       font-size: 25px;
     }
 
     .welcome_news {
       font-size: 20px;
-      color: $textColor1;
+      color: $color3;
       text-decoration: underline;
     }
 
@@ -63,7 +63,7 @@
         text-align: center;
         position: relative;
         box-shadow: 0px 0px 9px 2px #000000;
-        border: 1px solid $borderColor;
+        border: 1px solid $color5;
 
         &::before {
           content: "";
@@ -77,12 +77,12 @@
         }
 
         &_title {
-          color: $textColor1;
+          color: $color3;
           margin: 0;
         }
 
         &_desc {
-          color: $textColor2;
+          color: $color4;
           margin: 0;
         }
       }
@@ -129,11 +129,11 @@
 
   &_title {
     font-size: 25px;
-    color: $textColor1;
+    color: $color3;
   }
 
   &_desc {
     font-size: 20px;
-    color: $textColor2;
+    color: $color4;
   }
 }

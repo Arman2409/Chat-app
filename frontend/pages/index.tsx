@@ -1,13 +1,13 @@
 import {useEffect} from "react";
 import Head from 'next/head';
 import {Row} from 'antd';
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import {useDispatch} from "react-redux";
+import {useSelector} from "react-redux";
 
-import SearchUser from '../components/Users/FindUser/FindUser';
-import Welcome from "../components/Welcome/Welcome";
+import SearchUser from '../components/Parts/FindUser/FindUser';
+import Welcome from "../components/Parts/Welcome/Welcome";
 import {setMessagesData} from "../store/messagesSlice";
-import { IRootState } from "../store/store";
+import {IRootState} from "../store/store";
 
 export default function Home() {
    const dispatch = useDispatch();

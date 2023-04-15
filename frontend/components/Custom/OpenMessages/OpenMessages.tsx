@@ -7,7 +7,7 @@ import { useSelector} from "react-redux";
 import styles from "../../../styles/Custom/OpenMessages.module.scss";
 import {UserType} from "../../../types/types";
 import {IRootState} from "../../../store/store";
-import useOpenAlert from "../../../hooks/useOpenAlert";
+import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 
 const OpenMessages:React.FC = () => {
      const router:any = useRouter();
@@ -39,11 +39,12 @@ const OpenMessages:React.FC = () => {
 
     return (
         <div>
-          {display ?
-           <WechatFilled 
-             onClick={() => openMessages()} 
-             className={styles.open_icon}/>
-             : null}
+          {display &&
+           <div className={styles.open_cont}>
+            <WechatFilled 
+              onClick={() => openMessages()} 
+              className={styles.open_cont_icon}/>
+            </div>}
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Typography, Button } from "antd";
 import { useDispatch } from "react-redux";
@@ -8,15 +8,17 @@ import styles from "../../../../styles/Custom/Header/Owner/Owner.module.scss";
 import SignInUp from "./SignInUp/SignInUp";
 import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";
-import handleGQLRequest from "../../../../requests/handleGQLRequest";
-import { setStoreUser } from "../../../../store/userSlice";
+import handleGQLRequest from "../../../../request/handleGQLRequest";
+import { setStoreUser, setUserWindow } from "../../../../store/userSlice";
+import { useOnClickOutside } from "usehooks-ts";
 
-const Owner = () => {
-    const [signStatus, setSignStatus] = useState<string>("SignIn");
-    const storeUser = useSelector<IRootState>((state) => state.user.user);
-    const [user, setUser] = useState<UserType>(storeUser as UserType);
-    const dispatch: Dispatch = useDispatch();
+const Owner = ({userContRef}:any) => {
     const [message, setMessage] = useState<string>("");
+    const [signStatus, setSignStatus] = useState<string>("SignIn");
+    const [user, setUser] = useState<UserType>({} as UserType);
+    const dispatch: Dispatch = useDispatch();
+    const ownerRef = useRef<any>();
+    const storeUser = useSelector<IRootState>((state) => state.user.user);
 
     const changeSignStatus = () => {
         setSignStatus(status => status == "SignIn" ? "SignUp" : "SignIn");
@@ -26,7 +28,7 @@ const Owner = () => {
         return state.socket.socket;
     });
 
-    async function signOut() {
+     const signOut = useCallback(async () => {
         const resp = await handleGQLRequest("SignOut");
         socket.disconnect();
         if (resp.SignOut) {
@@ -37,14 +39,23 @@ const Owner = () => {
         } else {
             setMessage("Error Occured");
         }
-    };
+    }, [setMessage, socket, dispatch, setStoreUser]);
+
+    useOnClickOutside(ownerRef, (e) => {
+        if (e.target == userContRef.current || userContRef.current?.contains(e.target as Node)) {
+            return;
+        }
+        dispatch(setUserWindow(false));
+    });
 
     useEffect(() => {
         setUser(storeUser as UserType);
     }, [storeUser]);
 
     return (
-        <>
+        <div
+        className={styles.owner_main}
+        ref={ownerRef}>
             {user.name ?
                 <>
                     <div className={styles.data_cont}>
@@ -63,23 +74,20 @@ const Owner = () => {
                 </> :
                 <>
                     {signStatus == "SignUp" ?
-                        <SignInUp changeStatus={changeSignStatus} type={"SignUp"} />
-                        : null}
-                    {signStatus == "SignIn" ?
+                        <SignInUp changeStatus={changeSignStatus} type={"SignUp"} />      
+                      : signStatus == "SignIn" ?
                         <SignInUp  changeStatus={changeSignStatus} type={"SignIn"} />
                         : null}
-                    <div style={{
-                        margin: "15px"
-                    }}>
+                    <div className={styles.owner_link_cont}>
                         <a
                             onClick={() => setSignStatus(status => status == "SignIn" ? "SignUp" : "SignIn")}
-                            className={styles.owner_link}>
+                            className={styles.owner_link_cont_link}>
                             {signStatus == "SignUp" ? "Sign In" : "Sign Up"}
                         </a>
                     </div>
                 </>
             }
-        </>
+        </div>
     )
 }
 

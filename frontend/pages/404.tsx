@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 
-const Page404:React.FC = () => {
+const Page404 = () => {
     return (
         <div className="error-cont">
           <Typography className="error-text">

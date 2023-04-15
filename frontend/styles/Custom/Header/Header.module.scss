@@ -24,7 +24,7 @@
             margin-left: auto;
             .requests_icon {
               font-size: 20px;
-              color:$textColor1;
+              color:$color3;
               cursor: pointer;
               text-shadow: 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #49ff18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49ff18;
             }
@@ -32,19 +32,19 @@
         .user_cont{
           margin-left: 10px;
           cursor: pointer;
-          border: 1px solid $textColor1;
+          border: 1px solid $color3;
           background-color: $color2;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 10px;
           .user_name {
-            color:$textColor2;
+            color:$color4;
             margin-right: 10px;
           }
           .user_icon {
             font-size: 30px;
-            color: $textColor1;
+            color: $color3;
             margin: 0 15px;
            }
         }

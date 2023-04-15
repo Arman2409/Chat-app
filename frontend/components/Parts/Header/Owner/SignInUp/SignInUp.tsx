@@ -6,15 +6,16 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
+import { last } from "lodash";
 
-import handleGQLRequest from "../../../../../requests/handleGQLRequest";
+import handleGQLRequest from "../../../../../request/handleGQLRequest";
 import styles from "../../../../../styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss";
 import { setStoreUser } from "../../../../../store/userSlice";
 import { SignProps } from "../../../../../types/types";
-import Loading from "../../../Loading/Loading";
+import Loading from "../../../../Custom/Loading/Loading";
 import { getSlicedWithDots } from "../../../../../functions/functions";
 import { setSocket } from "../../../../../store/socketSlice";
-import useOpenAlert from "../../../../../hooks/useOpenAlert";
+import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
@@ -22,7 +23,7 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     reader.readAsDataURL(img);
 };
 
-const beforeUpload = (file: RcFile) => {
+const beforeUpload = (file: RcFile) => {    
     const { setMessageOptions } = useOpenAlert();
     
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -78,10 +79,10 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
-            if(repeatPassword !== password) {
-                setMessage("Password must be repeated")
-                return;
-            }
+            // if(repeatPassword !== password) {
+            //     setMessage("Password must be repeated")
+            //     return;
+            // }
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignUp", { email: name, password: "pass", name, image: imageUrl });
             if (!res.email) {
@@ -104,17 +105,12 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
         }
     };
 
-    const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-        if (info.file.status === 'done') {
-            getBase64(info.file.originFileObj as RcFile, (url) => {
+    const handleChangeImage: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
+            const lastFile:any = last(info.fileList);
+            getBase64(lastFile.originFileObj as RcFile, (url) => {
                 setLoading(false);
                 setImageUrl(url);
             });
-        }
     };
 
     const uploadButton = (
@@ -148,7 +144,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                                 listType="picture-card"
                                 showUploadList={false}
                                 beforeUpload={beforeUpload}
-                                onChange={handleChange}
+                                onChange={handleChangeImage}
                                 className={styles.image_input}
                             >
                                 {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
@@ -165,7 +161,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                     </>
                     : null}
                 <Form.Item
-                    rules={[{ required: true }]}
+                    // rules={[{ required: true }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -174,7 +170,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
-                    rules={[{ required: true, min: 8 }]}
+                    // rules={[{ required: true, min: 8 }]}
                     name={"password"}>
                     <Input
                         placeholder="Password"
@@ -184,7 +180,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 {type == "SignUp" ?
                     <Form.Item
                         className={styles.form_item}
-                        rules={[{ required: true, min: 8 }]}
+                        // rules={[{ required: true, min: 8 }]}
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"

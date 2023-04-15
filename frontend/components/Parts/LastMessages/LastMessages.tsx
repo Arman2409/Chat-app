@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Pagination, Typography } from "antd";
 
-import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
-import handleGQLRequest from "../../../requests/handleGQLRequest";
+import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
+import handleGQLRequest from "../../../request/handleGQLRequest";
 import styles from "../../../styles/Users/LastMessages.module.scss";
 
 const LastMessages:React.FC = () => {

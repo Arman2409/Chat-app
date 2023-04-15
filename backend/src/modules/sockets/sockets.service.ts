@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {PrismaService} from "nestjs-prisma";
+import { MessageType } from 'types/graphqlTypes';
 
 @Injectable()
 export class SocketsService {
@@ -21,6 +22,13 @@ export class SocketsService {
                 active: status,
             }
         });
+    }
+
+    async updateMessages(allMessages: MessageType[]) {
+        await this.prisma.messages.deleteMany();
+        if (allMessages.length) {
+           await this.prisma.messages.createMany({ data: allMessages as any });
+        };
     }
 
 }

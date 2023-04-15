@@ -7,16 +7,17 @@ import {
     SubscribeMessage, MessageBody, ConnectedSocket
 } from "@nestjs/websockets";
 import {Server} from "socket.io";
-import {PrismaService} from "nestjs-prisma";
+import {isEqual, remove} from "lodash"
 
 import {SocketWIthHandshake} from "../../../types/types";
 import {SocketsService} from "./sockets.service";
+import { AnyCnameRecord } from "dns";
 
 @WebSocketGateway({ cors: "*" },)
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
     @WebSocketServer() server: Server;
 
-    constructor(private readonly prisma: PrismaService, private readonly service: SocketsService) {
+    constructor( private readonly service: SocketsService) {
     }
 
     private activeUsers: string[] = [];
@@ -26,15 +27,12 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     private previousAllMessages = [];
 
     afterInit(): any {
-        setInterval(() => {
-            if (this.previousAllMessages !== this.allMessages) {
-                this.prisma.messages.deleteMany();
-                if (this.allMessages.length) {
-                    this.prisma.messages.createMany({ data: this.allMessages as any });
-                }
+        setInterval( async () => {
+            if (!isEqual(this.allMessages, this.previousAllMessages)) {
+                 await this.service.updateMessages(this.allMessages);
+                 this.previousAllMessages = [...this.allMessages];
             }
-            this.previousAllMessages = this.allMessages;
-        }, 5000);
+        }, 2000);
     }
 
     handleConnection(client: any): any {
@@ -70,15 +68,15 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         @MessageBody("to") to: number,
         @MessageBody("message") message: string,
     ) {
-        let alreadyMessaged: boolean = this.allMessages.filter(message => message.between.every(elem => [from, to].indexOf(elem) > -1))[0];
-        console.log(this.allMessages.filter(message => message.between.every(elem => [from, to].indexOf(elem) > -1))[0]);   
-
+        let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData = {};
 
         if (alreadyMessaged) {
             const previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
-            console.log({previousMessaging});
-            delete this.allMessages[this.allMessages.indexOf(previousMessaging)]
+            remove(this.allMessages,(messages) => {
+                return messages === previousMessaging;
+            });
+            
             messageData = {
                 between: previousMessaging.between || [from, to],
                 messages: [...previousMessaging.messages || [message], message],
@@ -100,8 +98,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             }
         );
         this.server.sockets.in(to.toString()).emit("message", messageData);
-        console.log({messageData});
-        
         return messageData;
     }
 

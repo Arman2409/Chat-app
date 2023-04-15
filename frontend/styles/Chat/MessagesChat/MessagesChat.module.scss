@@ -4,7 +4,7 @@
   width: 60%;
   position: relative;
   height: 100%;
-  border: 1px solid $borderColor;
+  border: 1px solid $color5;
 
   .interlocutor_cont {
     width: 100%;
@@ -16,7 +16,7 @@
     padding: 10px;
 
     .interlocutor_name {
-      color: $textColor2;
+      color: $color4;
       margin-right: 5px;
       font-size: 18px;
     }
@@ -47,7 +47,7 @@
       display: flex;
       align-items: center;
       padding: 2px;
-      color: $textColor1;
+      color: $color3;
 
       &_text_cont {
         width: auto;
@@ -55,7 +55,7 @@
         line-break: anywhere;
         height: auto;
         padding: 2px;
-        font-family: $mainFamily;
+        font-family: $mainFontFamily;
         position: relative;
 
         &::before {
@@ -86,12 +86,12 @@
 
     .choose_interlocutor {
       font-size: 35px;
-      color: $textColor1;
+      color: $color3;
     }
 
     .choose_interlocutor_icon {
       font-size: 40px;
-      color: $textColor2;
+      color: $color4;
       animation-name: chat_icon;
       animation-duration: 3s;
       animation-timing-function: ease-in-out;
@@ -117,7 +117,7 @@
     height: 90px;
     display: flex;
     align-items: center;
-    border: 1px solid $borderColor;
+    border: 1px solid $color5;
     width: 100%;
 
     &::before {
@@ -135,7 +135,7 @@
       width: calc(100% - 135px);
       height: 100%;
       resize: none;
-      background-color: $textColor1;
+      background-color: $color3;
     }
 
     .smile_cont {
@@ -159,7 +159,7 @@
 
     .emoji_cont {
       position: absolute;
-      border: 1px solid $borderColor;
+      border: 1px solid $color5;
       bottom: 90px;
       left: 0;
     }

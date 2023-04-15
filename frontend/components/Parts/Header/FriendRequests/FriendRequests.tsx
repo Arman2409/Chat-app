@@ -4,15 +4,15 @@ import {message} from "antd/lib";
 
 import requestsStyles from "../../../../styles/Custom/Header/Requests/Requests.module.scss";
 import {IRootState} from "../../../../store/store";
-import Loading from "../../Loading/Loading";
-import handleGQLRequest from "../../../../requests/handleGQLRequest";
-import UsersMapper from "../../UsersMapper/UsersMapper";
+import Loading from "../../../Custom/Loading/Loading";
+import handleGQLRequest from "../../../../request/handleGQLRequest";
+import UsersMapper from "../../../Tools/UsersMapper/UsersMapper";
 import {UserType} from "../../../../types/types";
 import { useOnClickOutside} from "usehooks-ts";
 import {Dispatch} from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 import {setStoreUser} from "../../../../store/userSlice";
-import useOpenAlert from "../../../../hooks/useOpenAlert";
+import useOpenAlert from "../../../Tools/hooks/useOpenAlert";
 
 const FriendRequests = ({clickOutside}: any) => {
     const [loading, setLoading] = useState<boolean>(false);

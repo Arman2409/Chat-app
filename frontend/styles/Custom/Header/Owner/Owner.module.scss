@@ -6,16 +6,26 @@
      position: absolute;
      top: 80px;
      right: 5px;
-     border: 1px solid $borderColor;
+     border: 1px solid $color5;
      margin: 2px;
+     z-index: 5;
      background-color: $color2;
 }
 
-.owner_link{
-  cursor: pointer;
+.owner_link_cont{
+  padding: 5px;
   width: auto;
   text-decoration: underline;
   color: $color1;
+
+  &_link {
+    margin: 15px; 
+    cursor: pointer;
+
+    &:hover {
+      color: $color4;
+    }
+  }
 }
 
 .data_cont {
@@ -27,6 +37,6 @@
   flex-direction: column;
   padding: 15px 0;
   .owner_email {
-    color: $textColor2;
+    color: $color4;
   }
 }

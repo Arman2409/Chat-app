@@ -1,5 +1,5 @@
 import { Input, Pagination, Switch } from "antd";
-import React, { useEffect, useMemo, useRef, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState} from "react";
 import { useMediaQuery } from "react-responsive";
 import { useDebounce } from "usehooks-ts";
 import {useSelector} from "react-redux";
@@ -7,10 +7,10 @@ import {useSelector} from "react-redux";
 const { Search } = Input;
 
 import styles from "../../../styles/Users/FindUser.module.scss";
-import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
+import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
 import {IRootState} from "../../../store/store";
 import { UserType } from "../../../types/types";
-import handleGQLRequest from "../../../requests/handleGQLRequest";
+import handleGQLRequest from "../../../request/handleGQLRequest";
 import Loading from "../../Custom/Loading/Loading";
 
 const SearchUser: React.FC = () => {
@@ -67,19 +67,19 @@ const SearchUser: React.FC = () => {
         })();
     };
 
-    const search: Function = (e: string) => {
+    const search = useCallback((e: string) => {
         if (e !== name) setName(e);
         if (loading || debouncedSearch) return;
         if (searchOptionsRef.current.name == e) return;
-        const args:any = {
+        const args = {
             ...searchOptionsRef.current,
             name: e,
         }
         searchOptionsRef.current = args;
-        setLoading(true)
-    };
+        setLoading(true);
+    }, [setLoading, searchOptionsRef, loading, debouncedSearch, name]);
 
-    const searchChange: Function = (e: any) => {
+    const searchChange = (e: any) => {
         if (e !== name) setName(e.target.value);
         if (loading || debouncedSearch) return;
         if (searchOptionsRef.current.name == e) return;
@@ -88,7 +88,7 @@ const SearchUser: React.FC = () => {
             name: e.target.value,
         }
         searchOptionsRef.current = args;
-        setLoading(true)
+        setLoading(true);
     };
 
     const changePage: Function = (e: any) => {

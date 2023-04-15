@@ -10,7 +10,7 @@ import styles from "../../../styles/Custom/UsersMapper.module.scss";
 import {MapperProps} from "../../../types/types";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import {IRootState} from "../../../store/store";
-import useOpenAlert from "../../Tools/hooks/useOpenAlert";
+import useOpenAlert from "../hooks/useOpenAlert";
 import {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";

@@ -25,7 +25,6 @@ const useOpenAlert = () => {
          }, 1000)
     }
 
-
     useEffect(() => {
         if(!messageOptions?.message) return;
         openMessage(messageOptions);

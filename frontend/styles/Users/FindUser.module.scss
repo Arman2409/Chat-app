@@ -17,14 +17,14 @@
         background-color: $color2;
     }
     & input {
-        color: $textColor1;
-        font-family: $mainFamily;
+        color: $color3;
+        font-family: $mainFontFamily;
         &::placeholder {
-            color: $textColor2;
+            color: $color4;
         }
     }
     & path{
-        color: $textColor2;
+        color: $color4;
     }
 }
 
@@ -32,7 +32,7 @@
     align-self: center;
     margin: 5px;
     & span {
-        color: $textColor2 !important;
+        color: $color4 !important;
     }
     & div:before {
         background-color: $color1 !important;

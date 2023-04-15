@@ -3,7 +3,7 @@
 .requests_main {
     width:300px;
     height:300px;
-    border: 1px solid $borderColor;
+    border: 1px solid $color5;
     position: absolute;
     top: 80px;
     right: 210px;
@@ -11,6 +11,6 @@
     overflow: auto;
 
     &_not_found {
-        color: $textColor2;
+        color: $color4;
     }
 }

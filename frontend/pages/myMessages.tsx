@@ -4,8 +4,8 @@ import { Layout, Row } from "antd";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
 
-import MessagesChat from "../components/Chat/MessagesChat/MessagesChat";
-import LastMessages from "../components/Users/LastMessages/LastMessages";
+import MessagesChat from "../components/Parts/MessagesChat/MessagesChat";
+import LastMessages from "../components/Parts/LastMessages/LastMessages";
 const { Content } = Layout;
 
 

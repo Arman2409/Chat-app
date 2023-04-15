@@ -51,7 +51,7 @@
       /cairo_font where { pop cairo_selectfont } if } bind def
 /Tm { 2 copy 8 2 roll 6 array astore /cairo_font_matrix exch def
       cairo_store_point /cairo_font where { pop cairo_selectfont } if } bind def
-/g { setgray } bind def
+/g { setcolor6 } bind def
 /rg { setrgbcolor } bind def
 /d1 { setcachedevice } bind def
 /cairo_data_source {

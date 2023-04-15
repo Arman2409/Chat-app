@@ -5,8 +5,8 @@ import decode from "jwt-decode";
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
     const userFields = ["name","lastVisited", "image", "sentRequests", "friendRequests", "email", "active","id"];
     const perPage = 4;
-    let variables: any = {};
-    let fields: any = [];
+    let variables = {};
+    let fields: any[] = [];
 
     if (operation == "SignIn") {
         const { email, password } = args;

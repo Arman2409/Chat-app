@@ -6,7 +6,7 @@ import {Dispatch} from "@reduxjs/toolkit";
 
 import {UserType} from "../../../types/types";
 import {IRootState} from "../../../store/store";
-import handleGQLRequest from "../../../requests/handleGQLRequest";
+import handleGQLRequest from "../../../request/handleGQLRequest";
 import styles from "../../../styles/Custom/MessageAlert.module.scss";
 import {getSendersId, getSlicedWithDots} from "../../../functions/functions";
 import {setInterlocutor} from "../../../store/messagesSlice";
