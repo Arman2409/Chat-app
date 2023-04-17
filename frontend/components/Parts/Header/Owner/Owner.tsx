@@ -4,7 +4,7 @@ import { Typography, Button } from "antd";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 
-import styles from "../../../../styles/Custom/Header/Owner/Owner.module.scss";
+import styles from "../../../../styles/Parts/Header/Owner/Owner.module.scss";
 import SignInUp from "./SignInUp/SignInUp";
 import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";

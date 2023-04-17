@@ -26,6 +26,8 @@
     display: flex !important;
     cursor: pointer;
     position: relative;
+    align-items: center;
+    padding: 5px;
     justify-content: flex-start !important;
     border: 1px solid $color5 !important;
     border-radius: 5px;

@@ -2,7 +2,7 @@ import {Typography} from "antd";
 import {useMediaQuery} from "react-responsive";
 import React, {useState, useEffect} from "react";
 
-import styles from "../../../styles/Welcome/Welcome.module.scss";
+import styles from "../../../styles/Parts/Welcome.module.scss";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import {getSlicedWithDots} from "../../../functions/functions";
 import NewsModal from "./NewsModal/NewsModal";

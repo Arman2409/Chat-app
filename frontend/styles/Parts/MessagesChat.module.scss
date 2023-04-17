@@ -1,4 +1,4 @@
-@import "../../variables";
+@import "../variables";
 
 .chat_cont {
   width: 60%;
@@ -11,20 +11,40 @@
     background-color: $color2;
     height: 70px;
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     padding: 10px;
+    justify-content: space-between;
 
-    .interlocutor_name {
-      color: $color4;
-      margin-right: 5px;
-      font-size: 18px;
+    &_info{
+       font-size: 25px;
+
+       &_icon {
+        margin-right: 10px;
+       }
+
+       &_active {
+        color: $green;
+       }
     }
 
-    .interlocutor_avatar{
-       height: 50px;
-       width: 50px;
+    &_name {
+      display: flex;
+       height: 100%;
+        align-items: center; 
+        justify-content: center;
+
+        .interlocutor_name {
+          color: $color4;
+          margin-right: 5px;
+          font-size: 18px;
+        }
+    
+        .interlocutor_avatar{
+           height: 50px;
+           width: 50px;
+        }
     }
+
   }
 
   .messages_cont {
@@ -51,7 +71,7 @@
 
       &_text_cont {
         width: auto;
-        max-width: 150px;
+        max-width: 200px;
         line-break: anywhere;
         height: auto;
         padding: 2px;
@@ -117,15 +137,16 @@
     height: 90px;
     display: flex;
     align-items: center;
-    border: 1px solid $color5;
+    border-radius: 5px;
+    border: 0.5px solid $color4;
     width: 100%;
 
     &::before {
       content: "";
       width: 100%;
       height: 100%;
-      background-color: $color2;
-      opacity: 0.3;
+      background-color: $color1;
+      opacity: 0.1;
       position: absolute;
       top: 0;
       left: 0;
@@ -135,18 +156,23 @@
       width: calc(100% - 135px);
       height: 100%;
       resize: none;
-      background-color: $color3;
+      background-color: rgba($color6, 0.5);
+      color: $color5;
+      font-family: $mainFontFamily;
+      position: relative;
     }
 
     .smile_cont {
       font-size: 20px;
       margin: 10px;
       color: $color2;
+
     }
 
     .smile_icon {
       color: $color1;
       position: absolute;
+      font-size: 25px;
       right: calc(80px + 20px)
     }
 
@@ -154,6 +180,7 @@
       position: absolute;
       right: 0;
       width: 80px;
+      height: 60px;
       margin: 10px;
     }
 
@@ -162,6 +189,7 @@
       border: 1px solid $color5;
       bottom: 90px;
       left: 0;
+      z-index: 6;
     }
 
   }

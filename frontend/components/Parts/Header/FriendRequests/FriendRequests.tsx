@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {message} from "antd/lib";
 
-import requestsStyles from "../../../../styles/Custom/Header/Requests/Requests.module.scss";
+import requestsStyles from "../../../../styles/Parts/Header/Requests/Requests.module.scss";
 import {IRootState} from "../../../../store/store";
 import Loading from "../../../Custom/Loading/Loading";
 import handleGQLRequest from "../../../../request/handleGQLRequest";

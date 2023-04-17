@@ -4,7 +4,6 @@ import Link from "next/link";
 import {useSelector, useDispatch} from "react-redux";
 import {useEffect, useState, useRef, useCallback} from "react";
 import {Dispatch} from "@reduxjs/toolkit";
-import {useOnClickOutside} from "usehooks-ts";
 import jwtDecode from "jwt-decode";
 import {HiOutlineUserAdd} from "react-icons/hi";
 import {CiLogin} from "react-icons/ci"
@@ -14,16 +13,16 @@ import { io } from "socket.io-client";
 
 import Logo from "/logo-files/svg/logo-no-background.svg";
 import {IRootState} from "../../../store/store";
-import styles from "../../../styles/Custom/Header/Header.module.scss";
+import styles from "../../../styles/Parts/Header/Header.module.scss";
 import Owner from "./Owner/Owner";
 import {setStoreUser, setUserWindow} from "../../../store/userSlice";
 import {UserType} from "../../../types/types";
-import ownerStyles from "../../../styles/Custom/Header/Owner/Owner.module.scss";
 import FriendRequests from "./FriendRequests/FriendRequests";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import { setSocket } from "../../../store/socketSlice";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { getSlicedWithDots } from "../../../functions/functions";
+import { setLoaded } from "../../../store/windowSlice";
 
 const {Header} = Layout;
 
@@ -40,14 +39,16 @@ const AppHeader: React.FunctionComponent = () => {
     const userContRef = useRef<HTMLDivElement>(null);
     const { setMessageOptions } = useOpenAlert();
 
+    const waitForSec = useCallback(() => {
+        setTimeout(() => {
+            dispatch(setLoaded(true));
+        }, 1500)
+    }, [setLoaded, dispatch]);
 
     const toggleUser = useCallback(() => {
         dispatch(setUserWindow(!userWindow));
-    }, [dispatch, setUserWindow, userWindow]);
-
-    useEffect(() => {
         setOwnerState(userWindow);
-    }, [userWindow]);
+    }, [dispatch, setUserWindow, userWindow]);
 
     useEffect(() => {
         if (ownerState) {
@@ -84,8 +85,13 @@ const AppHeader: React.FunctionComponent = () => {
                          type: "error"
                        })
                     }
+                    dispatch(setLoaded(true));
                 })()
+            }  else {
+               waitForSec();
             }
+        } else {
+           waitForSec();
         }
         ;
     }, []);

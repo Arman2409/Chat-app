@@ -47,11 +47,18 @@ a {
     padding: 5px 0;
     font-size: 20px;
     background-color: $color4;
+
+    a {
+       color: $color1 !important;
+     }
   }
 
-  & .ant-pagination-item-link path {
-    color: $color4;
-  }
+
+  & .ant-pagination-item-link{
+    path {
+      color: $color5;
+    }
+   }
 }
 
 .ant-message-notice {

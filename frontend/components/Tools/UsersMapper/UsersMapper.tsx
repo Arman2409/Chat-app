@@ -3,10 +3,11 @@ import React, {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
+import { BabelLoading, RollBoxLoading, WaveLoading } from "react-loading-typescript";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
 
-import styles from "../../../styles/Custom/UsersMapper.module.scss";
+import styles from "../../../styles/Tools/UsersMapper.module.scss";
 import {MapperProps} from "../../../types/types";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import {IRootState} from "../../../store/store";
@@ -16,8 +17,9 @@ import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
 
-const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
+    const [scrolled, setScrolled]  = useState<boolean>(false);
     const router: any = useRouter();
     const dispatch: Dispatch = useDispatch();
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
@@ -30,6 +32,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, las
     });
 
     const acceptLink = useRef<null | any>(null);
+    const listRef = useRef<null | any>(null);
 
     const { setMessageOptions } = useOpenAlert();
 
@@ -72,6 +75,10 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, las
         })()
     };
 
+    const getMore = () => {
+       getUsers();
+    };
+
     const newChat: Function = (e: UserType) => {
         if (!user.name) {
             setMessageOptions({
@@ -89,18 +96,36 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, las
         setButtonsDisabled(false);
     }, [users]);
 
+    useEffect(() => {
+         window.addEventListener("wheel", function(e){ 
+            if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
+               console.log("in");
+                if(scrolled) {
+                 return;
+                };
+                setScrolled(true);
+                if(e.deltaY > 0){    
+                   if (listRef.current.scrollTop = listRef.current.scrollHeight) {
+                      getMore();
+                   }
+                    
+                };
+                if(e.deltaY < 0){
+                  //    .....    
+                };
+            }
+         }, false);
+    }, [listRef.current]);
+
     return (
-        <ConfigProvider renderEmpty={() => (
-            <div className={styles.empty_cont}>
-                {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
-                <p className={styles.empty_text}>{emptyText}</p>
-            </div>
-        )}>
-            <List
-                itemLayout="horizontal"
-                dataSource={users}
-                className={styles.list}
-                renderItem={(item) => {
+        <div ref={listRef}
+            className={`${styles.list} w-100 h-100`}
+            style={{height: "500px", width: "100%", border: "1px solid green",}} >
+                {users.length === 0 &&  <div className={styles.empty_cont}>
+                    {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
+                    <p className={styles.empty_text}>{emptyText}</p>
+                 </div>}
+                {users.map((item) => {
                     if(!friendRequests && user?.friendRequests?.includes(item.id)) return <></>;
                     let isInterlocutor;
                     if(item.id === storeInterlocutor.id) isInterlocutor = true;
@@ -123,9 +148,12 @@ const UsersMapper: React.FC<MapperProps> = ({users, friends, friendRequests, las
                                 <Button className={styles.list_item_action} disabled={buttonsDisabled} ref={acceptLink}
                                    onClick={(e) => acceptRequest(item, e)}>Accept</Button> : ""}
                     </List.Item>
-                )}}
-            />
-        </ConfigProvider>
+                    )
+                })}
+                <div style={{position: "relative", paddingTop: "25px"}}>
+                  <WaveLoading {...{} as any} />
+                </div>
+        </div>
     )
 }
 

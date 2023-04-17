@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 
 const { Search } = Input;
 
-import styles from "../../../styles/Users/FindUser.module.scss";
+import styles from "../../../styles/Parts/FindUser.module.scss";
 import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
 import {IRootState} from "../../../store/store";
 import { UserType } from "../../../types/types";
@@ -32,7 +32,7 @@ const SearchUser: React.FC = () => {
                 "SearchInFriends", {page: searchOptionsRef.current.page, name: searchOptionsRef.current.name});
             if (usersData.SearchInAll) {
                 if (usersData.SearchInAll.users) {
-                    setUsers(usersData.SearchInAll.users);
+                    setUsers([...users , ...usersData.SearchInAll.users]);
                     setLoading(false)
                 } else {
                     setUsers([]);
@@ -92,6 +92,9 @@ const SearchUser: React.FC = () => {
     };
 
     const changePage: Function = (e: any) => {
+        console.log("change page");
+        console.log(e);
+        
         setCurrent(e);
         const args:any = {
             page: e,
@@ -158,6 +161,8 @@ const SearchUser: React.FC = () => {
                 defaultChecked={false} />
               <div className="centered_users_cont">
                  <UsersMapper
+                   getUsers={() => changePage(current + 1)}
+                   total={total}
                    users={users} 
                    friends={listType === "friends"}/>
                 <Pagination

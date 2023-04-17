@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "../../../../styles/Welcome/Welcome.module.scss";
+import styles from "../../../../styles/Parts/Welcome.module.scss";
 import { NewsModalProps} from "../../../../types/types";
 import {CloseCircleFilled} from "@ant-design/icons";
 

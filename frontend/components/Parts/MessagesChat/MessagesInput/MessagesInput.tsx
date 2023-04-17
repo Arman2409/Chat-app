@@ -1,11 +1,12 @@
 import React, { useRef, useState, useCallback } from "react";
-import EmojiPicker from "emoji-picker-react";
+import data from '@emoji-mart/data'
 import { SmileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useOnClickOutside } from "usehooks-ts";
 import { useSelector } from "react-redux";
+import Picker from "@emoji-mart/react";
 
-import messagesStyles from "../../../../styles/Chat/MessagesChat/MessagesChat.module.scss";
+import messagesStyles from "../../../../styles/Parts/MessagesChat.module.scss";
 import { IRootState } from "../../../../store/store";
 import { UserType } from "../../../../types/types";
 
@@ -25,18 +26,9 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
     const user: UserType = useSelector((state: IRootState) => {
         return state.user.user;
     });
-    
-    useOnClickOutside(emojiRef,(e) => {
-        if(smileStatus) {
-         if(e.target == smileRef.current || smileRef.current.contains(e.target)) {
-             return;          
-          };
-          setSmileStatus(false);
-        };       
-     });
 
      const addEmoji = useCallback((emoji:any) => {
-        setMessage(curr => curr + emoji?.emoji);        
+        setMessage(curr => curr + emoji?.native);        
     }, [setMessage]);
 
     const openEmojis = useCallback(() => {
@@ -54,6 +46,15 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
             }
         });
     }, [message, socket, setMessageData, user, interlocutor]);
+     
+    useOnClickOutside(emojiRef,(e) => {
+        if(smileStatus) {
+         if(e.target == smileRef.current || smileRef.current.contains(e.target)) {
+             return;          
+          };
+          setSmileStatus(false);
+        };       
+     });
      
     return (
         <div className={messagesStyles.inputs_cont}>
@@ -74,14 +75,12 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
         >
             Send
         </Button>
-        {smileStatus ?
-            <div ref={emojiRef} className={messagesStyles.emoji_cont}>
-                <EmojiPicker
-                    searchDisabled
-                    onEmojiClick={(emoji) => addEmoji(emoji)}
-                    height={"300px"} />
-            </div> : null}
-    </div>
+         {smileStatus &&
+             <div ref={emojiRef} className={messagesStyles.emoji_cont}>
+                    <Picker data={data} onEmojiSelect={addEmoji} onChange={console.log}/>
+             </div> 
+         }
+        </div> 
     )
 };
 

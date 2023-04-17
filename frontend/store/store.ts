@@ -4,11 +4,14 @@ import userReducer from "./userSlice";
 import messagesSlice from "./messagesSlice";
 import {Reducers} from "../types/types";
 import socketSlice from "./socketSlice";
+import windowSlice from "./windowSlice";
+
 
 const reducers:Reducers = {
     user: userReducer,
     messages: messagesSlice,
     socket: socketSlice,
+    window: windowSlice,
 }
 
 const store:Store = configureStore({

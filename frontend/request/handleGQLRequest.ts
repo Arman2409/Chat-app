@@ -3,7 +3,7 @@ import { query } from "gql-query-builder";
 import decode from "jwt-decode";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
-    const userFields = ["name","lastVisited", "image", "sentRequests", "friendRequests", "email", "active","id"];
+    const userFields = ["name","lastVisited", "friends", "image", "sentRequests", "friendRequests", "email", "active","id"];
     const perPage = 4;
     let variables = {};
     let fields: any[] = [];

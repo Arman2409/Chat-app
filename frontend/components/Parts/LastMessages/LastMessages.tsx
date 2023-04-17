@@ -3,7 +3,7 @@ import { Pagination, Typography } from "antd";
 
 import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
-import styles from "../../../styles/Users/LastMessages.module.scss";
+import styles from "../../../styles/Parts/LastMessages.module.scss";
 
 const LastMessages:React.FC = () => {
    const [current, setCurrent] = useState<number>(1);

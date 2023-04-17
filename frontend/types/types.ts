@@ -30,6 +30,10 @@ export interface  MessagesInitialState {
     messagesData: MessagesDataType,
 }
 
+export interface  WindowInitialState {
+    loaded: boolean
+}
+
 export interface  SocketInitialState {
     socket:any
 }
@@ -39,15 +43,22 @@ export interface Reducers {
     user: Reducer,
     messages: Reducer,
     socket: any,
+    window: Reducer
 };
 
 export interface SignProps {
-  type: string,
+    type: string,
     changeStatus: Function
+}
+
+export interface LoadingProps {
+    type?: string  
 }
 
 export interface MapperProps {
   friends?: boolean;
+  getUsers?: Function,
+  total?: number,
   friendRequests?: boolean;
   lastMessages?: boolean
   accept?:Function;

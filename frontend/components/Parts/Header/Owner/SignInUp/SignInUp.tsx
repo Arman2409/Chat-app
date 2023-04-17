@@ -9,7 +9,7 @@ import { io } from "socket.io-client";
 import { last } from "lodash";
 
 import handleGQLRequest from "../../../../../request/handleGQLRequest";
-import styles from "../../../../../styles/Custom/Header/Owner/SignInUp/SignInUp.module.scss";
+import styles from "../../../../../styles/Parts/Header/Owner/SignInUp/SignInUp.module.scss";
 import { setStoreUser } from "../../../../../store/userSlice";
 import { SignProps } from "../../../../../types/types";
 import Loading from "../../../../Custom/Loading/Loading";
@@ -131,7 +131,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             <Form
                 onFinish={(values) => submit(values)}
                 onChange={() => {
-                    if (message) setMessage("")
+                    if (message) setMessage("");
                 }}
                 className={styles.sign_form}>
                 {type == "SignUp" ?
