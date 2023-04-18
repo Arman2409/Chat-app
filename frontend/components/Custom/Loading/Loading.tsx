@@ -6,7 +6,9 @@ import { LoadingProps } from "../../../types/types";
 
 const Loading:React.FC<LoadingProps> = ({type}:LoadingProps) => {
    return (
-     <div className={styles.loading_cont}>
+     <div className={styles.loading_cont} style={{
+       zIndex: type === "box" ? 8 : 7,
+     }}>
          {type === "box" && <div className={styles.loading_cont_box_div}>
              <BoxLoading style={{}} color="" size="large" speed={1}/>
           </div>}

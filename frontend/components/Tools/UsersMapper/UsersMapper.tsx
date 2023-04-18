@@ -1,5 +1,5 @@
 import {List, Avatar, Typography, Badge, message, ConfigProvider, Button} from "antd";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
@@ -16,13 +16,17 @@ import {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
+import { useDebounce } from "use-debounce";
 
-const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
-    const [scrolled, setScrolled]  = useState<boolean>(false);
-    const router: any = useRouter();
-    const dispatch: Dispatch = useDispatch();
+    const [loading, setLoading] = useState(false)
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
+
+    const router: any = useRouter();
+
+    const dispatch: Dispatch = useDispatch();
 
     const user = useSelector((state: IRootState) => {
         return state.user.user
@@ -33,6 +37,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total, 
 
     const acceptLink = useRef<null | any>(null);
     const listRef = useRef<null | any>(null);
+    const loadingTimeout = useDebounce(loading, 3000);
 
     const { setMessageOptions } = useOpenAlert();
 
@@ -75,9 +80,18 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total, 
         })()
     };
 
-    const getMore = () => {
-       getUsers();
-    };
+    const getMore = useCallback(() => {
+
+        if (loading) {
+            return;
+        };
+        if (total <= users.length) {
+            return;
+        };
+          setLoading(true);
+          setPage(curr => curr + 1);
+          getUsers(page + 1);
+    }, [loading, users, total, getUsers, setPage, setLoading]);
 
     const newChat: Function = (e: UserType) => {
         if (!user.name) {
@@ -92,40 +106,51 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total, 
     };
 
     useEffect(() => {
+        console.log({users});
+        
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
+        setLoading(false);
     }, [users]);
 
     useEffect(() => {
-         window.addEventListener("wheel", function(e){ 
-            if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
-               console.log("in");
-                if(scrolled) {
-                 return;
-                };
-                setScrolled(true);
-                if(e.deltaY > 0){    
-                   if (listRef.current.scrollTop = listRef.current.scrollHeight) {
-                      getMore();
-                   }
-                    
-                };
-                if(e.deltaY < 0){
-                  //    .....    
-                };
-            }
-         }, false);
-    }, [listRef.current]);
+        if (loadingTimeout && loading) {
+            setLoading(false);
+        }
+    }, [loadingTimeout]);
+
+    const handleScroll =(e:any) => { 
+        if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
+           
+            if(e.deltaY < 0){
+                return;  
+              };
+            if(e.deltaY > 0){    
+               if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {
+                 getMore();
+               }      
+            };
+        }
+     };
+
+    useEffect(() => {
+         window.removeEventListener("wheel", handleScroll);
+         window.addEventListener("wheel", handleScroll);
+    }, [handleScroll]);
+
+    useEffect(() => {
+       setPage(1);
+    }, [friends]);
 
     return (
         <div ref={listRef}
-            className={`${styles.list} w-100 h-100`}
+            className={`${styles.list}`}
             style={{height: "500px", width: "100%", border: "1px solid green",}} >
                 {users.length === 0 &&  <div className={styles.empty_cont}>
                     {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
-                {users.map((item) => {
+                  {users.map((item) => {
                     if(!friendRequests && user?.friendRequests?.includes(item.id)) return <></>;
                     let isInterlocutor;
                     if(item.id === storeInterlocutor.id) isInterlocutor = true;
@@ -150,9 +175,9 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total, 
                     </List.Item>
                     )
                 })}
-                <div style={{position: "relative", paddingTop: "25px"}}>
+                {loading && <div style={{position: "relative", paddingTop: "25px"}}>
                   <WaveLoading {...{} as any} />
-                </div>
+                </div>}
         </div>
     )
 }

@@ -36,10 +36,10 @@ export class SearchService {
                     }
                 );
             }
-        }
-        ;
+        };
 
-        const {startIndex, endIndex, total} = getStartEndTotal(page, perPage, data.length);
+        const total = data.length;
+        const {startIndex, endIndex} = getStartEndTotal(page, perPage, data.length);
 
         data = sortByActivesFirst(data);
         data = data.slice(startIndex, endIndex);
@@ -73,11 +73,12 @@ export class SearchService {
                         }
                     });
                 }
-
-                const {startIndex, endIndex, total} = getStartEndTotal(page, perPage, friends.length);
+                 
+                const total = friends.length;
+                const {startIndex, endIndex} = getStartEndTotal(page, perPage, friends.length);
                 friends = sortByActivesFirst(friends);
                 friends = friends.splice(startIndex, endIndex);
-                return {users: friends, total};
+                return {users: friends, total: total};
             } else {
                 return {users: [], total: 1}
             }
