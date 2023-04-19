@@ -6,6 +6,7 @@ import {useEffect, useState, useRef, useCallback} from "react";
 import {Dispatch} from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 import {HiOutlineUserAdd} from "react-icons/hi";
+import { WechatFilled } from "@ant-design/icons"
 import {CiLogin} from "react-icons/ci"
 import {IoPersonSharp} from "react-icons/io5";
 import Image from "next/image";
@@ -23,6 +24,7 @@ import { setSocket } from "../../../store/socketSlice";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { setLoaded } from "../../../store/windowSlice";
+import { windowLoadTime } from "../../../configs/configs";
 
 const {Header} = Layout;
 
@@ -38,11 +40,30 @@ const AppHeader: React.FunctionComponent = () => {
     const addRef = useRef<any>([]);
     const userContRef = useRef<HTMLDivElement>(null);
     const { setMessageOptions } = useOpenAlert();
+    const [displayMessages, setDisplayMessages] = useState<Boolean>(false);
+
+   const openMessages:Function = () => {
+       if(!user.name) {
+           setMessageOptions({
+             message: "Sign in to message", 
+             type: "warning"});
+           return;
+       }
+     router.replace("/myMessages");
+   };
+
+   useEffect(() => {
+       if (router.pathname == "/myMessages" || router.pathname == "/404") {
+          setDisplayMessages(false)
+       } else {
+         setDisplayMessages(true);
+       }
+   }, [router.pathname])
 
     const waitForSec = useCallback(() => {
         setTimeout(() => {
             dispatch(setLoaded(true));
-        }, 1500)
+        }, windowLoadTime);
     }, [setLoaded, dispatch]);
 
     const toggleUser = useCallback(() => {
@@ -113,6 +134,14 @@ const AppHeader: React.FunctionComponent = () => {
                 </div>
             </Link>
             {inPage ?
+               <>
+                <div className={styles.open_cont}>
+                  {user.name && displayMessages &&
+                    <WechatFilled 
+                    onClick={() => openMessages()} 
+                    className={styles.open_cont_icon}/>
+                  }
+                </div> 
                 <Badge
                     dot={user ? Boolean(user.friendRequests?.length) : false}
                     className={styles.requests_badge}>
@@ -126,8 +155,6 @@ const AppHeader: React.FunctionComponent = () => {
                         </div>
                     }
                 </Badge>
-                : null}
-            {inPage ?
                 <Row
                     className={styles.user_cont}
                     ref={userContRef}
@@ -141,7 +168,9 @@ const AppHeader: React.FunctionComponent = () => {
                             className={styles.user_icon}
                         /> : <CiLogin  className={styles.user_icon} />
                     }
-                </Row> : null}
+                </Row> 
+                </>
+                 : null}
             {
                 user.name && watchingRequests ?
                     <FriendRequests clickOutside={clickOutside}/> : null

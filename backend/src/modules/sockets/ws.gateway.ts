@@ -35,7 +35,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         }, 2000);
     }
 
-    handleConnection(client: any): any {
+    handleConnection(): any {
     }
 
     async handleDisconnect(client: SocketWIthHandshake): Promise<any> {

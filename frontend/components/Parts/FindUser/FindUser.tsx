@@ -15,12 +15,11 @@ import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 
 const SearchUser: React.FC = () => {
-    const [current, setCurrent] = useState<number>(1);
     const [searchType, setSearchType] = useState<string>("all");
     const [users, setUsers] = useState<UserType[]>([]);
     const [total, setTotal] = useState<number>(1);
     const [name, setName] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean|string>(false);
     const user = useSelector((state: IRootState) => state.user.user);
     const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
     const listType = useMemo(() =>  searchType, [users])
@@ -100,29 +99,24 @@ const SearchUser: React.FC = () => {
             name: name,
             type: searchType
         }
-
-        setCurrent(e);
         searchOptionsRef.current = args;
         setLoading(true);
-    }, [total, users, loading,  searchOptionsRef.current, setCurrent, setLoading]);
+    }, [total, users, loading,  searchOptionsRef.current, setLoading]);
 
     const newSearchType: Function = (e: boolean) => {
         const type = (e ? "friends" : "all");
-        setCurrent(1);
         setSearchType(type);
         const args:any = {
-            page: current,
+            page: 1,
             name: name,
             type
         };
         searchOptionsRef.current = args;
-        setLoading(type as any);
+        setLoading(searchType);
         setUsers([]);
     };
 
     useEffect(() => {
-        console.log({debouncedSearch});
-        
         if(debouncedSearch) {
             getSeachResults();
         }
@@ -133,17 +127,7 @@ const SearchUser: React.FC = () => {
 
     useEffect(() => {
         setLoading(true);
-        if (user.email) {
-           newSearchType(true)
-        } else {
-           newSearchType(false);
-        }
     }, [user]);
-
-    useEffect(() => {
-       console.log(loading);
-       
-    }, [loading])
 
     return (
         <div
