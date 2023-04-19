@@ -1,9 +1,9 @@
-import {List, Avatar, Typography, Badge, message, ConfigProvider, Button} from "antd";
+import {List, Avatar, Typography, Badge, Button} from "antd";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
-import { BabelLoading, RollBoxLoading, WaveLoading } from "react-loading-typescript";
+import { WaveLoading } from "react-loading-typescript";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
 
@@ -16,11 +16,12 @@ import {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
-import { useDebounce } from "use-debounce";
+import { usersLoadWaitTime } from "../../../configs/configs";
 
 const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [newType, setNewType] = useState(false);
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
 
@@ -37,7 +38,6 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
 
     const acceptLink = useRef<null | any>(null);
     const listRef = useRef<null | any>(null);
-    const loadingTimeout = useDebounce(loading, 3000);
 
     const { setMessageOptions } = useOpenAlert();
 
@@ -81,13 +81,14 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
     };
 
     const getMore = useCallback(() => {
-
         if (loading) {
             return;
         };
         if (total <= users.length) {
             return;
         };
+        console.log(loading, total <= users.length);
+        
           setLoading(true);
           setPage(curr => curr + 1);
           getUsers(page + 1);
@@ -106,28 +107,33 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
     };
 
     useEffect(() => {
-        console.log({users});
-        
+        if (newType) {
+            setNewType(false);
+        }
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
         setLoading(false);
     }, [users]);
 
     useEffect(() => {
-        if (loadingTimeout && loading) {
-            setLoading(false);
-        }
-    }, [loadingTimeout]);
+        if(loading) {
+            setTimeout(() => {
+                if (loading) {
+                    setLoading(false)
+                }
+            }, usersLoadWaitTime);
+         }
+    }, [loading])
 
     const handleScroll =(e:any) => { 
         if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
-           
             if(e.deltaY < 0){
                 return;  
               };
             if(e.deltaY > 0){    
                if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {
                  getMore();
+                 window.removeEventListener("wheel", handleScroll);
                }      
             };
         }
@@ -139,17 +145,19 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
     }, [handleScroll]);
 
     useEffect(() => {
+       setNewType(true);
        setPage(1);
     }, [friends]);
 
     return (
         <div ref={listRef}
             className={`${styles.list}`}
-            style={{height: "500px", width: "100%", border: "1px solid green",}} >
-                {users.length === 0 &&  <div className={styles.empty_cont}>
+             >
+                {users.length === 0 && !newType &&  <div className={styles.empty_cont}>
                     {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
+                 {users.length === 0 && newType &&  <WaveLoading {...{} as any} />}
                   {users.map((item) => {
                     if(!friendRequests && user?.friendRequests?.includes(item.id)) return <></>;
                     let isInterlocutor;

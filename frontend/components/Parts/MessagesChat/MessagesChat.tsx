@@ -8,7 +8,7 @@ import { WechatFilled } from "@ant-design/icons";
 import { HiOutlineStatusOnline } from "react-icons/hi";
 import { FaUserFriends } from "react-icons/fa";
 
-import messagesStyles from "../../../styles/Parts/MessagesChat.module.scss";
+import styles from "../../../styles/Parts/MessagesChat.module.scss";
 import { IRootState } from "../../../store/store";
 import { MessagesDataType, UserType } from "../../../types/types";
 import { getSendersId, getSlicedWithDots } from "../../../functions/functions";
@@ -68,34 +68,34 @@ const MessagesChat: React.FC = () => {
 
     return (
         <>
-            <div className={messagesStyles.chat_cont}>
+            <div className={styles.chat_cont}>
                 {interlocutor.name ?
                     <>
-                        <div className={messagesStyles.interlocutor_cont}>
-                            <div className={messagesStyles.interlocutor_cont_info}>
-                                    <HiOutlineStatusOnline className={`${messagesStyles.interlocutor_cont_info_icon} ${interlocutor.active && messagesStyles.interlocutor_cont_info_active}`} />
-                                    <FaUserFriends className={`${messagesStyles.interlocutor_cont_info_icon} ${user.friends?.includes(interlocutor.id) && messagesStyles.interlocutor_cont_info_active}`}/>
+                        <div className={styles.interlocutor_cont}>
+                            <div className={styles.interlocutor_cont_info}>
+                                    <HiOutlineStatusOnline className={`${styles.interlocutor_cont_info_icon} ${interlocutor.active && styles.interlocutor_cont_info_active}`} />
+                                    <FaUserFriends className={`${styles.interlocutor_cont_info_icon} ${user.friends?.includes(interlocutor.id) && styles.interlocutor_cont_info_active}`}/>
                                 </div>
-                            <div className={messagesStyles.interlocutor_cont_name}>
-                                <h5 className={messagesStyles.interlocutor_name}>
+                            <div className={styles.interlocutor_cont_name}>
+                                <h5 className={styles.interlocutor_name}>
                                     {interlocutor.name ?
                                         interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
                                         : ""}
                                 </h5>
-                                <Avatar className={messagesStyles.interlocutor_avatar} src={interlocutor.image} />
+                                <Avatar className={styles.interlocutor_avatar} src={interlocutor.image} />
                             </div>
                         </div>
-                        <div className={messagesStyles.messages_cont} ref={messagesRef}>
+                        <div className={styles.messages_cont} ref={messagesRef}>
                             {messageData.messages && messageData.messages?.map((e: string, index: number) => {
                                 const order: number = messageData.between.indexOf(user.id);
                                 return (
                                     <div
                                         key={index}
-                                        className={messagesStyles.message_cont}
+                                        className={styles.message_cont}
                                         style={{
                                             justifyContent: messageData.sequence[index] == order ? "flex-end" : "flex-start",
                                         }}>
-                                        <div className={messagesStyles.message_cont_text_cont}>
+                                        <div className={styles.message_cont_text_cont}>
                                             {e}
                                         </div>
                                     </div>
@@ -105,9 +105,9 @@ const MessagesChat: React.FC = () => {
                         <MessagesInput setMessageData={setMessageData} interlocutor={interlocutor} />
                     </>
                     :
-                    <div className={messagesStyles.choose_interlocutor_cont}>
-                        <WechatFilled className={messagesStyles.choose_interlocutor_icon} />
-                        <Typography className={messagesStyles.choose_interlocutor}>
+                    <div className={styles.choose_interlocutor_cont}>
+                        <WechatFilled className={styles.choose_interlocutor_icon} />
+                        <Typography className={styles.choose_interlocutor}>
                             Choose your interlocutor and start messaging
                         </Typography>
                     </div>

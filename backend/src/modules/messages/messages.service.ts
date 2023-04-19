@@ -9,9 +9,11 @@ export class MessagesService {
   constructor(private readonly prisma: PrismaService) { }
 
 
-  async lastMessages(ctx:any,page: number, perPage: number) {
-    const req: UserReq = ctx.req;
-    const currentUser = req.session.user;
+  async lastMessages(ctx:any,
+     page: number, 
+     perPage: number) {
+     const req: UserReq = ctx.req;
+     const currentUser = req.session.user;
     
     let messages = await this.prisma.messages.findMany({
       where: {

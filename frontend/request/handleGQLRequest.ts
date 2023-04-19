@@ -1,10 +1,9 @@
 import axios from "axios";
 import { query } from "gql-query-builder";
-import decode from "jwt-decode";
+import { perPage } from "../configs/configs";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
     const userFields = ["name","lastVisited", "friends", "image", "sentRequests", "friendRequests", "email", "active","id"];
-    const perPage = 4;
     let variables = {};
     let fields: any[] = [];
 
@@ -49,7 +48,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     }
 
     if(operation == "GetLastMessages") {
-        const { perPage, page } = args
+        const { page } = args
         variables = {
             page: {type: "Float!", value: page},
             perPage: {type: "Float!", value: perPage}
@@ -91,7 +90,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
     }
 
     if(operation == "GetWelcomeNews") {
-        fields = ["description", "title"]
+        fields = ["description", "title"];
     }
 
     if(operation == "FindUserById") {
@@ -109,13 +108,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
             fields: fields
         })).then((res) => {            
             if (res.data?.data) {
-                if (operation == "SignIn") {
-                    if (res.data?.data?.SignIn?.token) {
-                      localStorage.setItem("token", res.data?.data?.SignIn?.token)
-                      return decode(res.data?.data?.SignIn?.token);
-                     }
-                }
-                return res.data.data;
+                return res.data?.data;
             } else if (res.data.errors) {
                 return res.data.errors[0]
             };
