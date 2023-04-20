@@ -6,12 +6,14 @@ import { GraphQLError } from 'graphql';
 import { CloudinaryService } from 'src/middlewares/cloudinary/cloudinary.service';
 import { UserReq } from 'types/types';
 import { JwtService } from "../../middlewares/jwt/jwt.service";
-
+import { MailerService } from '@nestjs-modules/mailer';
+import { random } from 'lodash';
 
 @Injectable()
 export class AuthService {
     constructor(private readonly prisma: PrismaService,
         private readonly jwt: JwtService,
+        private readonly mailerService: MailerService,
         private readonly cloudinary: CloudinaryService) { };
 
     async addUser(user: Omit<UserType, "active">): Promise<any> {
@@ -107,5 +109,32 @@ export class AuthService {
         }).catch((e) => {
              return {message: e.message};
         });
+    }
+
+    async recoverEmail(email: string):Promise<any>{
+      const recoverPassword = random(100000, 999999);
+      console.log(email,recoverPassword);
+      const user = await this.prisma.users.findUnique({
+          where: {
+            email
+          }
+      });
+       if(user?.email) {
+
+        return await this.mailerService.sendMail({
+            to: email,
+            subject: 'Recover password for TalkSpace account',
+            text: `Your recovery password is ${recoverPassword.toString()}`
+        }).then(() => {
+            return {code: recoverPassword};
+        }).catch(() => {
+            return {message: "Error Occured"};
+        }) ;
+        
+       } else {
+         return {
+            message: "User not found"
+         }
+       }
     }
 }

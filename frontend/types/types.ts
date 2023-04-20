@@ -72,3 +72,8 @@ export interface NewsModalProps {
     },
     toggleModal: Function
 }
+
+export interface TimeStampType {
+    min: number,
+    sec: number
+}

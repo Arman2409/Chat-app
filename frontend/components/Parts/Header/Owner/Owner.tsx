@@ -11,6 +11,7 @@ import { IRootState } from "../../../../store/store";
 import handleGQLRequest from "../../../../request/handleGQLRequest";
 import { setStoreUser, setUserWindow } from "../../../../store/userSlice";
 import { useOnClickOutside } from "usehooks-ts";
+import RecoverPassword from "./RecoverPassword/Recover";
 
 const Owner = ({userContRef}:any) => {
     const [message, setMessage] = useState<string>("");
@@ -77,13 +78,20 @@ const Owner = ({userContRef}:any) => {
                         <SignInUp changeStatus={changeSignStatus} type={"SignUp"} />      
                       : signStatus == "SignIn" ?
                         <SignInUp  changeStatus={changeSignStatus} type={"SignIn"} />
-                        : null}
+                        : signStatus == "Recover" ?
+                           <RecoverPassword /> : null}
                     <div className={styles.owner_link_cont}>
                         <a
                             onClick={() => setSignStatus(status => status == "SignIn" ? "SignUp" : "SignIn")}
                             className={styles.owner_link_cont_link}>
                             {signStatus == "SignUp" ? "Sign In" : "Sign Up"}
                         </a>
+                       {signStatus == "SignIn" && 
+                        <a
+                           onClick={() => setSignStatus("Recover")}
+                           className={styles.owner_link_cont_link}>
+                             Forgot Password?
+                         </a>}
                     </div>
                 </>
             }

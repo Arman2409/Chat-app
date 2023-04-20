@@ -80,3 +80,13 @@ export class  MessageType {
     @Field()
     lastDate:string
 }
+
+
+@ObjectType()
+export class RecoverType {
+    @Field({nullable: true})
+    code?:number
+
+    @Field({ nullable: true})
+    message?: string
+}

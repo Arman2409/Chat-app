@@ -102,6 +102,13 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         fields = userFields
     }
 
+    if(operation == "RecoverPassword") {
+        const { email } = args;
+        variables = {
+            email: {type: "String!", value: email}
+        };
+        fields = ["code", "message"]
+    }
 
     return await axios.post("/graphql", query({
             operation,

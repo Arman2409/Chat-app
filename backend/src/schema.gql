@@ -31,11 +31,17 @@ type NewsType {
   description: String!
 }
 
+type RecoverType {
+  code: Float
+  message: String
+}
+
 type Query {
   SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
   SignIn(email: String!, password: String!): TokenType!
   SignOut: String!
   AlreadySigned(token: String!): UserType!
+  RecoverPassword(email: String!): RecoverType!
   SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
   FindUserById(id: String!): UserType!

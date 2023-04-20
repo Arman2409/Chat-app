@@ -1,7 +1,7 @@
 import { Resolver, Args, Query, Context } from "@nestjs/graphql"
 
 import { AuthService } from "./auth.service";
-import { TokenType, UserType } from "types/graphqlTypes";
+import { RecoverType, TokenType, UserType } from "types/graphqlTypes";
 import { UserReq } from "types/types";
 
 @Resolver()
@@ -41,5 +41,12 @@ export class AuthResolver {
       @Args("token") token: string
    ):any {
       return this.auth.setSession(ctx, token);
+   }
+
+   @Query(() => RecoverType, { name: "RecoverPassword" })
+   recoverPassword(
+      @Args("email") email: string
+   ):any {
+      return this.auth.recoverEmail(email);
    }
 }
