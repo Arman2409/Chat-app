@@ -15,7 +15,7 @@
     padding: 10px;
     justify-content: space-between;
 
-    &_info{
+    &_info {
        font-size: 25px;
 
        &_icon {
@@ -45,11 +45,16 @@
         }
     }
 
+    &_add_friend {
+      cursor: pointer;
+    }
+
   }
 
   .messages_cont {
     overflow-y: scroll;
     height: calc(100% - 160px);
+    position: relative;
 
     &::before {
       content: "";

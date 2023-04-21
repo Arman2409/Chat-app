@@ -1,12 +1,9 @@
 import React, { useRef } from "react";
-import { Avatar, Typography } from "antd";
-
+import { Avatar, Badge, Button, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { WechatFilled } from "@ant-design/icons";
-import { HiOutlineStatusOnline } from "react-icons/hi";
-import { FaUserFriends } from "react-icons/fa";
 
 import messagesStyles from "../../../styles/Parts/MessagesChat.module.scss";
 import { IRootState } from "../../../store/store";
@@ -14,16 +11,22 @@ import { MessagesDataType, UserType } from "../../../types/types";
 import { getSendersId, getSlicedWithDots } from "../../../functions/functions";
 import { setMessagesData } from "../../../store/messagesSlice";
 import MessagesInput from "./MessagesInput/MessagesInput";
+import handleGQLRequest from "../../../request/handleGQLRequest";
+import { setStoreUser } from "../../../store/userSlice";
+import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 
 const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
     const [interlocutor, setInterlocutor] = useState<UserType>({} as UserType)
+    const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
     const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
-    const user: UserType = useSelector((state: IRootState) => {
+    const storeUser: UserType = useSelector((state: IRootState) => {
         return state.user.user;
     });
+    const [user, setUser] = useState<UserType>(storeUser);
+    const isFriend = user.friends?.includes(interlocutor.id);
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
     });
@@ -31,6 +34,41 @@ const MessagesChat: React.FC = () => {
         return state.socket.socket;
     });
     const router: any = useRouter();
+
+    const { setMessageOptions } = useOpenAlert();
+
+
+    const addFriend = () => {
+        setLoadingAdd(true);
+        (async function () {
+            if (user.email) {
+                const addStatus = await handleGQLRequest("AddFriend", {id: interlocutor.id});    
+                if(addStatus.message) {
+                    setMessageOptions({
+                        message: addStatus.message,
+                        type: "error"
+                    });
+                }
+                if (addStatus?.AddFriend?.email) {
+                    setMessageOptions({
+                        message: "Request Sent",
+                        type: "success"
+                    });
+                    dispatch(setStoreUser(addStatus.AddFriend));
+                } else if(addStatus.errors) {
+                    setMessageOptions({
+                        message: addStatus.errors[0],
+                        type: "error"
+                    });
+                }
+            } else {
+                setMessageOptions({
+                    message: "Sign in to add friends",
+                    type: "warning"
+                });
+            }
+        })()
+    }
 
     useEffect(() => {
         if (!user.name) {
@@ -66,23 +104,33 @@ const MessagesChat: React.FC = () => {
         }
     }, [messageData]);
 
+    useEffect(() => {
+        setUser(storeUser);
+    }, [storeUser])
+
     return (
         <>
             <div className={messagesStyles.chat_cont}>
                 {interlocutor.name ?
                     <>
                         <div className={messagesStyles.interlocutor_cont}>
-                            <div className={messagesStyles.interlocutor_cont_info}>
-                                    <HiOutlineStatusOnline className={`${messagesStyles.interlocutor_cont_info_icon} ${interlocutor.active && messagesStyles.interlocutor_cont_info_active}`} />
-                                    <FaUserFriends className={`${messagesStyles.interlocutor_cont_info_icon} ${user.friends?.includes(interlocutor.id) && messagesStyles.interlocutor_cont_info_active}`}/>
-                                </div>
+                            <div>
+                           {!isFriend && 
+                              <Button onClick={() => addFriend()} className={messagesStyles.interlocutor_cont_add_friend}>
+                                 Add Friend
+                              </Button>}
+                             </div>
                             <div className={messagesStyles.interlocutor_cont_name}>
                                 <h5 className={messagesStyles.interlocutor_name}>
                                     {interlocutor.name ?
                                         interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
                                         : ""}
                                 </h5>
-                                <Avatar className={messagesStyles.interlocutor_avatar} src={interlocutor.image} />
+                                <Badge dot={interlocutor.active ? true : false}>
+                                      <Avatar 
+                                         className={messagesStyles.interlocutor_avatar} 
+                                         src={interlocutor.image} />
+                                 </Badge>
                             </div>
                         </div>
                         <div className={messagesStyles.messages_cont} ref={messagesRef}>

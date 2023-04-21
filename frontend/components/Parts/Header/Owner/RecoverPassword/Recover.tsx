@@ -1,24 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button,Typography, Form, Input } from "antd";
-import { useSelector } from "react-redux";
 
 import styles from "../../../../../styles/Parts/Header/Owner/RecoverPassword/RecoverPassword.module.scss";
 import handleGQLRequest from "../../../../../request/handleGQLRequest";
-import { TimeStampType, UserType } from "../../../../../types/types";
+import { RecoverProps, TimeStampType } from "../../../../../types/types";
 import { getTimeString } from "../../../../../functions/functions";
-import { IRootState } from "../../../../../store/store";
+import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 
-const RecoverPassword = () => {
+const RecoverPassword = ({changeStatus}:RecoverProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [emailCodePass, setEmailCodePass] = useState<string|number>("");
     const [message, setMessage] = useState<string>("");
     const [recoveringStatus, setRecoveringStatus] = useState<string>("getCode");
-    const [code, setCode] = useState<number>();
-    const [newPassword, setNewPassword] = useState<string>("");
-            //    should be given from the config 
+    const [recoverOptions, setRecoverOptions] = useState<any>({});
+    const [repeatPassword, setRepeatPassword] = useState<string>("");
+            //  .................  should be given from the config 
     const [timestamp, setTimestamp] = useState<TimeStampType>({min: 3, sec: 0});
-    const storeUser:UserType = useSelector<IRootState>((state) => state.user.user) as any;
     const confirmInterval = useRef<any>();
+    const {setMessageOptions} = useOpenAlert();
+
 
 
     const getCode = () => {
@@ -27,7 +27,7 @@ const RecoverPassword = () => {
             const response = await handleGQLRequest("RecoverPassword", { email: emailCodePass });
             if (response?.RecoverPassword?.code) {
                setRecoveringStatus("confirm");
-               setCode(response?.RecoverPassword?.code);
+               setRecoverOptions(response?.RecoverPassword);
                confirmInterval.current = setInterval(() => {
                   if (timestamp.sec === 0 && timestamp.min === 0) {
                     clearInterval(confirmInterval.current);
@@ -35,6 +35,11 @@ const RecoverPassword = () => {
                   }
                   setTimestamp((curr:any) => {
                     if(curr.sec === 0 && curr.min === 0) {
+                        changeStatus("SignIn");
+                        setMessageOptions({
+                            type: "error",
+                            messge: "Recovery failed"
+                        });
                         return curr;
                     }
                     if(curr.sec <= 0) {
@@ -58,18 +63,38 @@ const RecoverPassword = () => {
     };
 
     const confirm = () => {
-        if (emailCodePass === code) {
+        if (Number(emailCodePass) === recoverOptions.code) {
             setRecoveringStatus("setPassword");
+        } else {
+            setMessage("Wrong recovery code");
         }
     };
 
     const changePassword = async () => {
-        console.log(storeUser.password,emailCodePass);
-        
-         if (storeUser.password === emailCodePass) {
-            // .............
-             console.log("same");
-             const newPassword = await handleGQLRequest("ChangePassword")
+         if (emailCodePass === repeatPassword) {
+             const newPassword = await handleGQLRequest("ConfirmRecoveredPassword", {id: recoverOptions.id, newPassword: emailCodePass});
+             
+             if(newPassword?.ConfirmRecoveredPassword?.successMessage) {                
+                setMessageOptions({
+                    type: "success",
+                    message: newPassword?.ConfirmRecoveredPassword?.successMessage
+                });
+             } else if(newPassword?.ConfirmRecoveredPassword?.message) {
+                setMessageOptions({
+                    type: "error",
+                    message: newPassword?.ConfirmRecoveredPassword?.message
+                });
+             } else {
+                setMessageOptions({
+                    type: "error",
+                    message: "Not Changed"
+                });
+             }
+          
+            //  changeStatus("SignIn");
+             
+         } else {
+            setMessage("Please repeat the password");
          }
     };
 
@@ -79,21 +104,31 @@ const RecoverPassword = () => {
 
     return (
         <div className={styles.recover_password_main}>
-            <Typography>
+            <Typography className={styles.recover_password_main_title} style={{
+                color: recoveringStatus === "failed" ? "red" : "",
+            }}>
                {recoveringStatus === "getCode" ? " Enter your email to get the verification code" :
                 recoveringStatus === "confirm" ? "Enter the verification code sent to your email" : ""}
             </Typography>
-            <Form onFinish={recoveringStatus === "getCode" ? getCode : recoveringStatus === "confirm" ? confirm : recoveringStatus === "setPassword" ? changePassword : () => {}}>
+            <Form 
+              className={styles.form_item}
+              onFinish={recoveringStatus === "getCode" ? getCode :
+                            recoveringStatus === "confirm" ? confirm :
+                           recoveringStatus === "setPassword" ? changePassword : () => {}}>
                 <Form.Item
                     className={styles.form_item}
-                    name={recoveringStatus === "getCode" ? "email" : recoveringStatus === "confirm" ? "code" : recoveringStatus === "setPassword" ? "password" : ""}
-                    rules={[{ required: true, min: 4 }]}
+                    name={recoveringStatus === "getCode" ? "email" :
+                          recoveringStatus === "confirm" ? "code" :
+                          recoveringStatus === "setPassword" ? "password" : ""}
+                    rules={recoveringStatus === "setPassword" ? [{ required: true, min: 8 }] : [{ required: true, min: 4 }]}
                 >
                     <Input
                         value={emailCodePass}
                         
                         onChange={(e) => setEmailCodePass(e?.target?.value)}
-                        placeholder={recoveringStatus === "getCode" ? "Email" : recoveringStatus === "confirm" ? "Code" : recoveringStatus === "setPassword" ? "Old Password" : ""}
+                        placeholder={recoveringStatus === "getCode" ? "Email" :
+                                     recoveringStatus === "confirm" ? "Code" :
+                                     recoveringStatus === "setPassword" ? "New Password" : ""}
                         className={styles.sign_input} />
                 </Form.Item>
                 { recoveringStatus === "setPassword" &&   
@@ -103,21 +138,20 @@ const RecoverPassword = () => {
                     rules={[{ required: true, min: 4 }]}
                 >
                     <Input
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e?.target?.value)}
-                        placeholder="New Password"
+                        value={repeatPassword}
+                        onChange={(e) => setRepeatPassword(e?.target?.value)}
+                        placeholder="Repeat Password"
                         className={styles.sign_input} />
                 </Form.Item>}
                 { recoveringStatus === "confirm" &&
-                <Typography>
+                <Typography className={styles.timeout_string}>
                     {getTimeString(timestamp)}
                 </Typography>
                 }
-                <Typography>
+                <Typography className={styles.message}>
                     {message}
                 </Typography>
-                <Form.Item
-                    className={styles.form_item_button}>
+                <Form.Item>
                     <Button
                         type="primary"
                         htmlType="submit"

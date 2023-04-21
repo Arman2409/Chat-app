@@ -10,6 +10,9 @@
        width: 100%; 
        display: flex;
        align-items: center; 
+       background-size: 100% 100%;
+       background-repeat: no-repeat;
+       background-image: url("../../../assests/images/EmbellishedAbsoluteKestrel-size_restricted.gif");
        .header_cont {
                 float: left;
                 width: 120px;
@@ -18,7 +21,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-color: $color1;
+             
          }
           .requests_badge{
             margin-left: auto;

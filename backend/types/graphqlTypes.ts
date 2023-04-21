@@ -87,6 +87,12 @@ export class RecoverType {
     @Field({nullable: true})
     code?:number
 
+    @Field({nullable: true})
+    successMessage?:string
+
+    @Field({nullable: true})
+    id?:string
+
     @Field({ nullable: true})
     message?: string
 }

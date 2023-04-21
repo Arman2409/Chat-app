@@ -1,9 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from 'nestjs-prisma';
 import {UserReq} from 'types/types';
-import { getStartEndTotal, sortByActivesFirst} from 'src/functions/functions';
-import {GraphQLError} from "graphql";
-
+import { getStartEnd, sortByActivesFirst} from 'src/functions/functions';
 
 @Injectable()
 export class SearchService {
@@ -39,7 +37,7 @@ export class SearchService {
         };
 
         const total = data.length;
-        const {startIndex, endIndex} = getStartEndTotal(page, perPage, data.length);
+        const {startIndex, endIndex} = getStartEnd(page, perPage, data.length);
 
         data = sortByActivesFirst(data);
         data = data.slice(startIndex, endIndex);
@@ -75,7 +73,7 @@ export class SearchService {
                 }
                  
                 const total = friends.length;
-                const {startIndex, endIndex} = getStartEndTotal(page, perPage, friends.length);
+                const {startIndex, endIndex} = getStartEnd(page, perPage, friends.length);
                 friends = sortByActivesFirst(friends);
                 friends = friends.splice(startIndex, endIndex);
                 return {users: friends, total: total};

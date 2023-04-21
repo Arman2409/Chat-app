@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Typography, Button } from "antd";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
+import { useOnClickOutside } from "usehooks-ts";
 
 import styles from "../../../../styles/Parts/Header/Owner/Owner.module.scss";
 import SignInUp from "./SignInUp/SignInUp";
@@ -10,7 +11,6 @@ import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";
 import handleGQLRequest from "../../../../request/handleGQLRequest";
 import { setStoreUser, setUserWindow } from "../../../../store/userSlice";
-import { useOnClickOutside } from "usehooks-ts";
 import RecoverPassword from "./RecoverPassword/Recover";
 
 const Owner = ({userContRef}:any) => {
@@ -79,18 +79,19 @@ const Owner = ({userContRef}:any) => {
                       : signStatus == "SignIn" ?
                         <SignInUp  changeStatus={changeSignStatus} type={"SignIn"} />
                         : signStatus == "Recover" ?
-                           <RecoverPassword /> : null}
+                           <RecoverPassword changeStatus={changeSignStatus} />
+                     : null}
                     <div className={styles.owner_link_cont}>
                         <a
-                            onClick={() => setSignStatus(status => status == "SignIn" ? "SignUp" : "SignIn")}
+                            onClick={() => setSignStatus(status => status == "SignIn" ? "SignUp" : "SignUp" ? "SignIn" : "Recover" ? "SignIn" : "")}
                             className={styles.owner_link_cont_link}>
-                            {signStatus == "SignUp" ? "Sign In" : "Sign Up"}
+                            {signStatus == "SignUp" ? "Sign In" : signStatus == "SignIn" ? "Sign Up" : signStatus == "Recover" ? "Sign In" : "" }
                         </a>
                        {signStatus == "SignIn" && 
                         <a
                            onClick={() => setSignStatus("Recover")}
                            className={styles.owner_link_cont_link}>
-                             Forgot Password?
+                             Forgot Password
                          </a>}
                     </div>
                 </>

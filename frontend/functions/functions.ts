@@ -5,8 +5,8 @@ export const getSlicedWithDots = (word: string, lettersCount: number) => {
   return  word.slice(0, lettersCount) + "...";
 };
 
-export const getSendersId = (array: any[], userId:number) => {
-  return array.filter((id: string) => id.toString() !== userId.toString())[0]
+export const getSendersId = (array: any[], userId:string) => {
+  return array.filter((id: string) => id.toString() !== userId)[0]
 }
 
 export const getTimeString = (timestamp:TimeStampType) => {
@@ -17,7 +17,7 @@ export const getTimeString = (timestamp:TimeStampType) => {
     minutes = timestamp.min.toString()
   }
   if(timestamp.sec < 10) {
-    seconds = "0" + timestamp.min.toString();
+    seconds = "0" + timestamp.sec.toString();
   } else {
     seconds = timestamp.sec.toString()
   }

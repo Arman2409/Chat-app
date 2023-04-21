@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { UserReq } from 'types/types';
-import { getStartEndTotal } from 'src/functions/functions';
+import { getStartEnd } from 'src/functions/functions';
 
 
 @Injectable()
@@ -22,7 +22,7 @@ export class MessagesService {
     });
 
     const length = messages.length;
-    const { startIndex, endIndex } = getStartEndTotal(page, perPage, length);
+    const { startIndex, endIndex } = getStartEnd(page, perPage, length);
     messages = messages.slice(startIndex, endIndex);
     return {total: length, users: messages.map(async message => {
         const lastMessage = message?.messages[message?.messages?.length - 1];

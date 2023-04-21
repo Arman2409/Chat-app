@@ -67,10 +67,11 @@ a {
   .ant-message-notice-content {
     width: 200px;
     height: 75px;
+    font-size: 20px;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    background-color: $color5 !important;
+    background-color: $color1 !important;
     color: $color4;
     box-shadow: -10px 0px 13px -7px $color3, 10px 0px 13px -7px $color3, 5px 5px 15px 5px $color3 !important;
   }

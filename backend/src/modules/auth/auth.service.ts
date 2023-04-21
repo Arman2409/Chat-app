@@ -126,7 +126,7 @@ export class AuthService {
             subject: 'Recover password for TalkSpace account',
             text: `Your recovery password is ${recoverPassword.toString()}`
         }).then(() => {
-            return {code: recoverPassword};
+            return {code: recoverPassword, id: user.id};
         }).catch(() => {
             return {message: "Error Occured"};
         }) ;
@@ -136,5 +136,34 @@ export class AuthService {
             message: "User not found"
          }
        }
+    }
+
+    async confirmNewPassword(id:string, newPassword: string) {
+        const user = await this.prisma.users.findUnique({
+            where: {
+              id
+            }
+        });
+         if(user?.email) {
+            console.log(newPassword);
+            
+            const hashedPassword: string = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS));
+            return await this.prisma.users.update({
+                where: {
+                  id
+                },
+                data: {
+                    password: hashedPassword
+                }
+            }).then((res) => {
+                console.log(res);
+                
+                return {successMessage: "Password changed succesfully"}
+            }).catch(() => {
+               return {message: "Failed"}
+            });
+         } else {
+            return {message: "Failed"}
+         }
     }
 }

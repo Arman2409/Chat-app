@@ -59,7 +59,6 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             const res = await handleGQLRequest("SignIn", { email, password: "pass" });
             if (!res.email) {
                 if (res.SignIn?.message) {
-                    console.log("here 1");
                     setMessage(getSlicedWithDots(res.SignIn?.message, 20));
                     setLoadingRequest(false);
                     return;
@@ -79,10 +78,10 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             dispatch(setStoreUser(res));
         }
         else if (type == "SignUp") {
-            // if(repeatPassword !== password) {
-            //     setMessage("Password must be repeated")
-            //     return;
-            // }
+            if(repeatPassword !== password) {
+                setMessage("Password must be repeated")
+                return;
+            }
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignUp", { email: name, password: "pass", name, image: imageUrl });
             if (!res.email) {
@@ -152,7 +151,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                         </Form.Item>
                         <Form.Item
                             className={styles.form_item}
-                            // rules={[{ required: true, min: 3 }]}
+                            rules={[{ required: true, min: 3 }]}
                             name="name" >
                             <Input
                                 placeholder="Name"
@@ -161,7 +160,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                     </>
                     : null}
                 <Form.Item
-                    // rules={[{ required: true }]}
+                    rules={[{ required: true }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -170,7 +169,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
-                    // rules={[{ required: true, min: 8 }]}
+                    rules={[{ required: true, min: 8 }]}
                     name={"password"}>
                     <Input
                         placeholder="Password"
@@ -180,7 +179,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 {type == "SignUp" ?
                     <Form.Item
                         className={styles.form_item}
-                        // rules={[{ required: true, min: 8 }]}
+                        rules={[{ required: true, min: 8 }]}
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"

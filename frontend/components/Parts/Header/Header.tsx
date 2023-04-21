@@ -11,7 +11,7 @@ import {IoPersonSharp} from "react-icons/io5";
 import Image from "next/image";
 import { io } from "socket.io-client";
 
-import Logo from "/logo-files/svg/logo-no-background.svg";
+import Logo from "/assests/logo-files/svg/logo-no-background.svg";
 import {IRootState} from "../../../store/store";
 import styles from "../../../styles/Parts/Header/Header.module.scss";
 import Owner from "./Owner/Owner";

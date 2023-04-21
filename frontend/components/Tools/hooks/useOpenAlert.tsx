@@ -16,7 +16,7 @@ const useOpenAlert = () => {
        if(type == "warning") {
          message.warning(string, 1);
        }
-       if(type == "succes") {
+       if(type == "success") {
         message.success(string, 1);
       }
         clearTimeout(timeoutRef.current);

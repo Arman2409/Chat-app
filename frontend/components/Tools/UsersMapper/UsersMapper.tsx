@@ -47,7 +47,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
         accept ? await accept(item.id) : null;
     }
 
-    const addFriend: Function = (id: string, event: Event) => {
+    const handleAddFriend: Function = (id: string, event: Event) => {
         event.stopPropagation();
         setButtonsDisabled(true);
         (async function () {
@@ -106,8 +106,6 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
     };
 
     useEffect(() => {
-        console.log({users});
-        
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
         setLoading(false);
@@ -168,7 +166,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
                         </div>
                         {(!friends && user.name) ? lastMessages ? <p className={styles.list_item_action_message}>{getSlicedWithDots(item.lastMessage,25)}</p> : user.sentRequests?.includes(item.id) ? 
                         <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
-                            <Button disabled={buttonsDisabled} className={styles.list_item_action} onClick={(e) => addFriend(item.id, e)}>Add
+                            <Button disabled={buttonsDisabled} className={styles.list_item_action} onClick={(e) => handleAddFriend(item.id, e)}>Add
                                 Friend</Button> : accept ?
                                 <Button className={styles.list_item_action} disabled={buttonsDisabled} ref={acceptLink}
                                    onClick={(e) => acceptRequest(item, e)}>Accept</Button> : ""}

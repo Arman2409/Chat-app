@@ -49,4 +49,12 @@ export class AuthResolver {
    ):any {
       return this.auth.recoverEmail(email);
    }
+
+   @Query(() => RecoverType, { name: "ConfirmRecoveredPassword" })
+   changePassword(
+      @Args("id") id:string,
+      @Args("newPassword") password: string,
+   ):any {
+      return this.auth.confirmNewPassword(id, password);
+   }
 }

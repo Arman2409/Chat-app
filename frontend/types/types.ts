@@ -51,6 +51,10 @@ export interface SignProps {
     changeStatus: Function
 }
 
+export interface RecoverProps {
+    changeStatus: Function
+}
+
 export interface LoadingProps {
     type?: string  
 }
