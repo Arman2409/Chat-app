@@ -6,6 +6,7 @@ import handleGQLRequest from "../../../../../request/handleGQLRequest";
 import { RecoverProps, TimeStampType } from "../../../../../types/types";
 import { getTimeString } from "../../../../../functions/functions";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
+import { recoverPasswordWaitTime } from "../../../../../configs/configs";
 
 const RecoverPassword = ({changeStatus}:RecoverProps) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -15,11 +16,9 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
     const [recoverOptions, setRecoverOptions] = useState<any>({});
     const [repeatPassword, setRepeatPassword] = useState<string>("");
             //  .................  should be given from the config 
-    const [timestamp, setTimestamp] = useState<TimeStampType>({min: 3, sec: 0});
+    const [timestamp, setTimestamp] = useState<TimeStampType>({min: recoverPasswordWaitTime / 1000, sec: 0});
     const confirmInterval = useRef<any>();
     const {setMessageOptions} = useOpenAlert();
-
-
 
     const getCode = () => {
         (async () => {
@@ -72,13 +71,14 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
 
     const changePassword = async () => {
          if (emailCodePass === repeatPassword) {
+             setLoading(true);
              const newPassword = await handleGQLRequest("ConfirmRecoveredPassword", {id: recoverOptions.id, newPassword: emailCodePass});
              
              if(newPassword?.ConfirmRecoveredPassword?.successMessage) {                
                 setMessageOptions({
                     type: "success",
                     message: newPassword?.ConfirmRecoveredPassword?.successMessage
-                });
+                });                
              } else if(newPassword?.ConfirmRecoveredPassword?.message) {
                 setMessageOptions({
                     type: "error",
@@ -89,9 +89,10 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
                     type: "error",
                     message: "Not Changed"
                 });
-             }
-          
-            //  changeStatus("SignIn");
+            }
+            setTimeout(() => {
+              changeStatus("SignIn");
+            }, 350);
              
          } else {
             setMessage("Please repeat the password");
@@ -100,6 +101,7 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
 
     useEffect(() => {
        setMessage("");
+       setLoading(false);
     }, [recoveringStatus]);
 
     return (
@@ -124,7 +126,7 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
                 >
                     <Input
                         value={emailCodePass}
-                        
+                        disabled={loading}
                         onChange={(e) => setEmailCodePass(e?.target?.value)}
                         placeholder={recoveringStatus === "getCode" ? "Email" :
                                      recoveringStatus === "confirm" ? "Code" :
@@ -138,6 +140,7 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
                     rules={[{ required: true, min: 4 }]}
                 >
                     <Input
+                        disabled={loading}
                         value={repeatPassword}
                         onChange={(e) => setRepeatPassword(e?.target?.value)}
                         placeholder="Repeat Password"
@@ -153,6 +156,7 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
                 </Typography>
                 <Form.Item>
                     <Button
+                        disabled={loading}
                         type="primary"
                         htmlType="submit"
                         className={styles.sign_button}
