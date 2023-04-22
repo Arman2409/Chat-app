@@ -7,11 +7,12 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
 import { last } from "lodash";
+import decode from "jwt-decode";
 
 import handleGQLRequest from "../../../../../request/handleGQLRequest";
 import styles from "../../../../../styles/Parts/Header/Owner/SignInUp/SignInUp.module.scss";
 import { setStoreUser } from "../../../../../store/userSlice";
-import { SignProps } from "../../../../../types/types";
+import { SignProps, UserType } from "../../../../../types/types";
 import Loading from "../../../../Custom/Loading/Loading";
 import { getSlicedWithDots } from "../../../../../functions/functions";
 import { setSocket } from "../../../../../store/socketSlice";
@@ -57,7 +58,13 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
         if (type == "SignIn") {
             setLoadingRequest(true)
             const res = await handleGQLRequest("SignIn", { email, password: "pass" });
-            if (!res.email) {
+            let user:UserType = {} as UserType;
+            
+            if(res.SignIn?.token) {
+                user = decode(res.SignIn?.token);
+                localStorage.setItem("token", res.SignIn?.token)
+            }
+            if (!user.email) {
                 if (res.SignIn?.message) {
                     setMessage(getSlicedWithDots(res.SignIn?.message, 20));
                     setLoadingRequest(false);
@@ -72,10 +79,10 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 return;
             }
             let socket = io("ws://localhost:4000");
-            socket.emit("signedIn", { id: res.id });
+            socket.emit("signedIn", { id: user.id });
             dispatch(setSocket(socket));
             setLoadingRequest(false);
-            dispatch(setStoreUser(res));
+            dispatch(setStoreUser(user));
         }
         else if (type == "SignUp") {
             if(repeatPassword !== password) {

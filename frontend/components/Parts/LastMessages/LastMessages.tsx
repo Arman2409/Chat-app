@@ -1,22 +1,28 @@
 import { useEffect, useState } from "react";
-import { Pagination, Typography } from "antd";
+import { Typography } from "antd";
 
 import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import styles from "../../../styles/Parts/LastMessages.module.scss";
 
 const LastMessages:React.FC = () => {
-   const [current, setCurrent] = useState<number>(1);
    const [total, setTotal] = useState(100);
    const [lastMessages, setLastMessages] = useState<any[]>([])
 
-   useEffect(() => {
+   const getLastMessages = (page:number) => {
       (async function() {
-        const lastMessagesData = await handleGQLRequest("GetLastMessages", {page: current, perPage: 10});
-        setLastMessages(lastMessagesData?.GetLastMessages?.users);
-        setTotal(lastMessagesData?.GetLastMessages?.total);
-      })()
-   }, [current])
+         const lastMessagesData = await handleGQLRequest("GetLastMessages", {page});
+         console.log(lastMessagesData);
+         
+         setLastMessages(curr => [...curr,...lastMessagesData?.GetLastMessages?.users || []]);
+         setTotal(lastMessagesData?.GetLastMessages?.total);
+       })();
+   };
+
+
+   useEffect(() => {
+      getLastMessages(1);
+   }, []);
 
     return (
        <div className={styles.lastMessages_cont}>
@@ -24,14 +30,7 @@ const LastMessages:React.FC = () => {
             Last Messages
          </Typography>
          <div className="centered_users_cont">
-            <UsersMapper lastMessages={true} users={lastMessages} />
-            <Pagination 
-              className="users_pagination"
-              current={current} 
-              total={total}
-              showSizeChanger={false}
-              onChange={(e) => setCurrent(e)} 
-               />
+            <UsersMapper getUsers={(page:number) => getLastMessages(page)} lastMessages={true} total={total} users={lastMessages} />
          </div>
        </div>
     )

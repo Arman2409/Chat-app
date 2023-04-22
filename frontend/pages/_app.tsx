@@ -4,7 +4,6 @@ import { useMediaQuery } from 'react-responsive'
 
 import '../styles/globals.scss'
 import AppHeader from '../components/Parts/Header/Header'
-import OpenMessages from '../components/Custom/OpenMessages/OpenMessages'
 import Footer from '../components/Parts/Footer/Footer'
 import store, { IRootState } from '../store/store'
 import MessageAlert from "../components/Tools/MessageAlert/MessageAlert";
@@ -44,7 +43,6 @@ const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<App
        <>
         {!loaded && <Loading type="box" />} 
         <AppHeader />
-        <OpenMessages />
         <div className="main_cont">
             <MessageAlert/>
             <Component {...pageProps} />

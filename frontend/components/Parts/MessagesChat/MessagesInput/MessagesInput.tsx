@@ -1,10 +1,10 @@
 import React, { useRef, useState, useCallback } from "react";
-import data from '@emoji-mart/data'
+import data from '@emoji-mart/data';
+import Picker from "@emoji-mart/react";
 import { SmileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useOnClickOutside } from "usehooks-ts";
 import { useSelector } from "react-redux";
-import Picker from "@emoji-mart/react";
 
 import messagesStyles from "../../../../styles/Parts/MessagesChat.module.scss";
 import { IRootState } from "../../../../store/store";
@@ -77,7 +77,11 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
         </Button>
          {smileStatus &&
              <div ref={emojiRef} className={messagesStyles.emoji_cont}>
-                    <Picker data={data} onEmojiSelect={addEmoji} onChange={console.log}/>
+                    <Picker
+                      theme="dark"
+                      data={data} 
+                      onEmojiSelect={addEmoji}
+                       />
              </div> 
          }
         </div> 
