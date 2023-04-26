@@ -22,6 +22,7 @@ model Users {
   sentRequests String[] @default([])
   lastVisited String @default("")
   lastMesage String @default("")
+  notSeenCount Int @default(0)
 }
 
 model News {
@@ -36,4 +37,5 @@ model Messages {
   sequence Int[] @default([])
   messages String[] @default([])
   lastDate String @default("")
+  notSeenCount Int @default(0)
 }

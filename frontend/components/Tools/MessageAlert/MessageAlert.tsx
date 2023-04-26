@@ -63,7 +63,7 @@ const MessageAlert = () => {
         }
         
         const fromId = getSendersId(data.between, storeUser.id);
-        if(fromId === interlocutor.id) {
+        if(router.pathname === "myMessages" && fromId === interlocutor.id) {
             return;
         }
         setLoading(true);

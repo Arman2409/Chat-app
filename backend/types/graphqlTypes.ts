@@ -29,6 +29,9 @@ export class  UserType {
     @Field(type => [String])
     sentRequests?: any[]
 
+    @Field({nullable: true})
+    notSeenCount?: number
+
     @Field()
     lastVisited?: string
 
@@ -79,6 +82,9 @@ export class  MessageType {
 
     @Field()
     lastDate:string
+
+    @Field()
+    notSeenCount?: number
 }
 
 

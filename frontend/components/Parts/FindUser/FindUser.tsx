@@ -19,6 +19,7 @@ const SearchUser: React.FC = () => {
     const [users, setUsers] = useState<UserType[]>([]);
     const [total, setTotal] = useState<number>(1);
     const [name, setName] = useState<string>("");
+    const [childPage, setChildPage] = useState(1);
     const [loading, setLoading] = useState<boolean|string>(false);
     const user = useSelector((state: IRootState) => state.user.user);
     const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
@@ -34,34 +35,39 @@ const SearchUser: React.FC = () => {
             
             if (usersData.SearchInAll) {
                 if (usersData.SearchInAll.users) {
-                    setUsers([...users , ...usersData.SearchInAll.users]);
-                    setLoading(false)
+                    if(typeof debouncedSearch === "string") {
+                        setUsers([ ...usersData.SearchInAll.users]);
+                        
+                    }
+                    else if (usersData.SearchInAll?.users?.length){
+                       setUsers([...users , ...usersData.SearchInAll.users]);      
+                    };
                 } else {
                     setUsers([]);
-                    setLoading(false)
                 }
                 if (usersData.SearchInAll.total) {
-                    setLoading(false)
                     setTotal(usersData.SearchInAll.total);
                 } else {
                     setTotal(1);
-                    setLoading(false)
                 }
+                setLoading(false)
             } else if (usersData.SearchInFriends) {
                 if (usersData.SearchInFriends.users) {
-                    setUsers([...users, ...usersData.SearchInFriends.users]);
-                    setLoading(false)
+                    if(typeof debouncedSearch === "string") {
+                        setUsers([ ...usersData.SearchInFriends.users]);
+                    } else {
+                        setUsers([...users, ...usersData.SearchInFriends.users]);
+                    }
                 } else {
                     setUsers([]);
-                    setLoading(false)
                 }
                 if (usersData.SearchInFriends.total) {
-                    setLoading(false)
                     setTotal(usersData.SearchInFriends.total);
                 } else {
                     setTotal(1);
-                    setLoading(false)
                 }
+                setLoading(false);
+
             } else {
                 setTotal(1);
                 setLoading(false);
@@ -70,27 +76,32 @@ const SearchUser: React.FC = () => {
     };
 
     const search = useCallback((e: string) => {
+        setChildPage(1)
         if (e !== name) setName(e);
-        if (loading || debouncedSearch) return;
         if (searchOptionsRef.current.name == e) return;
         const args = {
-            ...searchOptionsRef.current,
+            type: searchOptionsRef.current.type,
             name: e,
+            page: 1
         }
         searchOptionsRef.current = args;
-        setLoading(true);
+        setLoading(e);
     }, [setLoading, searchOptionsRef, loading, debouncedSearch, name]);
 
     const searchChange = (e: any) => {
+        setChildPage(1);
+        console.log(loading, debouncedSearch);
+        console.log(e.target.value);
+        
         if (e !== name) setName(e.target.value);
-        if (loading || debouncedSearch) return;
         if (searchOptionsRef.current.name == e) return;
-        const args:any = {
-            ...searchOptionsRef.current,
+        const args = {
+            type: searchOptionsRef.current.type,
             name: e.target.value,
+            page: 1
         }
         searchOptionsRef.current = args;
-        setLoading(true);
+        setLoading(e.target.value);
     };
 
     const changePage: Function = useCallback((e: any) => {
@@ -100,12 +111,11 @@ const SearchUser: React.FC = () => {
             type: searchType
         }
         searchOptionsRef.current = args;
-        setLoading(true);
+        setLoading(e);
     }, [total, users, loading,  searchOptionsRef.current, setLoading]);
 
     const newSearchType: Function = (e: boolean) => {
         const type = (e ? "friends" : "all");
-        setSearchType(type);
         const args:any = {
             page: 1,
             name: name,
@@ -113,20 +123,33 @@ const SearchUser: React.FC = () => {
         };
         searchOptionsRef.current = args;
         setLoading(searchType);
+        setSearchType(type);
+        setChildPage(1);
         setUsers([]);
     };
 
     useEffect(() => {
-        if(debouncedSearch) {
+        console.log(debouncedSearch);
+        
+        if(debouncedSearch || debouncedSearch === "") {
             getSeachResults();
-        }
+        };
         if(!debouncedSearch && !loading && name !== searchOptionsRef.current.name) {
             search(name);
-        }
+        };
+        setLoading(false);
     }, [debouncedSearch])
 
     useEffect(() => {
-        setLoading(true);
+        searchOptionsRef.current = {
+            ...searchOptionsRef.current ,
+            page: 1
+        }
+        setLoading("user");
+        if(!user.name) {
+            newSearchType(false);
+        };
+        setChildPage(1);
     }, [user]);
 
     return (
@@ -155,7 +178,9 @@ const SearchUser: React.FC = () => {
                  <UsersMapper
                    getUsers={(page:number) => changePage(page)}
                    total={total}
-                   users={users} 
+                   users={users}
+                   newPage={childPage} 
+                   loadingSearch={loading}
                    friends={listType === "friends"}/>
             </div>
         </div>

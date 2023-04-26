@@ -78,6 +78,8 @@ const FriendRequests = ({clickOutside}: any) => {
        if(user.friendRequests.length) {
           getRequests();
           setLoading(true);
+       } else {
+         setUsers([]);
        }
    }, [user])
 
@@ -96,7 +98,8 @@ const FriendRequests = ({clickOutside}: any) => {
             } : {}}>
             {loading  && <Loading />}
             {user.friendRequests?.length ? 
-             <UsersMapper friendRequests={true}
+             <UsersMapper 
+              friendRequests={true}
               accept={accept} 
               friends={true} 
               users={users} /> :
