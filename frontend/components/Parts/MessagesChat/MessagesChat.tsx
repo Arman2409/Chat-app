@@ -19,6 +19,8 @@ const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
     const [interlocutor, setInterlocutor] = useState<UserType>({} as UserType)
     const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
+    const [requestSent, setRequestSent] = useState(false);
+
     const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
@@ -26,7 +28,7 @@ const MessagesChat: React.FC = () => {
         return state.user.user;
     });
     const [user, setUser] = useState<UserType>(storeUser);
-    const isFriend = user.friends?.includes(interlocutor.id);
+    const showAdd = !user.friends?.includes(interlocutor.id) && !user.sentRequests?.includes(interlocutor.id);
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
     });
@@ -67,6 +69,8 @@ const MessagesChat: React.FC = () => {
                     type: "warning"
                 });
             }
+            setLoadingAdd(false);
+            setRequestSent(true)
         })()
     }
 
@@ -115,8 +119,11 @@ const MessagesChat: React.FC = () => {
                     <>
                         <div className={styles.interlocutor_cont}>
                             <div>
-                           {!isFriend && 
-                              <Button onClick={() => addFriend()} className={styles.interlocutor_cont_add_friend}>
+                           {showAdd && !requestSent && 
+                              <Button 
+                                  onClick={() => addFriend()}
+                                  className={styles.interlocutor_cont_add_friend}
+                                  loading={loadingAdd}>
                                  Add Friend
                               </Button>}
                              </div>

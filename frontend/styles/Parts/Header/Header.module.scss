@@ -13,7 +13,7 @@
        background-size: 100% 100%;
        background-repeat: no-repeat;
        background-image: url("../../../assests/images/EmbellishedAbsoluteKestrel-size_restricted.gif");
-       .header_cont {
+       .header_logo_cont {
                 float: left;
                 width: 120px;
                 height: 31px;
@@ -21,29 +21,27 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-             
-                .open_cont {
-
-                  margin-left: auto;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-              
-                  &_icon {
-                    font-size: 35px;
-                    color: $color3;
-                    cursor: pointer;
-                    z-index: 3;
-              
-                    & svg {
-                      filter: drop-shadow(0px 0px 20px rgba(121, 67, 104));
-                    }
-                  }
-                }
-
          }
+         .open_cont {
+
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      
+          &_icon {
+            font-size: 35px;
+            color: $color3;
+            cursor: pointer;
+            z-index: 3;
+      
+            & svg {
+              filter: drop-shadow(0px 0px 20px rgba(121, 67, 104));
+            }
+          }
+        }
           .requests_badge{
-            margin-left: auto;
+            margin-left: 10px;
             .requests_icon {
               font-size: 20px;
               color:$color3;

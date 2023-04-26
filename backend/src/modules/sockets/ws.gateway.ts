@@ -71,8 +71,9 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData = {};
 
+        let previousMessaging;
         if (alreadyMessaged) {
-            const previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
+             previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
             remove(this.allMessages,(messages) => {
                 return messages === previousMessaging;
             });
@@ -92,12 +93,23 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                 lastDate: new Date().toString().slice(0, 10),
             }
         }
-        this.allMessages.push(
-            {
-                ...messageData,
-            }
-        );
-        this.server.sockets.in(to.toString()).emit("message", messageData);
+        if(this.activeUsers.includes(to)) {
+            this.allMessages.push(
+                {
+                    ...messageData,
+                }
+            );
+        }
+        else {
+            this.allMessages.push(
+                {
+                    ...messageData,
+                    notSeenCount: previousMessaging?.notSeenCount + 1 || 1,
+                }
+            );
+        }
+        this.server.sockets.in(to).emit("message", messageData);
+
         return messageData;
     }
 

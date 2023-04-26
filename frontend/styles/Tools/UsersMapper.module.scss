@@ -65,6 +65,7 @@
     &_message {
        @extend  .list_item;
        background-color: $color4;
+       display: flex;
 
         &_interlocutor {
           @extend .list_item_message;

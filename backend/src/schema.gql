@@ -12,6 +12,7 @@ type UserType {
   active: Boolean!
   friendRequests: [String!]!
   sentRequests: [String!]!
+  notSeenCount: Float
   lastVisited: String!
   lastMessage: String
 }

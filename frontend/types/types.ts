@@ -10,12 +10,13 @@ export interface UserType {
     sentRequests: any[],
     friends: any[],
     active: boolean,
-    lastMessage?: string
+    lastMessage?: string,
+    notSeenCount?: number,
 }
 
 export interface UserInitialState {
   user: UserType
-  userWindow: boolean
+  userWindow: boolean|string
 };
 
 export interface MessagesDataType {
@@ -60,13 +61,15 @@ export interface LoadingProps {
 }
 
 export interface MapperProps {
-  friends?: boolean;
+  friends?: boolean,
+  newPage? : number,
   getUsers?: Function,
+  loadingSearch?: string|boolean,
   total?: number,
-  friendRequests?: boolean;
+  friendRequests?: boolean,
   lastMessages?: boolean
-  accept?:Function;
-  users: any[];
+  accept?:Function,
+  users: any[],
 }
 
 export interface NewsModalProps {

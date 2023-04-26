@@ -97,7 +97,7 @@ export class AuthService {
     };
 
     async setSession(ctx:any ,token: string):Promise<any> {
-        const req: UserReq = ctx.req;
+        const req = ctx.req;
         const userData = this.jwt.authenticate(token);
         return this.prisma.users.findUnique({
             where: {

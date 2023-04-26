@@ -28,6 +28,9 @@ export class MessagesService {
     messages = messages.slice(startIndex, endIndex);
     return {total: length, users: messages.map(async message => {
         const lastMessage = message?.messages[message?.messages?.length - 1];
+        
+        const notSeenCount =  ((message.sequence[message.sequence?.length - 1] !== message.between?.indexOf(currentUser.id))) ? message?.notSeenCount : 0;
+        
         const userId = message?.between?.filter((elem):any => elem !== currentUser.id)[0];
         return await this.prisma.users.findUnique({
           where: {
@@ -36,6 +39,7 @@ export class MessagesService {
         }).then((resp) => ({
           ...resp,
           lastMessage,
+          notSeenCount
         }))
       })
     }

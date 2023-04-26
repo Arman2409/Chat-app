@@ -32,15 +32,17 @@ const AppHeader: React.FunctionComponent = () => {
     const [ownerState, setOwnerState] = useState<boolean>(false);
     const [user, setUser] = useState<UserType>({} as UserType);
     const [inPage, setInPage] = useState<boolean>(true);
+    const [displayMessages, setDisplayMessages] = useState<Boolean>(false);
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
+    const addRef = useRef<any>([]);
+    const userContRef = useRef<HTMLDivElement>(null);
+
     const router: any = useRouter();
     const storeUser = useSelector<IRootState>((state) => state.user.user);
     const userWindow: boolean = useSelector((state: IRootState) => state.user.userWindow);
     const dispatch: Dispatch = useDispatch();
-    const addRef = useRef<any>([]);
-    const userContRef = useRef<HTMLDivElement>(null);
+
     const { setMessageOptions } = useOpenAlert();
-    const [displayMessages, setDisplayMessages] = useState<Boolean>(false);
 
    const openMessages:Function = () => {
        if(!user.name) {
@@ -52,24 +54,42 @@ const AppHeader: React.FunctionComponent = () => {
      router.replace("/myMessages");
    };
 
-   useEffect(() => {
-       if (router.pathname == "/myMessages" || router.pathname == "/404") {
-          setDisplayMessages(false)
-       } else {
-         setDisplayMessages(true);
-       }
-   }, [router.pathname])
-
     const waitForSec = useCallback(() => {
         setTimeout(() => {
             dispatch(setLoaded(true));
         }, windowLoadTime);
     }, [setLoaded, dispatch]);
 
-    const toggleUser = useCallback(() => {
-        dispatch(setUserWindow(!userWindow));
+    const clickOutside = (e: Event) => {
+        if (e.target == addRef.current || addRef.current?.contains(e.target)) {
+            return;
+        }
+        if (watchingRequests) setWatchingRequests(false);
+    };
+
+    useEffect(() => {
+        console.log(userWindow);
+        
         setOwnerState(userWindow);
+    }, [userWindow])
+
+    const toggleUser = useCallback(() => {
+        if (watchingRequests) setWatchingRequests(false);
+        setOwnerState(curr => {
+            console.log(curr);
+            
+            dispatch(setUserWindow(!curr));
+            return !curr;
+        });
     }, [dispatch, setUserWindow, userWindow]);
+
+    useEffect(() => {
+        if (router.pathname == "/myMessages" || router.pathname == "/404") {
+           setDisplayMessages(false)
+        } else {
+          setDisplayMessages(true);
+        }
+    }, [router.pathname])
 
     useEffect(() => {
         if (ownerState) {
@@ -84,9 +104,12 @@ const AppHeader: React.FunctionComponent = () => {
     }, [router.pathname]);
 
     useEffect(() => {
+
+    }, [])
+
+    useEffect(() => {
         setUser(storeUser as UserType);
     }, [storeUser]);
-
 
     useEffect(() => {
         const token: string | null = localStorage.getItem("token");
@@ -117,18 +140,11 @@ const AppHeader: React.FunctionComponent = () => {
         ;
     }, []);
 
-    const clickOutside = (e: Event) => {
-        if (e.target == addRef.current || addRef.current?.contains(e.target)) {
-            return;
-        }
-        if (watchingRequests) setWatchingRequests(false);
-    };
-
     return (
         <Header className={styles.header_main}>
             <Link href="/">
                 <div
-                    className={styles.header_cont}
+                    className={styles.header_logo_cont}
                 >
                     <Image src={Logo} alt={"Talk Space"} width={200} height={200}/>
                 </div>
@@ -149,6 +165,7 @@ const AppHeader: React.FunctionComponent = () => {
                         <div ref={addRef}>
                             <HiOutlineUserAdd
                                 onClick={() => {
+                                    if (ownerState) setOwnerState(false);
                                     setWatchingRequests(current => !current)
                                 }}
                                 className={styles.requests_icon}/>

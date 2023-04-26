@@ -99,7 +99,7 @@ export class FriendsService {
     friend.friends.push(currentUser.id);
     delete friend.sentRequests[friend.sentRequests?.indexOf(currentUser.id)];
     delete friend.id;
-    const updatingFriend: UserType = await this.prisma.users.update({
+    const updatingFriend = await this.prisma.users.update({
       where: {
         id
       },

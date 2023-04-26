@@ -17,13 +17,15 @@ import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { usersLoadWaitTime } from "../../../configs/configs";
+import { getEventListeners } from "events";
 
-const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({users, loadingSearch, newPage, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
     const [loading, setLoading] = useState(false);
     const [newType, setNewType] = useState(false);
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
+    const gettingUsersRef = useRef(false);
 
     const router: any = useRouter();
 
@@ -80,19 +82,29 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
         })()
     };
 
-    const getMore = useCallback(() => {
-        if (loading) {
-            return;
-        };
-        if (total <= users.length) {
-            return;
-        };
-        console.log(loading, total <= users.length);
-        
-          setLoading(true);
-          setPage(curr => curr + 1);
-          getUsers(page + 1);
-    }, [loading, users, total, getUsers, setPage, setLoading]);
+    const handleScroll = (e:any) => { 
+        if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
+            if(e.deltaY > 0){    
+               if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {     
+                if (loading) {
+                    return;
+                };
+                if ( gettingUsersRef.current) {
+                    return;
+                }
+                if (total <= users.length) {
+                    return;
+                };
+                gettingUsersRef.current = true;
+                 setLoading(true);
+                 setPage(curr => {
+                    
+                    getUsers(curr + 1);
+                    return curr + 1});
+               }      
+            };
+        }
+     };
 
     const newChat: Function = (e: UserType) => {
         if (!user.name) {
@@ -107,42 +119,43 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
     };
 
     useEffect(() => {
-        if (newType) {
-            setNewType(false);
-        }
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
         setLoading(false);
+        gettingUsersRef.current = false
     }, [users]);
 
     useEffect(() => {
-        if(loading) {
+        // const scrollCallback = (e:any) => {
+        //     handleScroll(e);     
+            // if (total <= users.length) {
+            //     window.removeEventListener("wheel", scrollCallback);
+            //     return;
+            // };
+        //    }
+        //    console.log(window);
+           if(loading) {
+             window.removeEventListener("wheel", handleScroll, true);
+           
+           } else {
+             window.addEventListener("wheel", handleScroll, true);
+           }
+           if(loading) {
             setTimeout(() => {
                 if (loading) {
                     setLoading(false)
                 }
             }, usersLoadWaitTime);
          }
-    }, [loading])
-
-    const handleScroll =(e:any) => { 
-        if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
-            if(e.deltaY < 0){
-                return;  
-              };
-            if(e.deltaY > 0){    
-               if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {
-                 getMore();
-                 window.removeEventListener("wheel", handleScroll);
-               }      
-            };
-        }
-     };
+    }, [loading]);
 
     useEffect(() => {
-         window.removeEventListener("wheel", handleScroll);
-         window.addEventListener("wheel", handleScroll);
-    }, [handleScroll]);
+       setPage(1);
+    }, [friends]);
+
+    useEffect(() => {
+       setPage(newPage as number)
+    }, [newPage])
 
     useEffect(() => {
        setNewType(true);
@@ -153,7 +166,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
         <div ref={listRef}
             className={`${styles.list}`}
              >
-                {users.length === 0 && !newType &&  <div className={styles.empty_cont}>
+                {users.length === 0 && !loading && !loadingSearch && !newType &&  <div className={styles.empty_cont}>
                     {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
@@ -174,16 +187,19 @@ const UsersMapper: React.FC<MapperProps> = ({users, getUsers = () => {}, total =
                             <Typography>{item.name}</Typography>
                             {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
                         </div>
-                        {(!friends && user.name) ? lastMessages ? <p className={styles.list_item_action_message}>{getSlicedWithDots(item.lastMessage,25)}</p> : user.sentRequests?.includes(item.id) ? 
-                        <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
-                            <Button disabled={buttonsDisabled} className={styles.list_item_action} onClick={(e) => handleAddFriend(item.id, e)}>Add
-                                Friend</Button> : accept ?
-                                <Button className={styles.list_item_action} disabled={buttonsDisabled} ref={acceptLink}
+                        {(!friends && user.name) ? 
+                        lastMessages ? <p className={styles.list_item_action_message}>{getSlicedWithDots(item.lastMessage,25)}{item.notSeenCount && <span style={{width: "5px", height: "5px", display: "block"}}>{item.notSeenCount}</span>}</p> : 
+                         user.sentRequests?.includes(item.id) ?  <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
+                            <Button loading={buttonsDisabled} className={styles.list_item_action} onClick={(e) => handleAddFriend(item.id, e)}>Add
+                                Friend</Button> :
+                                 accept ?  <Button 
+                                  className={styles.list_item_action}
+                                  loading={buttonsDisabled} ref={acceptLink}
                                    onClick={(e) => acceptRequest(item, e)}>Accept</Button> : ""}
                     </List.Item>
                     )
                 })}
-                {loading && <div style={{position: "relative", paddingTop: "25px"}}>
+                {(loading || loadingSearch) && <div style={{position: "relative", paddingTop: "25px"}}>
                   <WaveLoading {...{} as any} />
                 </div>}
         </div>
