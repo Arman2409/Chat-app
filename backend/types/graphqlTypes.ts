@@ -67,10 +67,17 @@ export class NewsType {
 }
 
 @ObjectType()
-export class  MessageType {
+export class NotSeenType {
     @Field()
-    id:string
+     count?: number
+       
+     @Field()
+     by: number
+}
 
+
+@ObjectType()
+export class  MessageType {
     @Field(type => [String])
     between: string[]
 
@@ -84,7 +91,7 @@ export class  MessageType {
     lastDate:string
 
     @Field()
-    notSeenCount?: number
+    notSeen?: NotSeenType
 }
 
 

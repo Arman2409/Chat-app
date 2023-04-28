@@ -32,6 +32,11 @@ type NewsType {
   description: String!
 }
 
+type NotSeenType {
+  count: Float!
+  by: Float!
+}
+
 type RecoverType {
   code: Float
   successMessage: String

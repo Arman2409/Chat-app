@@ -17,14 +17,12 @@ import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { usersLoadWaitTime } from "../../../configs/configs";
-import { getEventListeners } from "events";
 
-const UsersMapper: React.FC<MapperProps> = ({users, loadingSearch, newPage, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
+    const [users, setUsers] = useState(userItems)
     const [loading, setLoading] = useState(false);
-    const [newType, setNewType] = useState(false);
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
-    const [page, setPage] = useState<number>(1);
     const gettingUsersRef = useRef(false);
 
     const router: any = useRouter();
@@ -97,10 +95,6 @@ const UsersMapper: React.FC<MapperProps> = ({users, loadingSearch, newPage, getU
                 };
                 gettingUsersRef.current = true;
                  setLoading(true);
-                 setPage(curr => {
-                    
-                    getUsers(curr + 1);
-                    return curr + 1});
                }      
             };
         }
@@ -126,14 +120,6 @@ const UsersMapper: React.FC<MapperProps> = ({users, loadingSearch, newPage, getU
     }, [users]);
 
     useEffect(() => {
-        // const scrollCallback = (e:any) => {
-        //     handleScroll(e);     
-            // if (total <= users.length) {
-            //     window.removeEventListener("wheel", scrollCallback);
-            //     return;
-            // };
-        //    }
-        //    console.log(window);
            if(loading) {
              window.removeEventListener("wheel", handleScroll, true);
            
@@ -150,29 +136,22 @@ const UsersMapper: React.FC<MapperProps> = ({users, loadingSearch, newPage, getU
     }, [loading]);
 
     useEffect(() => {
-       setPage(1);
-    }, [friends]);
-
-    useEffect(() => {
-       setPage(newPage as number)
-    }, [newPage])
-
-    useEffect(() => {
-       setNewType(true);
-       setPage(1);
-    }, [friends]);
+       setUsers(userItems);
+    }, [userItems]);
 
     return (
         <div ref={listRef}
             className={`${styles.list}`}
              >
-                {users.length === 0 && !loading && !loadingSearch && !newType &&  <div className={styles.empty_cont}>
+                {users.length === 0 && !loading && !loadingSearch  &&  <div className={styles.empty_cont}>
                     {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
-                 {users.length === 0 && newType &&  <WaveLoading {...{} as any} />}
                   {users.map((item) => {
-                    if(!friendRequests && user?.friendRequests?.includes(item.id)) return <></>;
+                    if(!friendRequests && user?.friendRequests?.includes(item.id)) {
+                        setUsers(users => users.filter(user => user.id !== item.id));
+                        return <></>;
+                    };
                     let isInterlocutor;
                     if(item.id === storeInterlocutor.id) isInterlocutor = true;
                     return (
@@ -188,7 +167,7 @@ const UsersMapper: React.FC<MapperProps> = ({users, loadingSearch, newPage, getU
                             {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
                         </div>
                         {(!friends && user.name) ? 
-                        lastMessages ? <p className={styles.list_item_action_message}>{getSlicedWithDots(item.lastMessage,25)}{item.notSeenCount && <span style={{width: "5px", height: "5px", display: "block"}}>{item.notSeenCount}</span>}</p> : 
+                        lastMessages ? <p className={styles.list_item_action_message}>{getSlicedWithDots(item.lastMessage,25)}{item.notSeenCount && <span className={styles.list_item_action_message_alert_span}>{item.notSeenCount}</span>}</p> : 
                          user.sentRequests?.includes(item.id) ?  <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
                             <Button loading={buttonsDisabled} className={styles.list_item_action} onClick={(e) => handleAddFriend(item.id, e)}>Add
                                 Friend</Button> :

@@ -77,11 +77,14 @@ const MessagesChat: React.FC = () => {
     useEffect(() => {
         if (!user.name) {
             router.replace("/");
+        } else {
+            setInterlocutor({} as UserType);
         }
     }, [user])
 
     useEffect(() => { 
         setInterlocutor(storeInterlocutor);
+        
     }, [storeInterlocutor]);
 
     useEffect(() => {
