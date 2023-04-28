@@ -31,11 +31,18 @@ model News {
   description String
 }
 
+model NotSeen {
+  id    String   @id  @default(auto()) @map("_id") @db.ObjectId
+  count Int @default(0)
+  by Int @default(0)
+  for Messages? @relation(fields: [id], references: [id])
+}
+
 model Messages {
   id    String   @id  @default(auto()) @map("_id") @db.ObjectId
   between String[]  @default([])
   sequence Int[] @default([])
   messages String[] @default([])
   lastDate String @default("")
-  notSeenCount Int @default(0)
+  notSeen NotSeen?
 }

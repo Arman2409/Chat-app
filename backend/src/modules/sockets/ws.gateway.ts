@@ -11,7 +11,7 @@ import {isEqual, remove} from "lodash"
 
 import {SocketWIthHandshake} from "../../../types/types";
 import {SocketsService} from "./sockets.service";
-import { AnyCnameRecord } from "dns";
+import { MessageType } from "types/graphqlTypes";
 
 @WebSocketGateway({ cors: "*" },)
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
@@ -69,7 +69,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         @MessageBody("message") message: string,
     ) {
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
-        let messageData = {};
+        let messageData:MessageType = {} as MessageType;
 
         let previousMessaging;
         if (alreadyMessaged) {
@@ -104,7 +104,10 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             this.allMessages.push(
                 {
                     ...messageData,
-                    notSeenCount: previousMessaging?.notSeenCount + 1 || 1,
+                    notSeen: { 
+                        count: previousMessaging?.notSeen.count + 1 || 1,
+                        by: messageData?.between?.indexOf(to)
+                    }
                 }
             );
         }
