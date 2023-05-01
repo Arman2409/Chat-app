@@ -159,7 +159,7 @@ const RecoverPassword = ({changeStatus}:RecoverProps) => {
                         disabled={loading}
                         type="primary"
                         htmlType="submit"
-                        className={styles.sign_button}
+                        className={styles.recover_button}
                     >
                        {recoveringStatus === "getCode" ?  "Get Code" : 
                         recoveringStatus === "confirm" ? "Confirm" :

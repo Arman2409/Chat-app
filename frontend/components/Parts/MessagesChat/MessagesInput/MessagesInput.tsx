@@ -1,12 +1,12 @@
 import React, { useRef, useState, useCallback } from "react";
 import data from '@emoji-mart/data';
-import Picker from "@emoji-mart/react";
+import EmojiPicker from "@emoji-mart/react";
 import { SmileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useOnClickOutside } from "usehooks-ts";
 import { useSelector } from "react-redux";
 
-import messagesStyles from "../../../../styles/Parts/MessagesChat.module.scss";
+import styles from "../../../../styles/Parts/MessagesChat/MessagesInput/MessagesInput.module.scss";
 import { IRootState } from "../../../../store/store";
 import { UserType } from "../../../../types/types";
 
@@ -57,27 +57,27 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
      });
      
     return (
-        <div className={messagesStyles.inputs_cont}>
+        <div className={styles.inputs_cont}>
         <TextArea
             value={message}
-            className={messagesStyles.chat_textarea}
+            className={styles.chat_textarea}
             onChange={(e: any) => setMessage(e.target.value)}
         />
         <SmileOutlined
             ref={smileRef}
             size={50}
-            className={messagesStyles.smile_icon}
+            className={styles.smile_icon}
             onClick={openEmojis} />
         <Button
             type="primary"
-            className={messagesStyles.send_button}
+            className={styles.send_button}
             onClick={send}
         >
             Send
         </Button>
          {smileStatus &&
-             <div ref={emojiRef} className={messagesStyles.emoji_cont}>
-                    <Picker
+             <div ref={emojiRef} className={styles.emoji_cont}>
+                    <EmojiPicker
                       theme="dark"
                       data={data} 
                       onEmojiSelect={addEmoji}

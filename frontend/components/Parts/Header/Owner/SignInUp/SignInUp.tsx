@@ -1,4 +1,4 @@
-import { Input, Button, Form, Typography, Upload, message } from "antd";
+import { Input, Button, Form, Typography, Upload } from "antd";
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import type { UploadChangeParam } from 'antd/es/upload';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
@@ -9,8 +9,8 @@ import { io } from "socket.io-client";
 import { last } from "lodash";
 import decode from "jwt-decode";
 
-import handleGQLRequest from "../../../../../request/handleGQLRequest";
 import styles from "../../../../../styles/Parts/Header/Owner/SignInUp/SignInUp.module.scss";
+import handleGQLRequest from "../../../../../request/handleGQLRequest";
 import { setStoreUser } from "../../../../../store/userSlice";
 import { SignProps, UserType } from "../../../../../types/types";
 import Loading from "../../../../Custom/Loading/Loading";
@@ -46,6 +46,7 @@ const beforeUpload = (file: RcFile) => {
 
 const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
     const [message, setMessage] = useState<string>("");
+    const [messageColor, setMessageColor] = useState("red");
     const [loading, setLoading] = useState(false);
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -65,6 +66,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 localStorage.setItem("token", res.SignIn?.token)
             }
             if (!user.email) {
+                setMessageColor("red")
                 if (res.SignIn?.message) {
                     setMessage(getSlicedWithDots(res.SignIn?.message, 20));
                     setLoadingRequest(false);
@@ -76,6 +78,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                     return;
                 };
                 setMessage("Not Found");
+                setLoadingRequest(false);
                 return;
             }
             let socket = io("ws://localhost:4000");
@@ -94,17 +97,21 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             if (!res.email) {
                 if (res.SignUp?.message) {
                     setMessage(getSlicedWithDots(res.message, 20));
+                     setMessageColor("red")
                     setLoadingRequest(false);
                     return;
                 }
                 if (res.errors) {
                     setMessage(getSlicedWithDots(res.erors[0], 20));
+                     setMessageColor("red")
+
                     setLoadingRequest(false);
                     return;
                 }
             }
             setLoadingRequest(false);
             setMessage("Signed Up!");
+            setMessageColor("green")
             changeStatus();
         } else {
             return;
@@ -194,11 +201,13 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                             className={styles.sign_input} />
                     </Form.Item>
                     : null}
-                <Typography className={styles.sign_message}>
+                <Typography className={styles.sign_message} style={{
+                    color: messageColor
+                }}>
                     {message}
                 </Typography>
                 <Form.Item
-                    className={styles.form_item_button}>
+                    className={styles.form_item}>
                     <Button
                         type="primary"
                         htmlType="submit"

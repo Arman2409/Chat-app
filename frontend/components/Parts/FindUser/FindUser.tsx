@@ -129,7 +129,6 @@ const SearchUser: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log(debouncedSearch);
         
         if(debouncedSearch || debouncedSearch === "") {
             getSeachResults();

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { WechatFilled } from "@ant-design/icons";
 
-import styles from "../../../styles/Parts/MessagesChat.module.scss";
+import styles from "../../../styles/Parts/MessagesChat/MessagesChat.module.scss";
 import { IRootState } from "../../../store/store";
 import { MessagesDataType, UserType } from "../../../types/types";
 import { getSendersId, getSlicedWithDots } from "../../../functions/functions";
@@ -84,7 +84,13 @@ const MessagesChat: React.FC = () => {
 
     useEffect(() => { 
         setInterlocutor(storeInterlocutor);
-        
+        if(storeInterlocutor?.name) {
+            if (socket) {
+                socket.emit("newInterlocutor", {id:user.id, userId: storeInterlocutor.id}, (resp:any) => {
+                    console.log({resp});
+                });
+            }
+        }
     }, [storeInterlocutor]);
 
     useEffect(() => {

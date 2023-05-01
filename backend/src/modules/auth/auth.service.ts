@@ -113,7 +113,6 @@ export class AuthService {
 
     async recoverEmail(email: string):Promise<any>{
       const recoverPassword = random(100000, 999999);
-      console.log(email,recoverPassword);
       const user = await this.prisma.users.findUnique({
           where: {
             email
@@ -145,7 +144,6 @@ export class AuthService {
             }
         });
          if(user?.email) {
-            console.log(newPassword);
             
             const hashedPassword: string = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUNDS));
             return await this.prisma.users.update({
@@ -156,8 +154,6 @@ export class AuthService {
                     password: hashedPassword
                 }
             }).then((res) => {
-                console.log(res);
-                
                 return {successMessage: "Password changed succesfully"}
             }).catch(() => {
                return {message: "Failed"}

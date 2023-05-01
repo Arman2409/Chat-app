@@ -8,12 +8,12 @@
   overflow-y: scroll;
   max-width: 550px;
 
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
   &::-webkit-scrollbar {
     display: none;
   }
-  
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
 
   .empty_cont {
     margin: 50px 0;
@@ -43,33 +43,41 @@
     align-items: center;
     padding: 5px;
     justify-content: flex-start !important;
-    border: 1px solid $color5 !important;
-    border-radius: 5px;
+    border: 5px solid $color5 !important;
+    border-radius: 15px;
     box-shadow: 0px 0px 9px 2px #000000;
     box-sizing: border-box;
-    margin: 5px 0;
+    margin: 10px 0;
     height: 80px;
-    background-color: $color1;
+    font-weight: 900;
+    background-color: rgba($color1, 0.5);
     opacity: 0.65;
+
+    &_user_avatar {
+      font-size: 20px;
+      color: $color1;
+    }
 
     & article:nth-child(1) {
       margin-left: 15px;
-      color: $color3;
+      color: $color7;
+      font-weight: 900;
     }
 
     & article:nth-child(2) {
       margin-left: 15px;
-      color: $color4;
+      color: $color3;
+      font-weight: 600
     }
 
     &_message {
        @extend  .list_item;
-       background-color: $color4;
+       background-color: $color6;
        display: flex;
 
         &_interlocutor {
           @extend .list_item_message;
-           background-color: $color2;
+           background-color: $color7;
         }
 
        & article:nth-child(1) {
@@ -86,11 +94,6 @@
     &_action {
       position: absolute;
       right: 10px;
-      color: $color4;
-
-      &:hover {
-        color: $color3
-      }
 
       &_disabled {
           @extend .list_item_action;
@@ -98,22 +101,30 @@
           pointer-events: none;
       }
 
+      &_button { 
+        @extend .list_item_action;
+        @include gradientButton($color2, $color4, $color5);
+      }
+
       &_message {
         @extend .list_item_action;
         pointer-events: none;
         color: $color5;
         display: flex;
+        align-items: center;
 
         &_alert_span {
-          width: 20px;
+          width: 30px;
+          position: relative;
+          right: 0;
+          height: 30px;
           background-color: $color3;
+          margin-left: 10px;
           border-radius: 50%;
-          height: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-left: 5px;
-          border: 1px solid pink;
+          border: 2px solid red;
           font-weight: 900;
         }
       }
