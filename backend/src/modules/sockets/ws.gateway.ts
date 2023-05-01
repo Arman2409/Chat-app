@@ -17,8 +17,7 @@ import { MessageType } from "types/graphqlTypes";
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
     @WebSocketServer() server: Server;
 
-    constructor( private readonly service: SocketsService) {
-    }
+    constructor(private readonly service: SocketsService) {}
 
     private activeUsers: string[] = [];
 
@@ -27,12 +26,12 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     private previousAllMessages = [];
 
     afterInit(): any {
-        setInterval( async () => {
+        setInterval( async () => {           
             if (!isEqual(this.allMessages, this.previousAllMessages)) {
                  await this.service.updateMessages(this.allMessages);
                  this.previousAllMessages = [...this.allMessages];
             }
-        }, 2000);
+        }, 500);
     }
 
     handleConnection(): any {
@@ -71,7 +70,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData:MessageType = {} as MessageType;
 
-        let previousMessaging;
+        let previousMessaging:MessageType;
+
         if (alreadyMessaged) {
              previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
             remove(this.allMessages,(messages) => {
@@ -97,6 +97,11 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             this.allMessages.push(
                 {
                     ...messageData,
+                    notSeen:
+                    {
+                        count:0,
+                        by:0
+                    }
                 }
             );
         }
@@ -104,21 +109,42 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             this.allMessages.push(
                 {
                     ...messageData,
-                    notSeen: { 
-                        count: previousMessaging?.notSeen.count + 1 || 1,
-                        by: messageData?.between?.indexOf(to)
-                    }
+                    notSeen:
+                            {
+                                count: previousMessaging?.notSeen.count + 1 || 1,
+                                by: messageData?.between?.indexOf(to)
+                            }
                 }
             );
-        }
+        };
         this.server.sockets.in(to).emit("message", messageData);
-
         return messageData;
     }
 
+    @SubscribeMessage("newInterlocutor")
+    async handleNewInterlocuter(@MessageBody("id") currentId: string, @MessageBody("userId") userId: string) {
+        const messaged = this.allMessages.filter(messages => messages.between.includes(currentId) && messages.between.includes(userId));
+        
+        if (messaged?.length){
+            const previousMessaging = messaged[0];
+            if (previousMessaging.notSeen?.by === previousMessaging?.between?.indexOf(currentId)) {
+                remove(this.allMessages,(messages) => {
+                    console.log(messages === previousMessaging);
+                    
+                    return messages === previousMessaging;
+                });
+                previousMessaging.notSeen.count = 0;
+                this.allMessages.push(previousMessaging);
+                return "new interlocuter got";
+            }
+        } else {
+            return "Not messaged";
+        }
+    }
+
     @SubscribeMessage("getMessages")
-    async handleGetMessages(@MessageBody("interlocuters") interlocuters: number[]) {
-        return await this.allMessages.filter(messages => messages.between?.every(id => interlocuters.indexOf(id) > -1))[0];
+    async handleGetMessages(@MessageBody("interlocuters") interlocuters: string[]) {
+        return await this.allMessages.filter(messages => messages.between?.every((id:string) => interlocuters.indexOf(id) > -1))[0];
      }
 }
 

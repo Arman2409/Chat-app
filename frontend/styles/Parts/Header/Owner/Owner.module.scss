@@ -42,4 +42,8 @@
   .owner_email {
     color: $color4;
   }
+
+  .signout_button{
+    @include gradientButton($color1, $color2, $color4);
+  }
 }

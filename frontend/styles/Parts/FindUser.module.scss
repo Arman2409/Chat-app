@@ -13,15 +13,19 @@
     width: 250px;
     align-self: center;
     border-radius: 25px;
+    @include mainInput($color3, $color7);
+
+    .ant-input-group-wrapper{
+        border:  none !important;
+    }
     span, input, div, button{
         background-color: $color2;
+        border-radius: 25px;
+        border:  none;
     }
     & input {
         color: $color3;
         font-family: $mainFontFamily;
-        &::placeholder {
-            color: $color4;
-        }
     }
     & path{
         color: $color4;

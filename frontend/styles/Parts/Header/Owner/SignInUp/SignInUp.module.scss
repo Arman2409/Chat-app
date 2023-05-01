@@ -13,28 +13,30 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
     .sign_message {
       color: darkred;
     }
+
     .form_item {
       width: 80%;
       margin: 10px 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      .sign_button {
-        width: auto;
-        background-color: $color2 !important;
-        & span {
-          color: $color2 !important;
-        }
-      }
+     
       .sign_input {
         width: 95%;
         border: 1px solid $color5;
         font-family: $mainFontFamily;
+
+        @include mainInput($color3, $color5);
       }
+
+      .sign_button {
+        @include gradientButton($color1, $color2, $color4);
+      }
+
       &_button {
         position: absolute;
         bottom: 0px;

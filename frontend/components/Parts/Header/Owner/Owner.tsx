@@ -63,7 +63,10 @@ const Owner = ({userContRef}:any) => {
                         <Typography className={styles.owner_email}>
                             {user.email}
                         </Typography>
-                        <Button type="primary" onClick={() => signOut()}>
+                        <Button 
+                          className={styles.signout_button}
+                          type="primary"
+                          onClick={() => signOut()}>
                             Sign Out
                         </Button>
                     </div>

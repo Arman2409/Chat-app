@@ -3,6 +3,7 @@ import {message, Card, Avatar} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import router from "next/router";
 import {Dispatch} from "@reduxjs/toolkit";
+import {CloseCircleFilled} from "@ant-design/icons";
 
 import {UserType} from "../../../types/types";
 import {IRootState} from "../../../store/store";
@@ -14,11 +15,12 @@ import {setInterlocutor} from "../../../store/messagesSlice";
 const MessageAlert = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const storeUser: UserType = useSelector((state: IRootState) => state.user.user);
-    const {messagesData: data , interlocutor, alertState}:any = useSelector((state: IRootState) => state.messages);
     const [fromUser, setFromUser] = useState<UserType>({} as UserType);
     const [loading, setLoading] = useState<boolean>(false);
     const dispatch: Dispatch = useDispatch();
     const [open, setOpen] = useState<boolean>(false);
+    const {messagesData: data , interlocutor}:any = useSelector((state: IRootState) => state.messages);
+
 
     const watchMessage = useCallback(() => {
         dispatch(setInterlocutor(fromUser));
@@ -31,12 +33,25 @@ const MessageAlert = () => {
         }
     }, [dispatch, fromUser, router])
 
+    const closeAlert = useCallback((e:any) => {
+        e.stopPropagation();
+        messageApi.destroy(fromUser.name)
+    }, [fromUser, messageApi])
+
     const Content = (
         <>
             {data.between.length ?
                 <Card onClick={watchMessage} className={styles.message_alert_card} style={{padding: 0}}>
-                    <Card.Meta avatar={<Avatar src={fromUser.image}/>} title={getSlicedWithDots(`${fromUser.name}`, 20)}
-                               description={data.messages.length ? getSlicedWithDots(data.messages.at(-1), 25) : ""}/>
+                    <Card.Meta avatar={<Avatar src={fromUser.image}/>} 
+                               title={getSlicedWithDots(`${fromUser.name}`, 20)}
+                               description={data.messages.length ? getSlicedWithDots(data.messages.at(-1), 25) : ""}
+                               
+                        />
+                        <div 
+                          onClick={closeAlert}
+                          className={styles.close_cont}>
+                            <CloseCircleFilled />
+                        </div>
                 </Card>
                 : null}
         </>
@@ -63,7 +78,7 @@ const MessageAlert = () => {
         }
         
         const fromId = getSendersId(data.between, storeUser.id);
-        if(router.pathname === "myMessages" && fromId === interlocutor.id) {
+        if(fromId === interlocutor.id) {
             return;
         }
         setLoading(true);
