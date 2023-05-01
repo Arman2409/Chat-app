@@ -1,7 +1,7 @@
 import {List, Avatar, Typography, Badge, Button} from "antd";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
-import {RiUserSearchFill} from "react-icons/ri";
+import {RiUser4Line, RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
 import { WaveLoading } from "react-loading-typescript";
 import {useDispatch, useSelector} from "react-redux";
@@ -148,10 +148,6 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, ge
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
                   {users.map((item) => {
-                    if(!friendRequests && user?.friendRequests?.includes(item.id)) {
-                        setUsers(users => users.filter(user => user.id !== item.id));
-                        return <></>;
-                    };
                     let isInterlocutor;
                     if(item.id === storeInterlocutor.id) isInterlocutor = true;
                     return (
@@ -160,26 +156,30 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, ge
                         className={lastMessages ? isInterlocutor ? styles.list_item_message_interlocutor : styles.list_item_message : styles.list_item}
                     >
                         <Badge dot={item.active ? true : false}>
-                            <Avatar src={item.image}/>
+                            {item.image ? <Avatar src={item.image}/> : <RiUser4Line className={styles.list_item_user_avatar} />}
                         </Badge>
                         <div>
                             <Typography>{item.name}</Typography>
                             {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
                         </div>
                         {(!friends && user.name) ? 
-                        lastMessages ? <p className={styles.list_item_action_message}>{getSlicedWithDots(item.lastMessage,25)}{item.notSeenCount && <span className={styles.list_item_action_message_alert_span}>{item.notSeenCount}</span>}</p> : 
+                        lastMessages ? <p className={styles.list_item_action_message}>
+                            {getSlicedWithDots(item.lastMessage,25)}
+                            {Number(item.notSeenCount) ?
+                               <span className={styles.list_item_action_message_alert_span}>{item.notSeenCount}</span> : ""}
+                               </p> : 
                          user.sentRequests?.includes(item.id) ?  <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
-                            <Button loading={buttonsDisabled} className={styles.list_item_action} onClick={(e) => handleAddFriend(item.id, e)}>Add
+                            <Button loading={buttonsDisabled} className={styles.list_item_action_button} onClick={(e) => handleAddFriend(item.id, e)}>Add
                                 Friend</Button> :
                                  accept ?  <Button 
-                                  className={styles.list_item_action}
+                                  className={styles.list_item_action_button}
                                   loading={buttonsDisabled} ref={acceptLink}
                                    onClick={(e) => acceptRequest(item, e)}>Accept</Button> : ""}
                     </List.Item>
                     )
                 })}
                 {(loading || loadingSearch) && <div style={{position: "relative", paddingTop: "25px"}}>
-                  <WaveLoading {...{} as any} />
+                  <WaveLoading color="rgb(167, 117, 117)" {...{} as any} />
                 </div>}
         </div>
     )
