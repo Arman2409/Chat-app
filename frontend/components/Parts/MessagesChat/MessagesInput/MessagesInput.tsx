@@ -4,17 +4,19 @@ import EmojiPicker from "@emoji-mart/react";
 import { SmileOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useOnClickOutside } from "usehooks-ts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "../../../../styles/Parts/MessagesChat/MessagesInput/MessagesInput.module.scss";
 import { IRootState } from "../../../../store/store";
 import { UserType } from "../../../../types/types";
+import { setMessagesData } from "../../../../store/messagesSlice";
 
 const { TextArea } = Input;
 
 const MessagesInput = ({setMessageData, interlocutor }:any) => {
     const [smileStatus, setSmileStatus] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
+    const dispatch = useDispatch();
 
     const emojiRef = useRef<any>(null);
     const smileRef = useRef<any>(null);
@@ -43,6 +45,7 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
             if (data.between) {
                 setMessageData(data);
                 setMessage("");
+                dispatch(setMessagesData(data));
             }
         });
     }, [message, socket, setMessageData, user, interlocutor]);
