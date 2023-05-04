@@ -1,11 +1,12 @@
 import {List, Avatar, Typography, Badge, Button} from "antd";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUser4Line, RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
 import { WaveLoading } from "react-loading-typescript";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
+import { last, remove } from "lodash";
 
 import styles from "../../../styles/Tools/UsersMapper.module.scss";
 import {MapperProps} from "../../../types/types";
@@ -18,7 +19,7 @@ import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { usersLoadWaitTime } from "../../../configs/configs";
 
-const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, getUsers = () => {}, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
     const [users, setUsers] = useState(userItems)
     const [loading, setLoading] = useState(false);
@@ -32,8 +33,8 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, ge
     const user = useSelector((state: IRootState) => {
         return state.user.user
     });
-    const storeInterlocutor = useSelector((state: IRootState) => {
-        return state.messages.interlocutor;
+    const {interlocutor: storeInterlocutor, messagesData} = useSelector((state: IRootState) => {
+        return state.messages;
     });
 
     const acceptLink = useRef<null | any>(null);
@@ -112,12 +113,26 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, ge
         router.push("/myMessages");
     };
 
+    const changeInterlocutorMessage = useCallback(() => {
+        const interlocutor:any = users.find(e => e.id === storeInterlocutor.id);
+        if(!interlocutor?.id) {
+            setUsers(currents => [ {...storeInterlocutor, lastMessage: last(messagesData?.messages) || ""} ,...currents]);
+        } else {
+            setUsers(currents => {
+                remove(currents, (user) => storeInterlocutor.id === user.id);
+                const newINterlocutor = {...interlocutor, lastMessage: last(messagesData?.messages) || ""};
+                currents.unshift(newINterlocutor);                    
+                return [...currents];
+                }); 
+        }
+    }, [setUsers, users, storeInterlocutor]);
+
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
         setLoading(false);
         gettingUsersRef.current = false
-    }, [users]);
+    }, [users, setUsers, storeInterlocutor, messagesData]);
 
     useEffect(() => {
            if(loading) {
@@ -138,6 +153,17 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, ge
     useEffect(() => {
        setUsers(userItems);
     }, [userItems]);
+
+    useEffect(() => {
+        if(lastMessages) {
+           changeInterlocutorMessage();
+        }
+    }, [messagesData, setUsers]);
+
+    useEffect(() => {
+        console.log(users);
+        
+    }, [users]);
 
     return (
         <div ref={listRef}
