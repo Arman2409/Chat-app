@@ -11,9 +11,10 @@ import Loading from "../../Custom/Loading/Loading";
 const Welcome: React.FunctionComponent = () => {
     const [news, setNews] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-
     const [modalData, setModalData] = useState<any>();
-    const isSmall = useMediaQuery({query: "(max-width: 481px)"});
+
+    const isMedium = useMediaQuery({query: "(max-width: 750px)"});
+    const isSmall = useMediaQuery({query: "(max-width: 500px)"});
 
     const toggleModal: Function = (news: any) => {
         setModalData(news);
@@ -43,7 +44,7 @@ const Welcome: React.FunctionComponent = () => {
         <div
             className={styles.welcome_cont}
             style={{
-                width: isSmall ? "100%" : "50%",
+                width: isSmall ? "100%" : isMedium ? "40%" :  "50%",
             }}>
             {loading && <Loading/>}
             {modalData &&
@@ -51,10 +52,14 @@ const Welcome: React.FunctionComponent = () => {
             }
             <div className="border_div"></div>
             <div className={styles.welcome_content}>
-                <Typography>
+                <Typography style={{
+                    fontSize: isMedium ? "30px" : "40px"
+                }}>
                     Welcome to Talk Space
                 </Typography>
-                <p className={styles.welcome_description}>
+                <p className={styles.welcome_description} style={{
+                    fontSize: isMedium ? "20px" : "25px"
+                }}>
                     One of the best ways to communicate with your friends from all around the world
                 </p>
                 <h5 className={styles.welcome_news}>

@@ -7,9 +7,11 @@ import AppHeader from '../components/Parts/Header/Header'
 import Footer from '../components/Parts/Footer/Footer'
 import store, { IRootState } from '../store/store'
 import MessageAlert from "../components/Tools/MessageAlert/MessageAlert";
-import NotReady from '../components/Custom/NotReady/NotReady'
+// Not ready for mobile version 
+// import NotReady from '../components/Custom/NotReady/NotReady'
 import React, { useEffect, useState } from 'react'
 import Loading from '../components/Custom/Loading/Loading';
+import MobileMenu from "../components/Parts/MobileMenu/MobileMenu";
 
 function MainApp({ Component, pageProps }: AppProps) {
 
@@ -28,27 +30,28 @@ const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<App
     return state.window.loaded;
    });
 
+  const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
   const isBig = useMediaQuery({query: '(min-width: 700px)'});  
 
   useEffect(() => {
-    console.log(storeLoaded);
-    
       setShowContent(isBig);
       setLoaded(storeLoaded);
   }, [isBig, storeLoaded]);
 
   return (
     <>
-      {showContent ?
+      {/* {showContent ? */}
        <>
         {!loaded && <Loading type="box" />} 
         <AppHeader />
+        {isSmall && <MobileMenu />}
         <div className="main_cont">
             <MessageAlert/>
             <Component {...pageProps} />
         </div>
         <Footer />
-        </> : <NotReady /> }
+        </>
+        {/* </> : <NotReady /> } */}
       </>
   )
 }

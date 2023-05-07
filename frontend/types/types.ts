@@ -16,7 +16,6 @@ export interface UserType {
 
 export interface UserInitialState {
   user: UserType
-  userWindow: boolean|string
 };
 
 export interface MessagesDataType {
@@ -32,13 +31,14 @@ export interface  MessagesInitialState {
 }
 
 export interface  WindowInitialState {
-    loaded: boolean
+    loaded: boolean,
+    menuOption: string,
+    userWindow: boolean
 }
 
 export interface  SocketInitialState {
     socket:any
 }
-
 
 export interface Reducers {
     user: Reducer,

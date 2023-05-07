@@ -125,7 +125,7 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
                 return [...currents];
                 }); 
         }
-    }, [setUsers, users, storeInterlocutor]);
+    }, [setUsers, users, messagesData, storeInterlocutor]);
 
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
@@ -159,11 +159,6 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
            changeInterlocutorMessage();
         }
     }, [messagesData, setUsers]);
-
-    useEffect(() => {
-        console.log(users);
-        
-    }, [users]);
 
     return (
         <div ref={listRef}
