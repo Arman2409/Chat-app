@@ -4,16 +4,18 @@ import { Typography } from "antd";
 import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import styles from "../../../styles/Parts/LastMessages.module.scss";
+import { useMediaQuery } from "react-responsive";
 
 const LastMessages:React.FC = () => {
    const [total, setTotal] = useState(100);
    const [lastMessages, setLastMessages] = useState<any[]>([])
 
+   const isMedium = useMediaQuery({query: "(max-width: 750px)"});
+   const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+   
    const getLastMessages = (page:number) => {
       (async function() {
-         const lastMessagesData = await handleGQLRequest("GetLastMessages", {page});
-         console.log(lastMessagesData);
-         
+         const lastMessagesData = await handleGQLRequest("GetLastMessages", {page});   
          setLastMessages(curr => [...curr,...lastMessagesData?.GetLastMessages?.users || []]);
          setTotal(lastMessagesData?.GetLastMessages?.total);
        })();
@@ -25,7 +27,11 @@ const LastMessages:React.FC = () => {
    }, []);
 
     return (
-       <div className={styles.lastMessages_cont}>
+       <div 
+         className={styles.lastMessages_cont} 
+         style={{
+            width: isSmall ? "100%" : isMedium ? "50%" : "40%",
+         }}>
          <Typography className={styles.lastMessages_cont_title}>
             Last Messages
          </Typography>

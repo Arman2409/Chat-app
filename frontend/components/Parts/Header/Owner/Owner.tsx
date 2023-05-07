@@ -10,7 +10,8 @@ import SignInUp from "./SignInUp/SignInUp";
 import { UserType } from "../../../../types/types";
 import { IRootState } from "../../../../store/store";
 import handleGQLRequest from "../../../../request/handleGQLRequest";
-import { setStoreUser, setUserWindow } from "../../../../store/userSlice";
+import { setStoreUser } from "../../../../store/userSlice";
+import { setUserWindow } from "../../../../store/windowSlice";
 import RecoverPassword from "./RecoverPassword/Recover";
 
 const Owner = ({userContRef}:any) => {

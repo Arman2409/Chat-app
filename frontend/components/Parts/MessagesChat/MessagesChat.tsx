@@ -14,6 +14,7 @@ import MessagesInput from "./MessagesInput/MessagesInput";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import { setStoreUser } from "../../../store/userSlice";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
+import { useMediaQuery } from "react-responsive";
 
 const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
@@ -21,6 +22,9 @@ const MessagesChat: React.FC = () => {
     const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
     const [requestSent, setRequestSent] = useState(false);
 
+    const isMedium = useMediaQuery({query: "(max-width: 750px)"});
+    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+ 
     const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
@@ -123,7 +127,10 @@ const MessagesChat: React.FC = () => {
 
     return (
         <>
-            <div className={styles.chat_cont}>
+            <div className={styles.chat_cont}
+              style={{
+                width: isSmall ? "100%" : isMedium ? "50%" : "60%",
+              }}>
                 {interlocutor.name ?
                     <>
                         <div className={styles.interlocutor_cont}>

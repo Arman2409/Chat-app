@@ -1,16 +1,15 @@
-import { Input, Pagination, Switch } from "antd";
+import { Input, Switch } from "antd";
 import React, { useCallback, useEffect, useMemo, useRef, useState} from "react";
 import { useMediaQuery } from "react-responsive";
-// import { useDebounce } from "usehooks-ts";
 import { useDebounce } from 'use-debounce';
 
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 const { Search } = Input;
 
 import styles from "../../../styles/Parts/FindUser.module.scss";
 import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
-import {IRootState} from "../../../store/store";
+import { IRootState } from "../../../store/store";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 
@@ -21,17 +20,19 @@ const SearchUser: React.FC = () => {
     const [name, setName] = useState<string>("");
     const [childPage, setChildPage] = useState(1);
     const [loading, setLoading] = useState<boolean|string>(false);
+
     const user = useSelector((state: IRootState) => state.user.user);
     const searchOptionsRef = useRef<any>({type: searchType, name, page: 1});
     const listType = useMemo(() =>  searchType, [users])
     const [debouncedSearch] = useDebounce( loading, 1000);
-    const isSmall: boolean = useMediaQuery({ query: "(max-width: 481px)" });
+
+    const isMedium = useMediaQuery({query: "(max-width: 750px)"});
+    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
 
     const getSeachResults = () => {
         (async function () {
             const usersData:any = await handleGQLRequest(searchOptionsRef.current.type == "all" ? "SearchInAll" :
                 "SearchInFriends", {page:  searchOptionsRef.current.page, name: searchOptionsRef.current.name});
-            console.log("get results", searchOptionsRef.current.page);
             
             if (usersData.SearchInAll) {
                 if (usersData.SearchInAll.users) {
@@ -89,10 +90,7 @@ const SearchUser: React.FC = () => {
     }, [setLoading, searchOptionsRef, loading, debouncedSearch, name]);
 
     const searchChange = (e: any) => {
-        setChildPage(1);
-        console.log(loading, debouncedSearch);
-        console.log(e.target.value);
-        
+        setChildPage(1);  
         if (e !== name) setName(e.target.value);
         if (searchOptionsRef.current.name == e) return;
         const args = {
@@ -128,8 +126,7 @@ const SearchUser: React.FC = () => {
         setUsers([]);
     };
 
-    useEffect(() => {
-        
+    useEffect(() => {   
         if(debouncedSearch || debouncedSearch === "") {
             getSeachResults();
         };
@@ -154,18 +151,21 @@ const SearchUser: React.FC = () => {
     return (
         <div
             style={{
-                width: isSmall ? "100%" : "50%",
+                width: isSmall ? "100%" : isMedium ? "60%" : "50%",
             }}
             className={styles.find_user_container}
-        >
-            <Search
+        >      
+            <div style={{
+                display: "flex"
+            }}>
+             <Search
                 allowClear={true}
                 className={styles.user_search}
                 placeholder={searchType == "friends" ? "Search in Friends" : "Search"}
                 onChange={(e) => searchChange(e)}
                 onSearch={(e) => search(e)}
-            />
-            <Switch
+             />
+             <Switch
                 checkedChildren="Friends"
                 unCheckedChildren="All"
                 checked={searchType === "friends"}
@@ -173,6 +173,8 @@ const SearchUser: React.FC = () => {
                 onChange={(e: boolean) => newSearchType(e)}
                 disabled={user.name ? false : true}
                 defaultChecked={false} />
+            </div>
+          
               <div className="centered_users_cont">
                  <UsersMapper
                    getUsers={(page:number) => changePage(page)}

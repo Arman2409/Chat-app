@@ -1,67 +1,75 @@
 @import "../../variables";
 
-.header_main{
-       height: 100px;
-       padding: 0px 50px;
-       background-color: $color1;
-       position: sticky; 
-       top: 0; 
-       z-index: 3;
-       width: 100%; 
-       display: flex;
-       align-items: center; 
-       background-size: 100% 100%;
-       background-repeat: no-repeat;
-       background-image: url("../../../assests/images/EmbellishedAbsoluteKestrel-size_restricted.gif");
-       .header_logo_cont {
-                float: left;
-                width: 120px;
-                height: 31px;
-                margin: 16px 24px 16px 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-         }
-        .open_cont {
-          margin-left: auto;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-      
-          &_icon {
-            font-size: 35px;
-            color: $color3;
-            cursor: pointer;
-            z-index: 3;
-          }
-        }
-          .requests_badge{
-            margin-left: 10px;
-            
-            .requests_icon {
-              font-size: 20px;
-              color:$color3;
-              cursor: pointer;
-              text-shadow: 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #49ff18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49ff18;
-            }
-          }
-        .user_cont{
-          margin-left: 10px;
-          cursor: pointer;
-          border: 1px solid $color3;
-          background-color: $color2;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px;
-          .user_name {
-            color:$color4;
-            margin-right: 10px;
-          }
-          .user_icon {
-            font-size: 30px;
-            color: $color3;
-            margin: 0 15px;
-           }
-        }
+.header_main {
+  height: 100px;
+  padding: 0px 50px;
+  background-color: $color1;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url("../../../assests/images/EmbellishedAbsoluteKestrel-size_restricted.gif");
+
+  .header_logo_cont {
+    float: left;
+    // margin: 16px 24px 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .open_cont {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &_icon {
+      font-size: 35px;
+      color: $color3;
+      cursor: pointer;
+      z-index: 3;
+    }
+  }
+
+  .requests_badge {
+    margin-left: 10px;
+
+    .requests_icon {
+      font-size: 20px;
+      color: $color3;
+      cursor: pointer;
+      text-shadow: 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #49ff18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49ff18;
+    }
+  }
+
+  .user_cont {
+    margin-left: 10px;
+    cursor: pointer;
+    border: 1px solid $color3;
+    background-color: $color2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+
+    .user_name {
+      color: $color4;
+      margin-right: 10px;
+    }
+
+    .user_icon {
+      font-size: 30px;
+      color: $color3;
+      margin: 0 15px;
+    }
+  }
+  
+  @media (max-width: 500px){
+        padding: 0px 10px !important;
+  }
 }

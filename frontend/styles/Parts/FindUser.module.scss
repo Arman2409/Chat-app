@@ -35,6 +35,27 @@
 .search_switch {
     align-self: center;
     margin: 5px;
+    height: 30px;
+    width: 100px;
+    padding-top: 5px !important;
+    margin-left: 10px;
+    div {
+        height: 25px !important;
+        width: 20px !important;
+        border-radius: 50px;
+        right: 50px !important;
+
+        &::before {
+             right: 2px !important;
+             left: 0px !important;
+             border-radius: 20px !important;
+        }
+    }
+    span {
+        & span {
+            font-size: 20px !important;
+        }
+    }
     & span {
         color: $color4 !important;
     }
