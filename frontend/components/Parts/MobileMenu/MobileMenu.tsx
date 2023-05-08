@@ -65,7 +65,9 @@ const MobileMenu = () => {
            items: currentItems }}
         >
          <div className={styles.menu_cont}>
-           <BiMenuAltRight />
+           <div className={styles.menu_cont_icon}>
+             <BiMenuAltRight />
+           </div>
          </div>
        </Dropdown>
     )
