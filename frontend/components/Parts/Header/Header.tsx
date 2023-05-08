@@ -13,7 +13,7 @@ import Image from "next/image";
 import { io } from "socket.io-client";
 import { useMediaQuery } from "react-responsive";
 
-import Logo from "/assests/logo-files/svg/logo-no-background.svg";
+import Logo from "/assests/logo-files/svg/logo-no-background-cropped.svg";
 import { IRootState } from "../../../store/store";
 import styles from "../../../styles/Parts/Header/Header.module.scss";
 import Owner from "./Owner/Owner";
@@ -139,13 +139,9 @@ const AppHeader: React.FunctionComponent = () => {
 
     return (
         <Header className={styles.header_main}>
-            <Link href="/">
+            <Link href="/"  className={styles.header_logo_link}>
                 <div
                     className={styles.header_logo_cont}
-                    style={{
-                        width: isSmall ? "100px" : "150px",
-                        height: isSmall ? "100px" : "100px"
-                    }}
                 >
                     <Image 
                       src={Logo} 

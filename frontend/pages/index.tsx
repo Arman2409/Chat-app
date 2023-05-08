@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Head from 'next/head';
 import { Row } from 'antd';
 import { useDispatch } from "react-redux";
