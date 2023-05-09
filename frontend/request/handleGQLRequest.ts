@@ -1,6 +1,6 @@
 import axios from "axios";
 import { query } from "gql-query-builder";
-import { perPage } from "../configs/configs";
+import { perPage } from "../../configs/configs";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
     const userFields = ["name","lastVisited", "friends", "image", "sentRequests", "friendRequests", "email", "active","id"];
