@@ -17,7 +17,7 @@ import {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import {setStoreUser} from "../../../store/userSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
-import { usersLoadWaitTime } from "../../../configs/configs";
+import { usersLoadWaitTime } from "../../../../configs/configs";
 
 const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
