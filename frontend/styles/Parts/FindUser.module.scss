@@ -4,62 +4,104 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color:$color2 ;
+    background-color: $color2 ;
     padding: 5px;
     position: relative;
-}
 
-.user_search{
-    width: 250px;
-    align-self: center;
-    border-radius: 25px;
-    @include mainInput($color3, $color7);
+    .find_user_open_search {
+         overflow: hidden;
+         background-color: $color3;
+         padding: 0;
+         border: none !important;
+         transition: 1s;
+         display: flex;
+         align-items: center;
+         justify-content: center;
 
-    .ant-input-group-wrapper{
-        border:  none !important;
-    }
-    span, input, div, button{
-        background-color: $color2;
-        border-radius: 25px;
-        border:  none;
-    }
-    & input {
-        color: $color3;
-        font-family: $mainFontFamily;
-    }
-    & path{
-        color: $color4;
-    }
-}
+        &_initial {
+           width: 40px;
+           height: 40px;
+           @extend .find_user_open_search;
+        }  
+        
+        &_animation {
+           width: 250px;
+           height: auto;
+           @extend .find_user_open_search;
 
-.search_switch {
-    align-self: center;
-    margin: 5px;
-    height: 30px;
-    width: 100px;
-    padding-top: 5px !important;
-    margin-left: 10px;
-    div {
-        height: 25px !important;
-        width: 20px !important;
-        border-radius: 50px;
-        right: 50px !important;
-
-        &::before {
-             right: 2px !important;
-             left: 0px !important;
-             border-radius: 20px !important;
         }
-    }
-    span {
-        & span {
-            font-size: 20px !important;
+
+        .user_search {
+            width: 250px;
+            align-self: center;
+            border-radius: 25px;
+            @include mainInput($color3, $color7);
+    
+            .ant-input-group-wrapper {
+                border: none !important;
+            }
+    
+            span,
+            input,
+            div,
+            button {
+                background-color: $color2;
+                border-radius: 25px;
+                border: none;
+            }
+    
+            & input {
+                color: $color3;
+                font-family: $mainFontFamily;
+            }
+    
+            & path {
+                color: $color4;
+            }
+    
         }
-    }
-    & span {
-        color: $color4 !important;
-    }
-    & div:before {
-        background-color: $color1 !important;
-    }
+     }
+
+     &_tools {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        .search_switch {
+            align-self: center;
+            margin: 5px;
+            height: 30px;
+            width: 100px;
+            padding-top: 5px !important;
+            margin-left: 10px;
+    
+            div {
+                height: 25px !important;
+                width: 20px !important;
+                border-radius: 50px;
+                right: 50px !important;
+    
+                &::before {
+                    right: 2px !important;
+                    left: 0px !important;
+                    border-radius: 20px !important;
+                }
+            }
+    
+            span {
+                & span {
+                    font-size: 20px !important;
+                }
+            }
+    
+            & span {
+                color: $color4 !important;
+            }
+    
+            & div:before {
+                background-color: $color1 !important;
+            }
+        }
+     }
 }
