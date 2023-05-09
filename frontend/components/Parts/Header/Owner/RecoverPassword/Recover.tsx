@@ -6,7 +6,7 @@ import handleGQLRequest from "../../../../../request/handleGQLRequest";
 import { RecoverProps, TimeStampType } from "../../../../../types/types";
 import { getTimeString } from "../../../../../functions/functions";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
-import { recoverPasswordWaitTime } from "../../../../../../configs/configs";
+import { recoverPasswordWaitTime } from "../../../../../configs/configs";
 
 const RecoverPassword = ({changeStatus}:RecoverProps) => {
     const [loading, setLoading] = useState<boolean>(false);
