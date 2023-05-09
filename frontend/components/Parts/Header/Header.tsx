@@ -26,7 +26,7 @@ import { setSocket } from "../../../store/socketSlice";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { setLoaded } from "../../../store/windowSlice";
-import { windowLoadTime } from "../../../../configs/configs";
+import { windowLoadTime } from "../../../configs/configs";
 
 const {Header} = Layout;
 
