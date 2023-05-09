@@ -3,6 +3,7 @@
 .footer_cont {
    display: flex;
    align-items: center;
+   flex-direction: column;
    justify-content: center;
    height: 80px;
    background-color: $color1;
