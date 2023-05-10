@@ -12,6 +12,6 @@
   "keywords": [],
   "author": "Arman",
   "engines": {
-    "node": "18.12.1"
+    "node": "18"
   }
 }
