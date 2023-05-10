@@ -5,8 +5,8 @@
   "main": "./backend/src/main.ts",
   "scripts": {
      "install": "npm install -g pnpm && cd frontend && pnpm install --strict-peer-dependencies && cd ../backend && pnpm install --strict-peer-dependencies && cd ../",
-     "build": "cd frontend && pnpm run build",
-     "start": "cd backend && pnpm run start",
+     "build": "npm install -g pnpm && cd frontend && pnpm install --strict-peer-dependencies && pnpm run build cd ../backend && pnpm install --strict-peer-dependencies && cd ../",
+     "start": "cd ./backend && pnpm run start",
      "global-start": "npm run install && npm run build && npm run start"
   },
   "keywords": [],
