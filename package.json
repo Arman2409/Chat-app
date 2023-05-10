@@ -4,9 +4,9 @@
   "description": "",
   "main": "./backend/src/main.ts",
   "scripts": {
-     "build": "npm install -g pnpm && cd frontend && pnpm install --strict-peer-dependencies &&   pnpm run build && cd ../backend && pnpm install --strict-peer-dependencies && cd ../",
-     "install": "npm install -g pnpm && cd frontend && pnpm install --strict-peer-dependencies && pnpm run build cd ../backend && pnpm install --strict-peer-dependencies && cd ../",
-     "start": "cd ./backend && pnpm run start",
+     "build": "cd ./frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install  --legacy-peer-deps && cd ../",
+     "install": "cd ./frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install  --legacy-peer-deps && cd ../",
+     "start": "cd ./backend && npm run start",
      "global-start": "npm run install && npm run build && npm run start"
   },
   "keywords": [],
