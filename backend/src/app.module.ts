@@ -6,6 +6,7 @@ import { PrismaService } from "nestjs-prisma"
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtService } from './middlewares/jwt/jwt.service';
@@ -25,6 +26,9 @@ import { WelcomeModule } from './modules/welcome/welcome.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: false
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../../', 'frontend/out/'),
+    }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
@@ -39,6 +43,7 @@ import { WelcomeModule } from './modules/welcome/welcome.module';
         defaults: {
           from: 'talkSpace'
         },
+        //  Template for nodemailer 
         // template: {
         //   dir: join(__dirname, './templates'),
         //   adapter: new HandlebarsAdapter(),
