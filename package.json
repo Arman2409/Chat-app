@@ -5,7 +5,6 @@
   "main": "./backend/src/main.ts",
   "scripts": {
      "build": "cd ./frontend && npm install --legacy-peer-deps && npm run build && cd ../backend && npm install  --legacy-peer-deps && cd ../",
-     "install": "cd ./backend && npm install  --legacy-peer-deps && cd ../",
      "start": "cd ./backend && npm run start",
      "global-start": "npm run install && npm run build && npm run start"
   },
