@@ -1,0 +1,62 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserType {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+  image: String!
+  friends: [String!]!
+  active: Boolean!
+  friendRequests: [String!]!
+  sentRequests: [String!]!
+  notSeenCount: Float
+  lastVisited: String!
+  lastMessage: String
+}
+
+type TokenType {
+  token: String
+  message: String
+}
+
+type SearchType {
+  users: [UserType!]
+  total: Float!
+}
+
+type NewsType {
+  title: String!
+  description: String!
+}
+
+type NotSeenType {
+  count: Float!
+  by: Float!
+}
+
+type RecoverType {
+  code: Float
+  successMessage: String
+  id: String
+  message: String
+}
+
+type Query {
+  SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
+  SignIn(email: String!, password: String!): TokenType!
+  SignOut: String!
+  AlreadySigned(token: String!): UserType!
+  RecoverPassword(email: String!): RecoverType!
+  ConfirmRecoveredPassword(id: String!, newPassword: String!): RecoverType!
+  SearchInAll(name: String!, page: Float!, perPage: Float!): SearchType!
+  SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
+  FindUserById(id: String!): UserType!
+  AddFriend(id: String!): UserType!
+  GetFriendRequestsUsers(ids: [String!]!): [UserType!]!
+  ConfirmFriend(friendId: String!): TokenType!
+  GetLastMessages(page: Float!, perPage: Float!): SearchType!
+  GetWelcomeNews: [NewsType!]!
+}
