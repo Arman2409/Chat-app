@@ -4,9 +4,9 @@
   "description": "",
   "main": "./backend/src/main.ts",
   "scripts": {
-     "install": "cd ./backend && npm install --omit=dev && cd ../frontend && npm install && cd ../",
-     "start": "cd ./backend && npm run start",
+     "install": "cd ./backend && npm install --omit=dev  && cd ../frontend && npm install --legacy-peer-deps && cd ../",
      "build": "cd ./frontend && npm run build && cd ../",
+     "start": "cd ./backend && npm run start",
      "global-start": "npm run install && npm run build && npm run start"
   },
   "keywords": [],
