@@ -25,7 +25,6 @@ function MainApp({ Component, pageProps }: AppProps) {
 const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<AppProps, "router">) => {
 
   const [loaded, setLoaded] = useState()
-  const [showContent, setShowContent] = useState<boolean>(true);
   const storeLoaded = useSelector((state: IRootState) => {
     return state.window.loaded;
    });
@@ -34,14 +33,11 @@ const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<App
   const isBig = useMediaQuery({query: '(min-width: 700px)'});  
 
   useEffect(() => {
-      setShowContent(isBig);
       setLoaded(storeLoaded);
   }, [isBig, storeLoaded]);
 
   return (
     <>
-      {/* {showContent ? */}
-       <>
         {!loaded && <Loading type="box" />} 
         <AppHeader />
         {isSmall && <MobileMenu />}
@@ -50,8 +46,6 @@ const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<App
             <Component {...pageProps} />
         </div>
         <Footer />
-        </>
-        {/* </> : <NotReady /> } */}
       </>
   )
 }

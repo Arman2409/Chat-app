@@ -138,7 +138,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
         <div
             className={styles.sign_main}
             style={{
-                height: type == "SignIn" ? "270px" : "500px"
+                height: "auto"
             }}>
             {loadingRequest && <Loading />}
             <Form
