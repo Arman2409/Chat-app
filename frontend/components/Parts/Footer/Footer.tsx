@@ -14,7 +14,9 @@ const FooterComp:React.FC = () => {
         <Footer className={styles.footer_cont} style={{
            height: isSmall ? "60px" : "80px",
         }}>
-           <Typography>
+           <Typography style={{
+              fontSize: isSmall ? "9px" : "15px"
+           }}>
               { " Copyright © 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc. <https://fsf.org/>" }
            </Typography>
            <Typography>

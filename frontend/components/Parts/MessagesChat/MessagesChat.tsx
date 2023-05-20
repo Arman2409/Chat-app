@@ -129,7 +129,7 @@ const MessagesChat: React.FC = () => {
         <>
             <div className={styles.chat_cont}
               style={{
-                width: isSmall ? "100%" : isMedium ? "50%" : "60%",
+                width: isSmall ? "100%" : isMedium ? "42%" : "50%",
               }}>
                 {interlocutor.name ?
                     <>

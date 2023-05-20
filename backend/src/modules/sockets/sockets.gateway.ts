@@ -55,8 +55,14 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         client.join(id?.toString());
         client.handshake.id = id;
         client.handshake.active = true;
+        const notSeenCount = this.allMessages.filter(message => {
+          const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
+          if(notSeenByUser) {
+            return  message?.notSeen?.count > 0;
+          }
+        })
         if (update) {
-            return "Connected";
+            return {notSeenCount: notSeenCount.length};
         } else {
             return "Not Connected";
         }
@@ -130,12 +136,11 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             if (previousMessaging.notSeen?.by === previousMessaging?.between?.indexOf(currentId)) {
                 remove(this.allMessages,(messages) => {
                     console.log(messages === previousMessaging);
-                    
                     return messages === previousMessaging;
                 });
                 previousMessaging.notSeen.count = 0;
                 this.allMessages.push(previousMessaging);
-                return "new interlocuter got";
+                return "Got new interlocuter ";
             }
         } else {
             return "Not messaged";

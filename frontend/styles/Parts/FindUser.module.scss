@@ -13,7 +13,7 @@
          background-color: $color3;
          padding: 0;
          border: none !important;
-         transition: 1s;
+         transition: 0s;
          display: flex;
          align-items: center;
          justify-content: center;
@@ -30,37 +30,45 @@
            @extend .find_user_open_search;
 
         }
-
-        .user_search {
-            width: 250px;
-            align-self: center;
-            border-radius: 25px;
-            @include mainInput($color3, $color7);
-    
-            .ant-input-group-wrapper {
-                border: none !important;
-            }
-    
-            span,
-            input,
-            div,
-            button {
-                background-color: $color2;
-                border-radius: 25px;
-                border: none;
-            }
-    
-            & input {
-                color: $color3;
-                font-family: $mainFontFamily;
-            }
-    
-            & path {
-                color: $color4;
-            }
-    
-        }
      }
+
+     .user_search {
+        align-self: center;
+        transition: 5s;
+        border-radius: 25px;
+        @include mainInput($color3, $color7);
+
+        .ant-input-group-wrapper {
+            border: none !important;
+        }
+
+        span,
+        input,
+        div,
+        button {
+            background-color: $color2;
+            border-radius: 25px;
+            border: none;
+        }
+
+        & input {
+            color: $color3;
+            font-family: $mainFontFamily;
+        }
+
+        & path {
+            color: $color4;
+        }
+
+    }
+
+    .user_search_closed {
+        @extend .user_search;
+        button {
+            display: none;
+        }
+        border: none !important;
+    }
 
      &_tools {
         display: flex;

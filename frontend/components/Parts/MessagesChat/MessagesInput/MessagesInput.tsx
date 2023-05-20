@@ -79,8 +79,14 @@ const MessagesInput = ({setMessageData, interlocutor }:any) => {
             Send
         </Button>
          {smileStatus &&
-             <div ref={emojiRef} className={styles.emoji_cont}>
+             <div 
+               ref={emojiRef} 
+               className={styles.emoji_cont}
+               style={{
+                width: "280px" 
+               }}>
                     <EmojiPicker
+                      dynamicWidth
                       theme="dark"
                       data={data} 
                       onEmojiSelect={addEmoji}

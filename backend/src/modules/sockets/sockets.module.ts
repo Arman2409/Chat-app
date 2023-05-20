@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import WebSocketsGateway from "./ws.gateway";
+import WebSocketsGateway from "./sockets.gateway";
 import { PrismaService } from "nestjs-prisma";
 import {SocketsService} from "./sockets.service";
 

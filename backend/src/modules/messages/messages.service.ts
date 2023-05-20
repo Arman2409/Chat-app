@@ -9,7 +9,7 @@ export class MessagesService {
   constructor(private readonly prisma: PrismaService) { }
 
 
-  async lastMessages(ctx:any,
+  async getLastMessages(ctx:any,
      page: number, 
      perPage: number) {
      const req: UserReq = ctx.req;

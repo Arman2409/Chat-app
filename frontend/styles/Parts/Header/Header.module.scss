@@ -28,7 +28,7 @@
     }
   }
 
-  .open_cont {
+  .messages_open_badge {
     margin-left: auto;
     display: flex;
     align-items: center;
@@ -51,6 +51,11 @@
       cursor: pointer;
       text-shadow: 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #49ff18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49ff18;
     }
+  }
+
+  .requests_badge_messages {
+    margin-left: auto;
+    @extend .requests_badge;
   }
 
   .user_cont {

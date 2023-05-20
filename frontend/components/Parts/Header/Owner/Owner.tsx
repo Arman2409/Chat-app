@@ -54,6 +54,10 @@ const Owner = ({userContRef}:any) => {
         setUser(storeUser as UserType);
     }, [storeUser]);
 
+    useEffect(() => {
+       setMessage("");
+    }, [signStatus])
+
     return (
         <div
         className={styles.owner_main}

@@ -161,20 +161,24 @@ const SearchUser: React.FC = () => {
               style={{
                 flexDirection: isSmall ? "column" : "row",
               }}>
-            <Button
-                className={searchOpened ? styles.find_user_open_search_animation : styles.find_user_open_search_initial}
-                onClick={() => setSearchOpened(true)}>
-                <Search
+            <Search
                     allowClear={true}
                     style={{
-                        display: !searchOpened && "none" as any,
+                        width: searchOpened ? "250px" : "0px",
                     }}
-                    className={styles.user_search}
+                    className={ searchOpened ? styles.user_search :  styles.user_search_closed }
                     placeholder={searchType == "friends" ? "Search in Friends" : "Search"}
                     onChange={(e) => searchChange(e)}
                     onSearch={(e) => search(e)}
                 />
-                {!searchOpened && <BiSearchAlt />}
+                 <Button
+                className={searchOpened ? styles.find_user_open_search_animation : styles.find_user_open_search_initial}
+                onClick={() => setSearchOpened(true)}
+                style={{
+                    width: searchOpened ? "0px" : "40px",
+                }}>
+                
+                 <BiSearchAlt />
             </Button>
                 <Switch
                     checkedChildren="Friends"

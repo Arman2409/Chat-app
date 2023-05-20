@@ -15,11 +15,11 @@ import MobileMenu from "../components/Parts/MobileMenu/MobileMenu";
 
 function MainApp({ Component, pageProps }: AppProps) {
 
-  return <>
-    <Provider store={store}>
-      <App Component={Component} pageProps={pageProps}/>
+  return (
+     <Provider store={store}>
+       <App Component={Component} pageProps={pageProps}/>
      </Provider>
- </>
+  )
 }
 
 const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<AppProps, "router">) => {

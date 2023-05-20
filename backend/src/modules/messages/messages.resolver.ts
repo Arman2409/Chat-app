@@ -7,11 +7,11 @@ export class MessagesResolver {
     constructor(private readonly  service:MessagesService){}
 
     @Query(() => SearchType, {name: "GetLastMessages"})
-    async lastMessages(
+    async getLastMessages(
         @Context() ctx:any,
         @Args("page") page:number,
         @Args("perPage") perPage:number
     ){
-        return await this.service.lastMessages(ctx,page,perPage);
+        return await this.service.getLastMessages(ctx,page,perPage);
     }
 }

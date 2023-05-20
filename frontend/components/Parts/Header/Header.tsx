@@ -11,7 +11,6 @@ import { CiLogin } from "react-icons/ci"
 import { IoPersonSharp } from "react-icons/io5";
 import Image from "next/image";
 import { io } from "socket.io-client";
-import { useMediaQuery } from "react-responsive";
 
 import Logo from "/assests/logo-files/svg/logo-no-background-cropped.svg";
 import { IRootState } from "../../../store/store";
@@ -34,6 +33,7 @@ const AppHeader: React.FunctionComponent = () => {
     const [ownerState, setOwnerState] = useState<boolean>(false);
     const [user, setUser] = useState<UserType>({} as UserType);
     const [inPage, setInPage] = useState<boolean>(true);
+    const [notSeenCount, setNotSeenCount] = useState<number>(0);
     const [displayMessages, setDisplayMessages] = useState<Boolean>(false);
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
 
@@ -42,10 +42,9 @@ const AppHeader: React.FunctionComponent = () => {
 
     const router: any = useRouter();
     const storeUser = useSelector<IRootState>((state) => state.user.user);
+    const storeNotSeen = useSelector<IRootState>((state) => state.messages.notSeenCount);
     const userWindow: boolean = useSelector((state: IRootState) => state.window.userWindow);
     const dispatch: Dispatch = useDispatch();
-
-    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
 
     const { setMessageOptions } = useOpenAlert();
 
@@ -108,6 +107,10 @@ const AppHeader: React.FunctionComponent = () => {
         setUser(storeUser as UserType);
     }, [storeUser]);
 
+    useEffect(() => { 
+        setNotSeenCount(storeNotSeen as any);
+    }, [storeNotSeen])
+
     useEffect(() => {
         const token: string | null = localStorage.getItem("token");
         if (token) {
@@ -117,14 +120,13 @@ const AppHeader: React.FunctionComponent = () => {
                     const signedUser: any = await handleGQLRequest("AlreadySigned", {token});
                     if (signedUser?.AlreadySigned?.email) { 
                         let socket = io("ws://localhost:4000");
-                        socket.emit("signedIn", {id: signedUser?.AlreadySigned?.id});
+                        socket.emit("signedIn", {id: signedUser?.AlreadySigned?.id}, (resp:any) => {   
+                            if (Object.hasOwn(resp, "notSeenCount")) {
+                              setNotSeenCount(resp?.notSeenCount);
+                            } 
+                        });
                         dispatch(setSocket(socket));
                         dispatch(setStoreUser(signedUser?.AlreadySigned));
-                    } else {
-                       setMessageOptions({
-                         message: "Error occured",
-                         type: "error"
-                       })
                     }
                     dispatch(setLoaded(true));
                 })()
@@ -133,8 +135,7 @@ const AppHeader: React.FunctionComponent = () => {
             }
         } else {
            waitForSec();
-        }
-        ;
+        };
     }, []);
 
     return (
@@ -151,21 +152,23 @@ const AppHeader: React.FunctionComponent = () => {
                         height: "100%"
                       }}
                       />
-                    {/* //    width={"100%"} height={"100%"}/> */}
                  </div>
             </Link>
             {inPage ?
                <>
-                <div className={styles.open_cont}>
                   {user.name && displayMessages &&
+
+                <Badge 
+                  count={notSeenCount} 
+                  className={styles.messages_open_badge}>
                     <WechatFilled 
                     onClick={() => openMessages()} 
-                    className={styles.open_cont_icon}/>
+                    className={styles.messages_open_badge_icon}/>
+                </Badge> 
                   }
-                </div> 
                 <Badge
                     dot={user ? Boolean(user.friendRequests?.length) : false}
-                    className={styles.requests_badge}>
+                    className={displayMessages ? styles.requests_badge : styles.requests_badge_messages}>
                     {user.name &&
                         <div ref={addRef}>
                             <HiOutlineUserAdd
@@ -180,6 +183,9 @@ const AppHeader: React.FunctionComponent = () => {
                 <Row
                     className={styles.user_cont}
                     ref={userContRef}
+                    style={{
+                        marginLeft: user.name ? "15px" : "auto"
+                    }}
                     onClick={() => toggleUser()}>
                     <Typography className={styles.user_name}>
                         {user.name ? getSlicedWithDots(user.name, 15) : "Sign In"}

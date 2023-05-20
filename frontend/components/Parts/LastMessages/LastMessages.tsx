@@ -10,7 +10,7 @@ const LastMessages:React.FC = () => {
    const [total, setTotal] = useState(100);
    const [lastMessages, setLastMessages] = useState<any[]>([])
 
-   const isMedium = useMediaQuery({query: "(max-width: 750px)"});
+   const isMedium: boolean = useMediaQuery({query: "(max-width: 750px)"});
    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
    
    const getLastMessages = (page:number) => {
@@ -30,7 +30,7 @@ const LastMessages:React.FC = () => {
        <div 
          className={styles.lastMessages_cont} 
          style={{
-            width: isSmall ? "100%" : isMedium ? "50%" : "40%",
+            width: isSmall ? "100%" : isMedium ? "58%" : "50%",
          }}>
          <Typography className={styles.lastMessages_cont_title}>
             Last Messages
