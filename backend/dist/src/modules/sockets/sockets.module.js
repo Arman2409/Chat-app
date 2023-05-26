@@ -8,14 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SocketsModule = void 0;
 const common_1 = require("@nestjs/common");
-const ws_gateway_1 = require("./ws.gateway");
+const sockets_gateway_1 = require("./sockets.gateway");
 const nestjs_prisma_1 = require("nestjs-prisma");
 const sockets_service_1 = require("./sockets.service");
 let SocketsModule = class SocketsModule {
 };
 SocketsModule = __decorate([
     (0, common_1.Module)({
-        providers: [ws_gateway_1.default, nestjs_prisma_1.PrismaService, sockets_service_1.SocketsService]
+        providers: [sockets_gateway_1.default, nestjs_prisma_1.PrismaService, sockets_service_1.SocketsService]
     })
 ], SocketsModule);
 exports.SocketsModule = SocketsModule;

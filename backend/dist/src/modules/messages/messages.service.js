@@ -17,7 +17,7 @@ let MessagesService = class MessagesService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async lastMessages(ctx, page, perPage) {
+    async getLastMessages(ctx, page, perPage) {
         const req = ctx.req;
         const currentUser = req.session.user;
         let messages = await this.prisma.messages.findMany({

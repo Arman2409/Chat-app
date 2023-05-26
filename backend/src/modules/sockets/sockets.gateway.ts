@@ -25,9 +25,14 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private previousAllMessages = [];
 
-    afterInit(): any {
-        setInterval( async () => {           
+    async afterInit(): Promise<any> {
+        this.allMessages = await this.service.getMessages();
+        setInterval( async () => {   
+            // console.log(this.allMessages);
+              
             if (!isEqual(this.allMessages, this.previousAllMessages)) {
+                console.log("not equal");
+                
                  await this.service.updateMessages(this.allMessages);
                  this.previousAllMessages = [...this.allMessages];
             }
@@ -81,7 +86,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         if (alreadyMessaged) {
              previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
             remove(this.allMessages,(messages) => {
-                return messages === previousMessaging;
+                return messages.between.includes(previousMessaging.between[0]) && messages.between.includes(previousMessaging.between[1]) ;
             });
             
             messageData = {
@@ -117,7 +122,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                     ...messageData,
                     notSeen:
                             {
-                                count: previousMessaging?.notSeen.count + 1 || 1,
+                                count: previousMessaging?.notSeen?.count + 1 || 1,
                                 by: messageData?.between?.indexOf(to)
                             }
                 }
@@ -138,9 +143,9 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                     console.log(messages === previousMessaging);
                     return messages === previousMessaging;
                 });
-                previousMessaging.notSeen.count = 0;
+                previousMessaging.notSeen.count = 0;                
                 this.allMessages.push(previousMessaging);
-                return "Got new interlocuter ";
+                return "Got new interlocuter";
             }
         } else {
             return "Not messaged";

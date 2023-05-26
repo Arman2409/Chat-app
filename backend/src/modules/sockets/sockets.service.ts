@@ -31,4 +31,8 @@ export class SocketsService {
         };
     }
 
+    async getMessages() {
+        const messages = await this.prisma.messages.findMany();
+        return messages;
+    }
 }

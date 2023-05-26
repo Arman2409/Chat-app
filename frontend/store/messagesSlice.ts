@@ -18,6 +18,8 @@ const messagesSlice:Slice = createSlice({
            state.messagesData = action.payload;
         },
         setNotSeenCount: (state, action) => {
+            console.log(action.payload);
+            
             state.notSeenCount = action.payload;
         },
     }

@@ -107,7 +107,7 @@
     height: 100%;
     width: 100%;
     background-color: $color1;
-    opacity: 0.8;
+    opacity: 0.9;
   }
 
   &_close {
@@ -133,5 +133,6 @@
   &_desc {
     font-size: 20px;
     color: $color4;
+    font-weight: 900;
   }
 }

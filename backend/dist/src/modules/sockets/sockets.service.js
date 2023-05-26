@@ -40,6 +40,10 @@ let SocketsService = class SocketsService {
         }
         ;
     }
+    async getMessages() {
+        const messages = await this.prisma.messages.findMany();
+        return messages;
+    }
 };
 SocketsService = __decorate([
     (0, common_1.Injectable)(),

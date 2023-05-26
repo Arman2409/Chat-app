@@ -8,7 +8,6 @@ import { getStartEnd } from 'src/functions/functions';
 export class MessagesService {
   constructor(private readonly prisma: PrismaService) { }
 
-
   async getLastMessages(ctx:any,
      page: number, 
      perPage: number) {

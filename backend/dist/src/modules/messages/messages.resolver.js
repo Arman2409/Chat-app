@@ -20,8 +20,8 @@ let MessagesResolver = class MessagesResolver {
     constructor(service) {
         this.service = service;
     }
-    async lastMessages(ctx, page, perPage) {
-        return await this.service.lastMessages(ctx, page, perPage);
+    async getLastMessages(ctx, page, perPage) {
+        return await this.service.getLastMessages(ctx, page, perPage);
     }
 };
 __decorate([
@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Number]),
     __metadata("design:returntype", Promise)
-], MessagesResolver.prototype, "lastMessages", null);
+], MessagesResolver.prototype, "getLastMessages", null);
 MessagesResolver = __decorate([
     (0, graphql_1.Resolver)(),
     __metadata("design:paramtypes", [messages_service_1.MessagesService])
