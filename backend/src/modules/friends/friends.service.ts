@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserReq } from 'types/types';
-import { RequestContext } from 'nestjs-request-context';
 import { PrismaService } from 'nestjs-prisma';
 import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
@@ -59,6 +58,45 @@ export class FriendsService {
       return updateCurrent;
     } else {
       throw {message: "Not Sent, Error Occured"};
+    }
+  }
+
+  async removeFriend(ctx:any , id: any):Promise<any> {
+    const req: UserReq = ctx.req;
+    const currentUser = req.session.user;
+    const index: number = currentUser.friends.indexOf(id);
+    currentUser.friends.splice(index, 1);
+    const updating = await this.prisma.users.update({
+      where: {
+        id: currentUser.id
+      },
+      data: {
+        friends: currentUser.friends
+      }
+    });
+    if(!updating) {
+      throw new GraphQLError("Error Occured")
+    }
+    req.session.user = currentUser;
+    const friend: UserType = await this.prisma.users.findUnique({
+      where: {
+        id
+      }
+    });
+    const friendIndex: number = friend.friends.indexOf(currentUser.id);
+    friend.friends.splice(friendIndex, 1);
+    const updatingFriend = await this.prisma.users.update({
+      where: {
+        id
+      },
+      data: {
+        friends: friend.friends
+      }
+    })
+    if (updatingFriend) {
+      return {token: this.jwt.sign(currentUser)};
+    } else {
+      return {message: "Not Removed, Error Occured"};
     }
   }
 

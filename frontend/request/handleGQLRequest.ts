@@ -3,7 +3,7 @@ import { query } from "gql-query-builder";
 import { perPage } from "../configs/configs";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
-    const userFields = ["name","lastVisited", "friends", "image", "sentRequests", "friendRequests", "email", "active","id"];
+    const userFields = ["name","blockedUsers", "lastVisited", "friends", "image", "sentRequests", "friendRequests", "email", "active","id"];
     let variables = {};
     let fields: any[] = [];
 
@@ -73,7 +73,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         fields = userFields
     }
 
-    if(operation == "ConfirmFriend") {
+    if(operation == "ConfirmFriend" || operation == "RemoveFriend") {
         const { friendId } = args;
         variables = {
             friendId: {type: "String!", value: friendId}

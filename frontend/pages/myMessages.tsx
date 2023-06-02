@@ -38,9 +38,9 @@ const MyMessages:React.FC = () => {
         height: "100%",
         border: "1px solid green"
        }}>
-        {isSmall ?   menuOption === "chat" ?
-         <MessagesChat /> : 
+        {isSmall ?   menuOption === "lastMessages" ?
          <LastMessages /> : 
+         <MessagesChat /> :
           <>
             <LastMessages />
             <MessagesChat />

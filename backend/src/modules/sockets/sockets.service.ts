@@ -30,5 +30,26 @@ export class SocketsService {
            await this.prisma.messages.createMany({ data: allMessages as any });
         };
     }
-
+    
+    async addRemoveBlockedUser(byId:string, userId:string, type:string):Promise<any> {
+        const byUser =  await this.prisma.users.findUnique(
+            {
+                where: {
+                    id: byId
+                }
+            })
+        const blockedUsers = byUser.blockedUsers;
+        if(type === "block") {
+            blockedUsers.push(userId);
+        } else if (type === "unblock") {
+            const userIndex =  blockedUsers.indexOf(userId);
+            blockedUsers.splice(userIndex, 1);
+        }
+        return  await this.prisma.users.update({
+            where : { id: byId },
+            data: {
+                blockedUsers,
+            }
+        });
+    }
 }

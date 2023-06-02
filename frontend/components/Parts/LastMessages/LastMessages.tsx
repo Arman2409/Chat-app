@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Typography } from "antd";
 
-import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
+import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import styles from "../../../styles/Parts/LastMessages.module.scss";
 import { useMediaQuery } from "react-responsive";

@@ -14,6 +14,14 @@ export class FriendsResolver{
     return await this.service.addFriend(ctx ,id);
   }
 
+  @Query(() => TokenType, { name: 'RemoveFriend' })
+  async removeFriend(
+    @Context() ctx:any,
+    @Args('friendId') id: string
+  ) {
+    return await this.service.removeFriend(ctx ,id);
+  }
+
   @Query(() => [UserType], { name: 'GetFriendRequestsUsers' })
   async getRequests(
     @Context() ctx:any,

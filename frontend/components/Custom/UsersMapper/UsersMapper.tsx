@@ -1,23 +1,23 @@
-import {List, Avatar, Typography, Badge, Button} from "antd";
 import React, {useCallback, useEffect, useRef, useState} from "react";
+import {List, Avatar, Typography, Badge, Button} from "antd";
 import {useRouter} from "next/router";
 import {RiUser4Line, RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
 import { WaveLoading } from "react-loading-typescript";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
-import { last, remove } from "lodash";
+import {last, remove} from "lodash";
 
-import styles from "../../../styles/Tools/UsersMapper.module.scss";
+import styles from "../../../styles/Custom/UsersMapper.module.scss";
 import {MapperProps} from "../../../types/types";
-import handleGQLRequest from "../../../request/handleGQLRequest";
 import {IRootState} from "../../../store/store";
-import useOpenAlert from "../hooks/useOpenAlert";
+import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
-import {setStoreUser} from "../../../store/userSlice";
-import { getSlicedWithDots } from "../../../functions/functions";
-import { usersLoadWaitTime } from "../../../configs/configs";
+import {getSlicedWithDots} from "../../../functions/functions";
+import {usersLoadWaitTime} from "../../../configs/configs";
+import {setMenuOption} from "../../../store/windowSlice";
+import UserDropdown from "../UserDropdown/UserDropdown";
 
 const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
@@ -25,9 +25,9 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
     const [loading, setLoading] = useState(false);
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
     const gettingUsersRef = useRef(false);
-
+    const acceptLink = useRef<null | any>(null);
+    const listRef = useRef<null | any>(null);
     const router: any = useRouter();
-
     const dispatch: Dispatch = useDispatch();
 
     const user = useSelector((state: IRootState) => {
@@ -37,49 +37,13 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
         return state.messages;
     });
 
-    const acceptLink = useRef<null | any>(null);
-    const listRef = useRef<null | any>(null);
+    const {setMessageOptions} = useOpenAlert();
 
-    const { setMessageOptions } = useOpenAlert();
-
-    const acceptRequest: Function = async (item: any, e: Event) => {
+    const acceptRequest = useCallback(async (item: any, e: Event) => {
         e.stopPropagation();
         setButtonsDisabled(true);
         accept ? await accept(item.id) : null;
-    }
-
-    const handleAddFriend: Function = (id: string, event: Event) => {
-        event.stopPropagation();
-        setButtonsDisabled(true);
-        (async function () {
-            if (user.email) {
-                const addStatus = await handleGQLRequest("AddFriend", {id});    
-                if(addStatus.message) {
-                    setMessageOptions({
-                        message: addStatus.message,
-                        type: "error"
-                    });
-                }
-                if (addStatus?.AddFriend?.email) {
-                    setMessageOptions({
-                        message: "Request Sent",
-                        type: "success"
-                    });
-                    dispatch(setStoreUser(addStatus.AddFriend));
-                } else if(addStatus.errors) {
-                    setMessageOptions({
-                        message: addStatus.errors[0],
-                        type: "error"
-                    });
-                }
-            } else {
-                setMessageOptions({
-                    message: "Sign in to add friends",
-                    type: "warning"
-                });
-            }
-        })()
-    };
+    }, [accept, setButtonsDisabled]);
 
     const handleScroll = (e:any) => { 
         if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
@@ -88,20 +52,20 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
                 if (loading) {
                     return;
                 };
-                if ( gettingUsersRef.current) {
+                if (gettingUsersRef.current) {
                     return;
                 }
                 if (total <= users.length) {
                     return;
                 };
-                gettingUsersRef.current = true;
+                 gettingUsersRef.current = true;
                  setLoading(true);
                }      
             };
         }
      };
 
-    const newChat: Function = (e: UserType) => {
+    const newChat = useCallback((e: UserType) => {
         if (!user.name) {
             setMessageOptions({
                 message: "Sign in to message",
@@ -110,8 +74,9 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
             return;
         };
         dispatch(setInterlocutor(e));
+        dispatch(setMenuOption("chat"));
         router.push("/myMessages");
-    };
+    }, [dispatch, setMessageOptions, router, user, setMenuOption, setInterlocutor]);
 
     const changeInterlocutorMessage = useCallback(() => {
         const interlocutor:any = users.find(e => e.id === storeInterlocutor.id);
@@ -137,7 +102,6 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
     useEffect(() => {
            if(loading) {
              window.removeEventListener("wheel", handleScroll, true);
-           
            } else {
              window.addEventListener("wheel", handleScroll, true);
            }
@@ -169,8 +133,9 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
                   {users.map((item) => {
-                    let isInterlocutor;
-                    if(item.id === storeInterlocutor.id) isInterlocutor = true;
+                    const isInterlocutor = item.id === storeInterlocutor.id;
+                    const isBlocked = user.blockedUsers?.includes(item.id);
+                    const isRequested = user.sentRequests?.includes(item.id) ||  user.friendRequests?.includes(item.id);
                     return (
                     <List.Item
                         onClick={() => newChat(item)}
@@ -183,19 +148,23 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
                             <Typography>{item.name}</Typography>
                             {!item.active && <Typography className="list_item_date">{item?.lastVisited}</Typography>}
                         </div>
-                        {(!friends && user.name) ? 
+                        {user.name ? 
                         lastMessages ? <p className={styles.list_item_action_message}>
                             {getSlicedWithDots(item.lastMessage,25)}
                             {Number(item.notSeenCount) ?
                                <span className={styles.list_item_action_message_alert_span}>{item.notSeenCount}</span> : ""}
-                               </p> : 
-                         user.sentRequests?.includes(item.id) ?  <a className={styles.list_item_action_disabled} onClick={() => {}}>Request Sent</a> :
-                            <Button loading={buttonsDisabled} className={styles.list_item_action_button} onClick={(e) => handleAddFriend(item.id, e)}>Add
-                                Friend</Button> :
-                                 accept ?  <Button 
+                               </p> : friendRequests ?  <Button 
                                   className={styles.list_item_action_button}
                                   loading={buttonsDisabled} ref={acceptLink}
-                                   onClick={(e) => acceptRequest(item, e)}>Accept</Button> : ""}
+                                   onClick={(e) => acceptRequest(item, e)}>Accept</Button> :
+                                  <UserDropdown 
+                                    user={item}   
+                                    isRequested={isRequested}
+                                    isBlocked={isBlocked}           
+                                    type={friends ? "friend" : "all"}
+                                    />
+                                   : ""
+                                       }
                     </List.Item>
                     )
                 })}
