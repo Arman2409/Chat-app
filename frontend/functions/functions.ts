@@ -2,7 +2,7 @@ import { TimeStampType } from "../types/types";
 
 export const getSlicedWithDots = (word: string, lettersCount: number) => {
   if(word?.length <= lettersCount) return word;
-  return  word.slice(0, lettersCount) + "...";
+  return  word?.slice(0, lettersCount) + "...";
 };
 
 export const getSendersId = (array: any[], userId:string) => {

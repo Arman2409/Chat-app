@@ -8,7 +8,7 @@ import { BiSearchAlt } from "react-icons/bi"
 const { Search } = Input;
 
 import styles from "../../../styles/Parts/FindUser.module.scss";
-import UsersMapper from "../../Tools/UsersMapper/UsersMapper";
+import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import { IRootState } from "../../../store/store";
 import { UserType } from "../../../types/types";
 import handleGQLRequest from "../../../request/handleGQLRequest";

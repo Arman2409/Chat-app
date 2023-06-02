@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { message } from "antd";
+import { getSlicedWithDots } from "../../../functions/functions";
 
 const useOpenAlert = () => {
     const [messageOptions, setMessageOptions] = useState<any>({});
@@ -10,6 +11,7 @@ const useOpenAlert = () => {
        if (!string) return;
        if (isOpen) message.destroy();
        setIsOpen(true);
+       string =  getSlicedWithDots(string, 25);
        if(type == "error") {
           message.error(string, 1)
        }

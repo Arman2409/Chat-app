@@ -35,6 +35,9 @@ export class  UserType {
     @Field()
     lastVisited?: string
 
+    @Field(type => [String])
+    blockedUsers?: any[]
+
     @Field({ nullable: true})
     lastMessage?: string
 }
@@ -92,6 +95,9 @@ export class  MessageType {
 
     @Field()
     notSeen?: NotSeenType
+
+    @Field()
+    blocked?: boolean
 }
 
 

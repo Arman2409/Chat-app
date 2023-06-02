@@ -75,11 +75,13 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     ) {
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData:MessageType = {} as MessageType;
-
         let previousMessaging:MessageType;
 
         if (alreadyMessaged) {
-             previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
+            previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
+            if(previousMessaging.blocked) {
+                return previousMessaging;
+            }
             remove(this.allMessages,(messages) => {
                 return messages === previousMessaging;
             });
@@ -135,7 +137,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             const previousMessaging = messaged[0];
             if (previousMessaging.notSeen?.by === previousMessaging?.between?.indexOf(currentId)) {
                 remove(this.allMessages,(messages) => {
-                    console.log(messages === previousMessaging);
                     return messages === previousMessaging;
                 });
                 previousMessaging.notSeen.count = 0;
@@ -150,6 +151,68 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     @SubscribeMessage("getMessages")
     async handleGetMessages(@MessageBody("interlocuters") interlocuters: string[]) {
         return await this.allMessages.filter(messages => messages.between?.every((id:string) => interlocuters.indexOf(id) > -1))[0];
+     }
+
+     @SubscribeMessage("blockUser")
+     async blockUser(@MessageBody("by") by: string,
+        @MessageBody("user") user: string,){
+            
+        const messaged = this.allMessages.filter(messages => messages.between.includes(by) && messages.between.includes(user));
+        let messageData:any;
+        if (messaged?.length){
+            messageData = messaged[0];
+            if(messageData.blocked) {
+                return "Already blocked";
+            }
+            remove(this.allMessages,(messages) => {
+                return messages === messageData;
+            });
+            messageData.blocked = true;
+            messageData.blockedBy = messageData.between?.indexOf(by);
+        } else {
+           messageData  =  {
+            between: [by, user],
+            blocked: true,
+            sequence: [],
+            messages: [],
+            notSeen:  {
+                count:0,
+                by:0
+            },
+            blockedBy: 0,
+            lastDate: new Date().toString().slice(0, 10),
+          }
+        }
+        this.allMessages.push(messageData);
+        const addBlocked = await this.service.addRemoveBlockedUser(by, user, "block");
+        if(addBlocked) {
+          return addBlocked;
+        } else {
+            return "Not blocked";
+        }
+     }
+
+     @SubscribeMessage("unBlockUser")
+     async unBlockUser(@MessageBody("by") by: string,
+        @MessageBody("user") user: string,){
+            
+        const messaged = this.allMessages.filter(messages => messages.between.includes(by) && messages.between.includes(user));
+        let messageData:any;
+        if (messaged?.length){
+            messageData = messaged[0];
+            remove(this.allMessages,(messages) => {
+                return messages === messageData;
+            });
+            messageData.blocked = false;
+            messageData.blockedBy = 0;
+        }
+        this.allMessages.push(messageData);
+        const removeBlocked = await this.service.addRemoveBlockedUser(by, user, "unblock");
+        if(removeBlocked) {
+         return removeBlocked;
+        } else {
+            return "Not unblocked";
+        }
      }
 }
 

@@ -12,6 +12,7 @@ export interface UserType {
     active: boolean,
     lastMessage?: string,
     notSeenCount?: number,
+    blockedUsers?: string[],
 }
 
 export interface UserInitialState {
@@ -84,4 +85,12 @@ export interface NewsModalProps {
 export interface TimeStampType {
     min: number,
     sec: number
+}
+
+export interface UserDropDownProps {
+    type: string,
+    user:UserType,
+    setButtonsDisabled?: Function,
+    isBlocked?: boolean,
+    isRequested?: boolean
 }

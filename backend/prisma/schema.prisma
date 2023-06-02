@@ -23,6 +23,7 @@ model Users {
   lastVisited String @default("")
   lastMesage String @default("")
   notSeenCount Int @default(0)
+  blockedUsers String[] @default([])
 }
 
 model News {
@@ -39,4 +40,6 @@ model Messages {
   messages String[] @default([])
   lastDate String @default("")
   notSeen Json
+  blocked Boolean @default(false)
+  blockedBy Int @default(0)
 }

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Avatar, Badge, Button, Typography } from "antd";
+import { Avatar, Badge, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,20 +11,16 @@ import { MessagesDataType, UserType } from "../../../types/types";
 import { getSendersId, getSlicedWithDots } from "../../../functions/functions";
 import { setMessagesData } from "../../../store/messagesSlice";
 import MessagesInput from "./MessagesInput/MessagesInput";
-import handleGQLRequest from "../../../request/handleGQLRequest";
-import { setStoreUser } from "../../../store/userSlice";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { useMediaQuery } from "react-responsive";
+import UserDropdown from "../../Custom/UserDropdown/UserDropdown";
 
 const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
     const [interlocutor, setInterlocutor] = useState<UserType>({} as UserType)
-    const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
-    const [requestSent, setRequestSent] = useState(false);
 
     const isMedium = useMediaQuery({query: "(max-width: 750px)"});
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
- 
     const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
@@ -32,7 +28,11 @@ const MessagesChat: React.FC = () => {
         return state.user.user;
     });
     const [user, setUser] = useState<UserType>(storeUser);
-    const showAdd = !user.friends?.includes(interlocutor.id) && !user.sentRequests?.includes(interlocutor.id);
+    const isBlocked = user.blockedUsers?.includes(interlocutor.id);
+    const isRequested = user.sentRequests?.includes(interlocutor.id) ||  user.friendRequests?.includes(interlocutor.id);
+    const isFriend = user.friends?.includes(interlocutor.id);
+    console.log({isFriend});
+    
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
     });
@@ -41,42 +41,8 @@ const MessagesChat: React.FC = () => {
     });
     const router: any = useRouter();
 
-    const { setMessageOptions } = useOpenAlert();
+    const {setMessageOptions} = useOpenAlert();
 
-
-    const addFriend = () => {
-        setLoadingAdd(true);
-        (async function () {
-            if (user.email) {
-                const addStatus = await handleGQLRequest("AddFriend", {id: interlocutor.id});    
-                if(addStatus.message) {
-                    setMessageOptions({
-                        message: addStatus.message,
-                        type: "error"
-                    });
-                }
-                if (addStatus?.AddFriend?.email) {
-                    setMessageOptions({
-                        message: "Request Sent",
-                        type: "success"
-                    });
-                    dispatch(setStoreUser(addStatus.AddFriend));
-                } else if(addStatus.errors) {
-                    setMessageOptions({
-                        message: addStatus.errors[0],
-                        type: "error"
-                    });
-                }
-            } else {
-                setMessageOptions({
-                    message: "Sign in to add friends",
-                    type: "warning"
-                });
-            }
-            setLoadingAdd(false);
-            setRequestSent(true)
-        })()
-    }
 
     useEffect(() => {
         if (!user.name) {
@@ -126,7 +92,6 @@ const MessagesChat: React.FC = () => {
     }, [storeUser])
 
     return (
-        <>
             <div className={styles.chat_cont}
               style={{
                 width: isSmall ? "100%" : isMedium ? "42%" : "50%",
@@ -135,14 +100,13 @@ const MessagesChat: React.FC = () => {
                     <>
                         <div className={styles.interlocutor_cont}>
                             <div>
-                           {showAdd && !requestSent && 
-                              <Button 
-                                  onClick={() => addFriend()}
-                                  className={styles.interlocutor_cont_add_friend}
-                                  loading={loadingAdd}>
-                                 Add Friend
-                              </Button>}
+                           <UserDropdown 
+                             type={isFriend ? "friend" : "all"} 
+                             isRequested={isRequested}
+                             isBlocked={isBlocked}  
+                             user={interlocutor}/>
                              </div>
+                             {/* interlocutor data  */}
                             <div className={styles.interlocutor_cont_name}>
                                 <h5 className={styles.interlocutor_name}>
                                     {interlocutor.name ?
@@ -157,7 +121,14 @@ const MessagesChat: React.FC = () => {
                             </div>
                         </div>
                         <div className={styles.messages_cont} ref={messagesRef}>
-                            {messageData.messages && messageData.messages?.map((e: string, index: number) => {
+                            {/* add blocked alert  */}
+                            {messageData.blocked && 
+                            <div className={styles.blocked_cont}>
+                                 {messageData.blockedBy ===  messageData.between.indexOf(user.id) ? "Blocked by you" : "You were blocked"}
+                            </div> }
+                             {/* maping the messages  */}
+                            {messageData.messages &&
+                             messageData.messages?.map((e: string, index: number) => {
                                 const order: number = messageData.between.indexOf(user.id);
                                 return (
                                     <div
@@ -184,7 +155,6 @@ const MessagesChat: React.FC = () => {
                     </div>
                 }
             </div>
-        </>
     )
 };
 

@@ -87,6 +87,22 @@
         border-radius: 5px;
       }
     }
+
+    .blocked_cont {
+      width: auto;
+      max-width: 80%;
+      position:sticky;
+      z-index: 3;
+      top: 10px;
+      background-color: $color4;
+      color: $color7;
+      border-radius: 5px;
+      margin: 5px auto;
+      display: flex;
+      font-weight: 900;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   .choose_interlocutor_cont {

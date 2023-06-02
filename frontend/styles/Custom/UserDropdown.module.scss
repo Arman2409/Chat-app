@@ -1,0 +1,33 @@
+@import "../variables.scss";
+
+.list_item_actions_dropdown {
+    background-color: $color2 !important;
+    border-radius: 50px !important;
+
+    ul {
+        background-color: $color2 !important;
+        padding: 0 !important;
+
+        li {
+            background-color: $color2 !important;
+            color: $color7 !important;
+
+            &:hover {
+                background-color: $color3 !important;
+            }
+        }
+    }
+}
+
+
+.list_item_actions_icon {
+    margin-left: auto;
+    color: $color5;
+    font-size: 20px;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: $color3;
+        color: $color6;
+    }
+}
