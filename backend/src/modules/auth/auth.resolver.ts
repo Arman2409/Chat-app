@@ -1,8 +1,8 @@
 import { Resolver, Args, Query, Context } from "@nestjs/graphql"
 
 import { AuthService } from "./auth.service";
-import { RecoverType, TokenType, UserType } from "types/graphqlTypes";
-import { UserReq } from "types/types";
+import { RecoverType, TokenType, UserType } from "../../../types/graphqlTypes";
+import { UserReq } from "../../../types/types";
 
 @Resolver()
 export class AuthResolver {

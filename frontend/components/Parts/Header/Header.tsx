@@ -1,3 +1,4 @@
+import React from "react";
 import { Layout, Typography, Row, Avatar, Badge } from "antd";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -172,6 +173,7 @@ const AppHeader: React.FunctionComponent = () => {
                     {user.name &&
                         <div ref={addRef}>
                             <HiOutlineUserAdd
+                                role="toggleOwnerInfo"
                                 onClick={() => {
                                     if (ownerState) setOwnerState(false);
                                     setWatchingRequests(current => !current)

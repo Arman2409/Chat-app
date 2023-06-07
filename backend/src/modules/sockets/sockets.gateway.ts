@@ -11,7 +11,7 @@ import {isEqual, remove} from "lodash"
 
 import {SocketWIthHandshake} from "../../../types/types";
 import {SocketsService} from "./sockets.service";
-import { MessageType } from "types/graphqlTypes";
+import { MessageType } from "../../../types/graphqlTypes";
 
 @WebSocketGateway({ cors: "*" },)
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
@@ -140,9 +140,9 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                     return messages === previousMessaging;
                 });
                 previousMessaging.notSeen.count = 0;
-                this.allMessages.push(previousMessaging);
-                return "Got new interlocuter ";
+                this.allMessages.push(previousMessaging);   
             }
+            return previousMessaging;
         } else {
             return "Not messaged";
         }

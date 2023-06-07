@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import * as bcrypt from "bcrypt";
-import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
-import { CloudinaryService } from 'src/middlewares/cloudinary/cloudinary.service';
-import { UserReq } from 'types/types';
-import { JwtService } from "../../middlewares/jwt/jwt.service";
 import { MailerService } from '@nestjs-modules/mailer';
 import { random } from 'lodash';
+
+import { UserType } from '../../../types/graphqlTypes';
+import { UserReq } from '../../../types/types';
+import { JwtService } from "../../middlewares/jwt/jwt.service";
+import { CloudinaryService } from '../../middlewares/cloudinary/cloudinary.service';
 
 @Injectable()
 export class AuthService {
@@ -153,7 +154,7 @@ export class AuthService {
                 data: {
                     password: hashedPassword
                 }
-            }).then((res) => {
+            }).then(() => {
                 return {successMessage: "Password changed succesfully"}
             }).catch(() => {
                return {message: "Failed"}

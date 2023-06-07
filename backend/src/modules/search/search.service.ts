@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from 'nestjs-prisma';
 import {UserReq} from 'types/types';
-import {capitalizeFirstLetter, getStartEnd, sortByActivesFirst} from 'src/functions/functions';
+import {capitalizeFirstLetter, getStartEnd, sortByActivesFirst} from '../../functions/functions';
 
 @Injectable()
 export class SearchService {
@@ -43,8 +43,8 @@ export class SearchService {
 
         const req: UserReq = ctx.req;
 
-        if (req.session.user) {
-            if (req.session.user.friends) {
+        if (req?.session?.user) {
+            if (req?.session?.user?.friends) {
                 data = data.filter((el: any) => {
                     if (req.session.user.friends.includes(el.id) || el.id == req.session.user.id) {
                         return false;
@@ -56,7 +56,7 @@ export class SearchService {
         };
 
         const total = data.length;
-        const { startIndex, endIndex } = getStartEnd(page, perPage, data.length);
+        const { startIndex, endIndex } = getStartEnd(page, perPage);
 
         data = sortByActivesFirst(data);
         data = data.slice(startIndex, endIndex);
@@ -112,7 +112,7 @@ export class SearchService {
                 }
 
                 const total = friends.length;
-                const { startIndex, endIndex } = getStartEnd(page, perPage, friends.length);
+                const { startIndex, endIndex } = getStartEnd(page, perPage);
                 friends = sortByActivesFirst(friends);
                 friends = friends.splice(startIndex, endIndex);
                 return { users: friends, total: total };

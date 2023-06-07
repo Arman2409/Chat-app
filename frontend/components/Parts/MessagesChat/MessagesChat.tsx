@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { WechatFilled } from "@ant-design/icons";
+import { useMediaQuery } from "react-responsive";
 
 import styles from "../../../styles/Parts/MessagesChat/MessagesChat.module.scss";
 import { IRootState } from "../../../store/store";
 import { MessagesDataType, UserType } from "../../../types/types";
 import { getSendersId, getSlicedWithDots } from "../../../functions/functions";
-import { setMessagesData } from "../../../store/messagesSlice";
+import { setInterlocutorMessages, setMessagesData as setStoreMesaagesData } from "../../../store/messagesSlice";
 import MessagesInput from "./MessagesInput/MessagesInput";
-import useOpenAlert from "../../Tools/hooks/useOpenAlert";
-import { useMediaQuery } from "react-responsive";
 import UserDropdown from "../../Custom/UserDropdown/UserDropdown";
 
 const MessagesChat: React.FC = () => {
@@ -31,7 +30,6 @@ const MessagesChat: React.FC = () => {
     const isBlocked = user.blockedUsers?.includes(interlocutor.id);
     const isRequested = user.sentRequests?.includes(interlocutor.id) ||  user.friendRequests?.includes(interlocutor.id);
     const isFriend = user.friends?.includes(interlocutor.id);
-    console.log({isFriend});
     
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
@@ -40,9 +38,6 @@ const MessagesChat: React.FC = () => {
         return state.socket.socket;
     });
     const router: any = useRouter();
-
-    const {setMessageOptions} = useOpenAlert();
-
 
     useEffect(() => {
         if (!user.name) {
@@ -57,7 +52,7 @@ const MessagesChat: React.FC = () => {
         if(storeInterlocutor?.name) {
             if (socket) {
                 socket.emit("newInterlocutor", {id:user.id, userId: storeInterlocutor.id}, (resp:any) => {
-                    console.log({resp});
+                  dispatch(setInterlocutorMessages(resp));
                 });
             }
         }
@@ -75,10 +70,10 @@ const MessagesChat: React.FC = () => {
                     setMessageData(data);
                     return;
                 }
-                dispatch(setMessagesData(data));
+                dispatch(setStoreMesaagesData(data));
             })
         }
-        setInterlocutor(storeInterlocutor);
+        setInterlocutor(storeInterlocutor);   
     }, [interlocutor, socket])
 
     useEffect(() => {

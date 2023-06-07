@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserReq } from 'types/types';
 import { PrismaService } from 'nestjs-prisma';
-import { UserType } from 'types/graphqlTypes';
 import { GraphQLError } from 'graphql';
 
 import { JwtService } from "../../middlewares/jwt/jwt.service";
+import { UserType } from '../../../types/graphqlTypes';
+import { UserReq } from '../../../types/types';
+
 @Injectable()
 export class FriendsService {
   constructor(private readonly prisma: PrismaService,

@@ -1,35 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Dropdown } from "antd";
 import { BiMenuAltRight } from "react-icons/bi"
-
-import styles from "../../../styles/Parts/MobileMenu.module.scss";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
+
+import styles from "../../../styles/Parts/MobileMenu.module.scss";
 import { setMenuOption } from "../../../store/windowSlice";
-
-const items = {
-    mainItems:[
-        {
-            label: "News",
-            key: "news"
-        },
-        {
-            label: "Find User",
-            key: "findUser"
-        }
-    ],
-    messagesItems: [
-        {
-            label: "Last Messages",
-            key: "lastMessages",
-        },
-        {
-            label: "Chat",
-            key: "chat"
-        }
-    ]
-} 
-
+import items from "./items";
 
 const MobileMenu = () => {
     const [currentItems, setCurrentItems] = useState<any[]>([]);

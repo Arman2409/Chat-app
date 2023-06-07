@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import type { AppProps } from 'next/app'
 import {Provider, useSelector} from "react-redux"
 import { useMediaQuery } from 'react-responsive'
@@ -9,7 +10,6 @@ import store, { IRootState } from '../store/store'
 import MessageAlert from "../components/Tools/MessageAlert/MessageAlert";
 // Not ready for mobile version 
 // import NotReady from '../components/Custom/NotReady/NotReady'
-import React, { useEffect, useState } from 'react'
 import Loading from '../components/Custom/Loading/Loading';
 import MobileMenu from "../components/Parts/MobileMenu/MobileMenu";
 

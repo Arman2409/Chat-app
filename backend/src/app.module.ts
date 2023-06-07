@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig,} from "@nestjs/apollo";
 import { PrismaService } from "nestjs-prisma"
 import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AuthModule } from './modules/auth/auth.module';
@@ -43,14 +42,6 @@ import { WelcomeModule } from './modules/welcome/welcome.module';
         defaults: {
           from: 'talkSpace'
         },
-        //  Template for nodemailer 
-        // template: {
-        //   dir: join(__dirname, './templates'),
-        //   adapter: new HandlebarsAdapter(),
-        //   options: {
-        //     strict: true
-        //   }
-        // }
       }),
       inject: [ConfigService]
      }),

@@ -29,7 +29,8 @@ export interface MessagesDataType {
 export interface  MessagesInitialState {
     interlocutor: UserType,
     messagesData: MessagesDataType,
-    notSeenCount: number
+    notSeenCount: number,
+    interlocutorMessages: MessagesDataType
 }
 
 export interface  WindowInitialState {
@@ -64,14 +65,15 @@ export interface LoadingProps {
 
 export interface MapperProps {
   friends?: boolean,
-  newPage? : number,
+  page? : number,
   getUsers?: Function,
-  loadingSearch?: string|boolean,
+  loadingSearchType?: string|boolean,
   total?: number,
   friendRequests?: boolean,
   lastMessages?: boolean
   accept?:Function,
   users: any[],
+  setLoadingSearchType: Function
 }
 
 export interface NewsModalProps {
