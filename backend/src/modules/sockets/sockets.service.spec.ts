@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from 'nestjs-prisma';
+
 import { SocketsService } from './sockets.service';
 
 describe('SocketsService', () => {
@@ -6,13 +8,13 @@ describe('SocketsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SocketsService],
+      providers: [SocketsService, PrismaService],
     }).compile();
 
     service = module.get<SocketsService>(SocketsService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should be function', async () => {
+    expect(service.addRemoveBlockedUser).toBeInstanceOf(Function);
   });
 });

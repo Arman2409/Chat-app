@@ -1,5 +1,5 @@
 import { Resolver, Query } from "@nestjs/graphql";
-import {NewsType} from "types/graphqlTypes";
+import {NewsType} from "../../../types/graphqlTypes";
 import {WelcomeService} from "./welcome.service";
 
 @Resolver()

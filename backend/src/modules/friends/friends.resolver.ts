@@ -1,5 +1,5 @@
 import { Resolver , Query, Args, Context} from "@nestjs/graphql";
-import { UserType, TokenType } from "types/graphqlTypes";
+import { UserType, TokenType } from "../../../types/graphqlTypes";
 import { FriendsService } from "./friends.service";
 
 @Resolver()

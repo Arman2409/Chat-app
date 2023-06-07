@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
 import {PrismaService} from "nestjs-prisma";
 import { MessageType } from 'types/graphqlTypes';
 
@@ -37,7 +38,10 @@ export class SocketsService {
                 where: {
                     id: byId
                 }
-            })
+            });
+        if(!byUser) {
+            throw new GraphQLError("User not found");
+        };
         const blockedUsers = byUser.blockedUsers;
         if(type === "block") {
             blockedUsers.push(userId);

@@ -19,7 +19,7 @@ import {usersLoadWaitTime} from "../../../configs/configs";
 import {setMenuOption} from "../../../store/windowSlice";
 import UserDropdown from "../UserDropdown/UserDropdown";
 
-const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
+const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingSearchType, loadingSearchType, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
     const [users, setUsers] = useState(userItems)
     const [loading, setLoading] = useState(false);
@@ -39,13 +39,13 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
 
     const {setMessageOptions} = useOpenAlert();
 
-    const acceptRequest = useCallback(async (item: any, e: Event) => {
+    const acceptRequest = useCallback(async (item: any, e: any) => {
         e.stopPropagation();
         setButtonsDisabled(true);
         accept ? await accept(item.id) : null;
     }, [accept, setButtonsDisabled]);
 
-    const handleScroll = (e:any) => { 
+    const handleScroll = (e:any) => {        
         if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
             if(e.deltaY > 0){    
                if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {     
@@ -60,6 +60,7 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
                 };
                  gettingUsersRef.current = true;
                  setLoading(true);
+                 setLoadingSearchType("newPage" + page);
                }      
             };
         }
@@ -79,16 +80,18 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
     }, [dispatch, setMessageOptions, router, user, setMenuOption, setInterlocutor]);
 
     const changeInterlocutorMessage = useCallback(() => {
+        setLoading(false);
+        setLoadingSearchType("");
         const interlocutor:any = users.find(e => e.id === storeInterlocutor.id);
         if(!interlocutor?.id) {
             setUsers(currents => [ {...storeInterlocutor, lastMessage: last(messagesData?.messages) || ""} ,...currents]);
         } else {
             setUsers(currents => {
                 remove(currents, (user) => storeInterlocutor.id === user.id);
-                const newINterlocutor = {...interlocutor, lastMessage: last(messagesData?.messages) || ""};
-                currents.unshift(newINterlocutor);                    
+                const newInterlocutor = {...interlocutor, lastMessage: last(messagesData?.messages) || ""};
+                currents.unshift(newInterlocutor);                    
                 return [...currents];
-                }); 
+            }); 
         }
     }, [setUsers, users, messagesData, storeInterlocutor]);
 
@@ -101,17 +104,16 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
 
     useEffect(() => {
            if(loading) {
-             window.removeEventListener("wheel", handleScroll, true);
-           } else {
-             window.addEventListener("wheel", handleScroll, true);
-           }
-           if(loading) {
+            window.removeEventListener("wheel", handleScroll, true);
             setTimeout(() => {
                 if (loading) {
-                    setLoading(false)
+                    setLoading(false);
+                    setLoadingSearchType("gotUsers")
                 }
             }, usersLoadWaitTime);
-         }
+         } else {
+            window.addEventListener("wheel", handleScroll, true);
+          }
     }, [loading]);
 
     useEffect(() => {
@@ -128,7 +130,7 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
         <div ref={listRef}
             className={`${styles.list}`}
              >
-                {users.length === 0 && !loading && !loadingSearch  &&  <div className={styles.empty_cont}>
+                {users.length === 0 && !loading && !loadingSearchType  &&  <div className={styles.empty_cont}>
                     {lastMessages ? <TbListSearch className={styles.empty_icon}/> : <RiUserSearchFill className={styles.empty_icon}/>}
                     <p className={styles.empty_text}>{emptyText}</p>
                  </div>}
@@ -168,7 +170,7 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, loadingSearch, to
                     </List.Item>
                     )
                 })}
-                {(loading || loadingSearch) && <div style={{position: "relative", paddingTop: "25px"}}>
+                {loading && <div style={{position: "relative", paddingTop: "25px"}}>
                   <WaveLoading color="rgb(167, 117, 117)" {...{} as any} />
                 </div>}
         </div>

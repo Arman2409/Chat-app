@@ -1,5 +1,5 @@
 import { Resolver, Query, Args,Context } from "@nestjs/graphql";
-import { SearchType, UserType } from "types/graphqlTypes";
+import { SearchType, UserType } from "../../../types/graphqlTypes";
 
 import { SearchService } from "./search.service";
 

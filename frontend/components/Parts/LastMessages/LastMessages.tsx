@@ -1,31 +1,64 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Typography } from "antd";
+import { useMediaQuery } from "react-responsive";
+import { last, sortBy } from "lodash";
+import { useSelector } from "react-redux";
 
 import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import styles from "../../../styles/Parts/LastMessages.module.scss";
-import { useMediaQuery } from "react-responsive";
+import { IRootState } from "../../../store/store";
 
 const LastMessages:React.FC = () => {
    const [total, setTotal] = useState(100);
-   const [lastMessages, setLastMessages] = useState<any[]>([])
+   const [loadingType, setLoadingType] = useState("");
+   const [lastMessages, setLastMessages] = useState<any[]>([]);
+   const [pageState, setPageState] = useState<number>(1);
 
+   const pageRef = useRef<number>(1);
+   const isRequestingRef = useRef<boolean>(false);
    const isMedium: boolean = useMediaQuery({query: "(max-width: 750px)"});
    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
-   
-   const getLastMessages = (page:number) => {
-      (async function() {
-         const lastMessagesData = await handleGQLRequest("GetLastMessages", {page});   
-         setLastMessages(curr => [...curr,...lastMessagesData?.GetLastMessages?.users || []]);
-         setTotal(lastMessagesData?.GetLastMessages?.total);
-       })();
-   };
 
+   const {interlocutor, interlocutorMessages} = useSelector((state: IRootState) => {
+      return state.messages;
+   });
+
+   const getInterlocutorData = useCallback((alreadyAdded:any) => {
+      return alreadyAdded ? [] : [{
+         ...interlocutor,
+         lastMessage: last(interlocutorMessages.messages) || "",
+      }]
+   }, [interlocutor, interlocutorMessages])
+   
+   const getLastMessages = useCallback(() => {            
+      (async function() {
+         const lastMessagesData = await handleGQLRequest("GetLastMessages", {page: pageRef.current});   
+         let users = lastMessagesData?.GetLastMessages?.users || []; 
+         const fetchedInterlocutor = users.filter((elem:any) => elem.email === interlocutor.email)[0];
+         if(fetchedInterlocutor) { 
+           users = sortBy(users, ({id}) => id === fetchedInterlocutor.id ? 0 : 1);
+         };
+         setLastMessages(curr => [...getInterlocutorData(fetchedInterlocutor),...users || []]);
+         setTotal(lastMessagesData?.GetLastMessages?.total);
+         isRequestingRef.current = false;
+         setPageState(pageRef.current)
+       })();
+   }, [pageRef]);
 
    useEffect(() => {
-      getLastMessages(1);
-   }, []);
+      if(isRequestingRef.current) return;
+      if(loadingType.startsWith("newPage")) {   
+         pageRef.current = pageRef.current + 1;
+         getLastMessages();
+         isRequestingRef.current = true;
+      };
+   }, [loadingType]);
 
+   useEffect(() => {
+      getLastMessages();
+   }, []);
+   
     return (
        <div 
          className={styles.lastMessages_cont} 
@@ -36,7 +69,13 @@ const LastMessages:React.FC = () => {
             Last Messages
          </Typography>
          <div className="centered_users_cont">
-            <UsersMapper getUsers={(page:number) => getLastMessages(page)} lastMessages={true} total={total} users={lastMessages} />
+            <UsersMapper
+              lastMessages={true} 
+              total={total} 
+              page={pageState}
+              loadingSearchType={loadingType}
+              setLoadingSearchType={setLoadingType}
+              users={lastMessages} />
          </div>
        </div>
     )

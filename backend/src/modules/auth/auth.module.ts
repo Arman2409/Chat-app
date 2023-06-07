@@ -5,7 +5,7 @@ import { RequestContextModule} from "nestjs-request-context"
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtService } from '../../middlewares/jwt/jwt.service';
-import { CloudinaryService } from 'src/middlewares/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../../src/middlewares/cloudinary/cloudinary.service';
 
 
 @Module({
