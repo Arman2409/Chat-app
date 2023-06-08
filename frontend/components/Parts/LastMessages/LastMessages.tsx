@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Typography } from "antd";
 import { useMediaQuery } from "react-responsive";
 import { last, sortBy } from "lodash";
@@ -25,10 +25,16 @@ const LastMessages:React.FC = () => {
    });
 
    const getInterlocutorData = useCallback((alreadyAdded:any) => {
-      return alreadyAdded ? [] : [{
-         ...interlocutor,
-         lastMessage: last(interlocutorMessages.messages) || "",
-      }]
+      console.log(interlocutor.name);
+      
+      if (alreadyAdded || !interlocutor.name) {
+         return [];
+      } else {
+         return [{
+            ...interlocutor,
+            lastMessage: last(interlocutorMessages.messages) || "",
+         }]
+      }
    }, [interlocutor, interlocutorMessages])
    
    const getLastMessages = useCallback(() => {            
@@ -39,7 +45,13 @@ const LastMessages:React.FC = () => {
          if(fetchedInterlocutor) { 
            users = sortBy(users, ({id}) => id === fetchedInterlocutor.id ? 0 : 1);
          };
-         setLastMessages(curr => [...getInterlocutorData(fetchedInterlocutor),...users || []]);
+         
+         setLastMessages(curr => {
+            if (!curr.length) {
+               return [...curr, ...users || []]
+            }
+            return [getInterlocutorData(fetchedInterlocutor), ...curr, ...users || []]
+         });
          setTotal(lastMessagesData?.GetLastMessages?.total);
          isRequestingRef.current = false;
          setPageState(pageRef.current)
@@ -58,6 +70,11 @@ const LastMessages:React.FC = () => {
    useEffect(() => {
       getLastMessages();
    }, []);
+
+   useEffect(() => {
+      console.log(lastMessages);
+      
+   }, [lastMessages])
    
     return (
        <div 

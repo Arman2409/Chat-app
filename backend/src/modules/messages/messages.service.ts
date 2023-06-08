@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import { GraphQLError } from 'graphql';
+
 import { UserReq } from 'types/types';
 import { getStartEnd } from '../../functions/functions';
 
@@ -14,6 +16,9 @@ export class MessagesService {
      perPage: number) {
      const req: UserReq = ctx.req;
      const currentUser = req.session.user;
+     if(!currentUser) {
+      throw new GraphQLError("Not Signed In");
+     }
     
     let messages = await this.prisma.messages.findMany({
       where: {

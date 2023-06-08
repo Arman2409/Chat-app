@@ -92,6 +92,8 @@ export interface TimeStampType {
 export interface UserDropDownProps {
     type: string,
     user:UserType,
+    openElement?:string,
+    onClick?: Function,
     setButtonsDisabled?: Function,
     isBlocked?: boolean,
     isRequested?: boolean

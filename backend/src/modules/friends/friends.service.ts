@@ -15,6 +15,9 @@ export class FriendsService {
   async addFriend(ctx:any , id: any):Promise<any> {
     const req: UserReq = ctx.req;
     const currentUser = req.session.user;
+    if(!currentUser) {
+       throw new GraphQLError("Not Signed In");
+    }
     const requestingUser = await this.prisma.users.findUnique({
       where: {
         id: id
@@ -65,6 +68,9 @@ export class FriendsService {
   async removeFriend(ctx:any , id: any):Promise<any> {
     const req: UserReq = ctx.req;
     const currentUser = req.session.user;
+    if(!currentUser) {
+      throw new GraphQLError("Not Signed In");
+    }
     const index: number = currentUser.friends.indexOf(id);
     currentUser.friends.splice(index, 1);
     const updating = await this.prisma.users.update({
@@ -113,6 +119,9 @@ export class FriendsService {
   async confirmFriend(ctx:any,id: any) {
     const req: UserReq = ctx.req;
     const currentUser: UserType = req.session.user;
+    if(!currentUser) {
+      throw new GraphQLError("Not Signed In");
+    }
     currentUser.friends.push(id);
     const index: number = currentUser.friendRequests.indexOf(id);
     currentUser.friendRequests.splice(index, 1);

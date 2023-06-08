@@ -20,12 +20,15 @@
     
     .header_logo_cont {
       float: left;
-      // margin: 16px 24px 16px 0;
       display: flex;
       align-items: center;
       height: 100% !important;
       justify-content: center;
     }
+
+     @media (max-width: 550px){
+        height: 70% !important;
+  }
   }
 
   .messages_open_badge {

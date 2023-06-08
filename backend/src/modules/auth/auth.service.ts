@@ -29,7 +29,7 @@ export class AuthService {
                 if (data) {
                     throw new GraphQLError("Email is already registered");
                 } else {
-                    // uploading the image to cloudinary if it exists 
+                    // uploading the image into cloudinary if image exists 
                     if (image) {
                         const uploadDetails = await this.cloudinary.upload(image);
                         if (uploadDetails) {
@@ -110,6 +110,12 @@ export class AuthService {
         }).catch((e) => {
              return {message: e.message};
         });
+    }
+
+    signOut(ctx:any) {
+        const req: UserReq = ctx.req;
+        req.session.user = null;
+        return "Signed Out"
     }
 
     async recoverEmail(email: string):Promise<any>{

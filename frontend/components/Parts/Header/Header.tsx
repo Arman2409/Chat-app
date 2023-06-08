@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Layout, Typography, Row, Avatar, Badge } from "antd";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState, useRef, useCallback } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 import { HiOutlineUserAdd } from "react-icons/hi";
@@ -13,9 +12,9 @@ import { IoPersonSharp } from "react-icons/io5";
 import Image from "next/image";
 import { io } from "socket.io-client";
 
-import Logo from "/assests/logo-files/svg/logo-no-background-cropped.svg";
-import { IRootState } from "../../../store/store";
 import styles from "../../../styles/Parts/Header/Header.module.scss";
+import Logo from "../../../assests/logo-files/svg/logo-no-background-cropped.svg";
+import { IRootState } from "../../../store/store";
 import Owner from "./Owner/Owner";
 import { setUserWindow } from "../../../store/windowSlice";
 import { setStoreUser } from "../../../store/userSlice";

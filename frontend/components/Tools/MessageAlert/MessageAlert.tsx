@@ -21,7 +21,6 @@ const MessageAlert = () => {
     const [open, setOpen] = useState<boolean>(false);
     const {messagesData: data , interlocutor}:any = useSelector((state: IRootState) => state.messages);
 
-
     const watchMessage = useCallback(() => {
         dispatch(setInterlocutor(fromUser));
         messageApi.destroy(fromUser.name);
@@ -98,7 +97,6 @@ const MessageAlert = () => {
             {contextHolder}
         </>
     )
-
 };
 
 export default MessageAlert;

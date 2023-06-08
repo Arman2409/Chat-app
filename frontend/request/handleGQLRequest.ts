@@ -4,7 +4,7 @@ import { perPage } from "../configs/configs";
 
 const handleGQLRequest: Function = async (operation: string, args?: any) => {
     const userFields = ["name","blockedUsers", "lastVisited", "friends", "image", "sentRequests", "friendRequests", "email", "active","id"];
-    let variables = {};
+    let variables: any = {};
     let fields: any[] = [];
 
     if (operation == "SignIn") {
@@ -127,6 +127,8 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
                 return res.data?.data;
             } else if (res.data.errors) {
                 return res.data.errors[0]
+            } else {
+                console.warn("Received not expected data");
             };
         }).catch((e) => {
             return e;
