@@ -3,9 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig,} from "@nestjs/apollo";
 import { PrismaService } from "nestjs-prisma"
-import { join } from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtService } from './middlewares/jwt/jwt.service';

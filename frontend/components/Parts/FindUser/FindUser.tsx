@@ -138,7 +138,12 @@ const SearchUser: React.FC = () => {
 
     useEffect(() => {
         setChildPage(1);
+        getSeachResults();
     }, [user]);
+
+    useEffect(() => {
+      getSeachResults();
+    }, [])
 
     return (
         <div

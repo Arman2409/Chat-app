@@ -1,8 +1,9 @@
-import { Layout, Typography } from "antd";
 import React from "react";
+import { useMediaQuery } from "react-responsive";
+import { Layout, Typography } from "antd";
 
 import styles from "../../../styles/Parts/Footer.module.scss";
-import { useMediaQuery } from "react-responsive";
+import { topCopyright, bottomCopyright } from "../../../configs/textConfigs";
 
 const { Footer } = Layout;
 
@@ -17,10 +18,10 @@ const FooterComp:React.FC = () => {
            <Typography style={{
               fontSize: isSmall ? "9px" : "15px"
            }}>
-              { " Copyright © 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc. <https://fsf.org/>" }
+              {topCopyright}
            </Typography>
            <Typography>
-              Ghazaryan Arman 2023
+              {bottomCopyright}
            </Typography>
         </Footer>
     )

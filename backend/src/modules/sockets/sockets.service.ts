@@ -30,6 +30,10 @@ export class SocketsService {
         if (allMessages.length) {
            await this.prisma.messages.createMany({ data: allMessages as any });
         };
+    };
+
+    async getMessages():Promise<any[]> {
+        return await this.prisma.messages.findMany();
     }
     
     async addRemoveBlockedUser(byId:string, userId:string, type:string):Promise<any> {

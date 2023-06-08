@@ -25,8 +25,11 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
 
     private previousAllMessages = [];
 
-    afterInit(): any {
-        setInterval( async () => {           
+    async afterInit() {
+        const messages = await this.service.getMessages();
+        this.allMessages = messages;
+        this.previousAllMessages = messages;
+        setInterval( async () => {      
             if (!isEqual(this.allMessages, this.previousAllMessages)) {
                  await this.service.updateMessages(this.allMessages);
                  this.previousAllMessages = [...this.allMessages];
@@ -59,6 +62,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
           const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
           if(notSeenByUser) {
             return  message?.notSeen?.count > 0;
+          } else {
+            return false;
           }
         })
         if (update) {

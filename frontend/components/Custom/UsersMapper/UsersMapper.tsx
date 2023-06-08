@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {List, Avatar, Typography, Badge, Button} from "antd";
 import {useRouter} from "next/router";
 import {RiUser4Line, RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
-import { WaveLoading } from "react-loading-typescript";
+import {WaveLoading} from "react-loading-typescript";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
+import {List, Avatar, Typography, Badge, Button} from "antd";
 import {last, remove} from "lodash";
 
 import styles from "../../../styles/Custom/UsersMapper.module.scss";
@@ -22,12 +22,13 @@ import UserDropdown from "../UserDropdown/UserDropdown";
 const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingSearchType, loadingSearchType, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");
     const [users, setUsers] = useState(userItems)
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [openedDropdown, setOpenedDropdown] = useState<string>("");
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
     const gettingUsersRef = useRef(false);
-    const acceptLink = useRef<null | any>(null);
-    const listRef = useRef<null | any>(null);
-    const router: any = useRouter();
+    const acceptLink = useRef<any>(null);
+    const listRef = useRef<any>(null);
+    const router:any = useRouter();
     const dispatch: Dispatch = useDispatch();
 
     const user = useSelector((state: IRootState) => {
@@ -45,9 +46,9 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
         accept ? await accept(item.id) : null;
     }, [accept, setButtonsDisabled]);
 
-    const handleScroll = (e:any) => {        
+    const handleScroll = (e:any, isTouchEvent?:boolean) => {        
         if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
-            if(e.deltaY > 0){    
+            if(e.deltaY > 0 || isTouchEvent){    
                if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {     
                 if (loading) {
                     return;
@@ -95,6 +96,10 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
         }
     }, [setUsers, users, messagesData, storeInterlocutor]);
 
+    const openDropdown = useCallback((email:string) => {
+         setOpenedDropdown(email);
+    }, [setOpenedDropdown]);
+
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
@@ -122,9 +127,16 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
 
     useEffect(() => {
         if(lastMessages) {
+            if(messagesData.blocked) {
+                return;
+            }
            changeInterlocutorMessage();
         }
     }, [messagesData, setUsers]);
+
+    useEffect(() => {
+        window.addEventListener("touchmove", (e) => handleScroll(e, true))
+    }, [])
 
     return (
         <div ref={listRef}
@@ -152,7 +164,7 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
                         </div>
                         {user.name ? 
                         lastMessages ? <p className={styles.list_item_action_message}>
-                            {getSlicedWithDots(item.lastMessage,25)}
+                            {item.lastMessage && getSlicedWithDots(item.lastMessage,25)}
                             {Number(item.notSeenCount) ?
                                <span className={styles.list_item_action_message_alert_span}>{item.notSeenCount}</span> : ""}
                                </p> : friendRequests ?  <Button 
@@ -160,7 +172,9 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
                                   loading={buttonsDisabled} ref={acceptLink}
                                    onClick={(e) => acceptRequest(item, e)}>Accept</Button> :
                                   <UserDropdown 
-                                    user={item}   
+                                    user={item}  
+                                    onClick={openDropdown} 
+                                    openElement={openedDropdown}
                                     isRequested={isRequested}
                                     isBlocked={isBlocked}           
                                     type={friends ? "friend" : "all"}

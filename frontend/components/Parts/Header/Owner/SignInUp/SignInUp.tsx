@@ -1,8 +1,8 @@
+import React,{ useEffect, useState, useCallback } from "react";
 import { Input, Button, Form, Typography, Upload } from "antd";
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import type { UploadChangeParam } from 'antd/es/upload';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
@@ -19,6 +19,9 @@ import { setSocket } from "../../../../../store/socketSlice";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 import { setNotSeenCount } from "../../../../../store/messagesSlice";
 
+const { useForm } = Form;
+
+//  ..... two functions for uploading image files 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result as string));
@@ -52,8 +55,10 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
     const [loadingRequest, setLoadingRequest] = useState(false);
     const [imageUrl, setImageUrl] = useState<string>("");
     const dispatch: Dispatch = useDispatch();
+    const [signForm] = useForm();
 
-    const submit: Function = async (values: any) => {
+
+    const submit = useCallback(async  (values: any) => {
 
         const { name, email, password, repeatPassword } = values;
 
@@ -102,6 +107,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             const res = await handleGQLRequest("SignUp", { email:name, password:"password", name, image: imageUrl });
             
             if (!res.SignUp?.email) {
+            
                 if (res.message) {
                     setMessage(getSlicedWithDots(res.message, 20));
                 }
@@ -119,7 +125,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
         } else {
             return;
         }
-    };
+    }, [changeStatus, io, setNotSeenCount, dispatch, setStoreUser, setMessageColor, setMessage, handleGQLRequest, setLoadingRequest]);
 
     const handleChangeImage: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
             const lastFile:any = last(info.fileList);
@@ -128,6 +134,10 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 setImageUrl(url);
             });
     };
+
+    useEffect(() => {
+       signForm.resetFields();
+    }, [type]);
 
     const uploadButton = (
         <div>
@@ -149,6 +159,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 onChange={() => {
                     if (message) setMessage("");
                 }}
+                form={signForm}
                 className={styles.sign_form}>
                 {type == "SignUp" ?
                     <>

@@ -6,7 +6,7 @@ import { UserReq } from "../../../types/types";
 
 @Resolver()
 export class AuthResolver {
-   constructor(private readonly auth: AuthService) { };
+   constructor(private readonly service: AuthService) { };
 
    @Query(() => UserType, { name: "SignUp" })
    async signUp(
@@ -14,7 +14,7 @@ export class AuthResolver {
       @Args("email") email: string,
       @Args("image") image: string,
       @Args("password") password: string): Promise<any> {
-      return await this.auth.addUser({ name, email, password, image });
+      return await this.service.addUser({ name, email, password, image });
    }
 
 
@@ -24,15 +24,13 @@ export class AuthResolver {
       @Args("email") email: string,
       @Args("password") password: string,
    ): Promise<any> {
-      return await this.auth.findUser(ctx, { email, password });
+      return await this.service.findUser(ctx, { email, password });
       
    }
 
    @Query(() => String, { name: "SignOut" })
    signOut(@Context() ctx:any) {
-      const req: UserReq = ctx.req;
-      req.session.user = null;
-      return "Signed Out";
+      return this.service.signOut(ctx); ;
    }
 
    @Query(() => UserType, { name: "AlreadySigned" })
@@ -40,14 +38,14 @@ export class AuthResolver {
       @Context() ctx:any,
       @Args("token") token: string
    ):any {
-      return this.auth.setSession(ctx, token);
+      return this.service.setSession(ctx, token);
    }
 
    @Query(() => RecoverType, { name: "RecoverPassword" })
    recoverPassword(
       @Args("email") email: string
    ):any {
-      return this.auth.recoverEmail(email);
+      return this.service.recoverEmail(email);
    }
 
    @Query(() => RecoverType, { name: "ConfirmRecoveredPassword" })
@@ -55,6 +53,6 @@ export class AuthResolver {
       @Args("id") id:string,
       @Args("newPassword") password: string,
    ):any {
-      return this.auth.confirmNewPassword(id, password);
+      return this.service.confirmNewPassword(id, password);
    }
 }
