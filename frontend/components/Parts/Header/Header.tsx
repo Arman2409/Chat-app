@@ -119,7 +119,7 @@ const AppHeader: React.FunctionComponent = () => {
                 (async () => {
                     const signedUser: any = await handleGQLRequest("AlreadySigned", {token});
                     if (signedUser?.AlreadySigned?.email) { 
-                        let socket = io("ws://localhost:4000");
+                        let socket = io(process.env.NEXT_PUBLIC_SOCKETS_URL as any);
                         socket.emit("signedIn", {id: signedUser?.AlreadySigned?.id}, (resp:any) => {   
                             if (Object.hasOwn(resp, "notSeenCount")) {
                               setNotSeenCount(resp?.notSeenCount);

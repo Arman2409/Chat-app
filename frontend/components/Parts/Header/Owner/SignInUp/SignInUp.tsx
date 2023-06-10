@@ -21,7 +21,7 @@ import { setNotSeenCount } from "../../../../../store/messagesSlice";
 
 const { useForm } = Form;
 
-//  ..... two functions for uploading image files 
+// two functions for uploading image files 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result as string));
@@ -87,7 +87,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 setLoadingRequest(false);
                 return;
             }
-            let socket = io("ws://localhost:4000");
+            let socket = io(process.env.NEXT_PUBLIC_SOCKETS_URL as any);
             socket.emit("signedIn", { id: user.id }, (resp:any) => {            
                 if (Object.hasOwn(resp, "notSeenCount")) {
                   dispatch(setNotSeenCount(Number(resp?.notSeenCount)));
@@ -179,7 +179,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                         </Form.Item>
                         <Form.Item
                             className={styles.form_item}
-                            rules={[{ required: true, min: 3 }]}
+                            // rules={[{ required: true, min: 3 }]}
                             name="name" >
                             <Input
                                 placeholder="Name"
@@ -188,7 +188,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                     </>
                     : null}
                 <Form.Item
-                    rules={[{ required: true, type: "email" }]}
+                    // rules={[{ required: true, type: "email" }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -197,7 +197,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
-                    rules={[{ required: true, min: 8 }]}
+                    // rules={[{ required: true, min: 8 }]}
                     name={"password"}>
                     <Input
                         placeholder="Password"
@@ -207,7 +207,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 {type == "SignUp" ?
                     <Form.Item
                         className={styles.form_item}
-                        rules={[{ required: true, min: 8 }]}
+                        // rules={[{ required: true, min: 8 }]}
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"
