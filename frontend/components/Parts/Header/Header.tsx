@@ -25,7 +25,7 @@ import { setSocket } from "../../../store/socketSlice";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { setLoaded } from "../../../store/windowSlice";
-import { windowLoadTime } from "../../../configs/configs";
+import { NEXT_PUBLIC_SOCKETS_URL, windowLoadTime } from "../../../configs/configs";
 
 const {Header} = Layout;
 
@@ -119,7 +119,7 @@ const AppHeader: React.FunctionComponent = () => {
                 (async () => {
                     const signedUser: any = await handleGQLRequest("AlreadySigned", {token});
                     if (signedUser?.AlreadySigned?.email) { 
-                        let socket = io(process.env.NEXT_PUBLIC_SOCKETS_URL as any);
+                        let socket = io(NEXT_PUBLIC_SOCKETS_URL as any);
                         socket.emit("signedIn", {id: signedUser?.AlreadySigned?.id}, (resp:any) => {   
                             if (Object.hasOwn(resp, "notSeenCount")) {
                               setNotSeenCount(resp?.notSeenCount);
