@@ -1,11 +1,10 @@
-import { screen, render } from "@testing-library/react";
-import {describe, beforeAll} from "@jest/globals";
-import "@testing-library/jest-dom";
-
-import Home from "./index";
-import store from "../store/store";
+import '@testing-library/jest-dom';
+import React from 'react';
+import { screen, render, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { useRouter } from "next/router";
+
+import Header from "../components/Parts/Header/Header";
+import store from "../store/store";
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn()
@@ -28,10 +27,11 @@ describe("<Home />", () => {
             });
           });
     // useRouter.mockReturnValue({ query: {}})
-    test("cd", () => {
-        render(<Provider store={store}><Home /></Provider>);
-        const div = screen.findAllByText("p")
-        expect(true).toBeDefined();
+    test("", () => {
+        render(<Provider store={store}><Header /></Provider>);
+        const toggleOwner = screen.getByRole("toggleOwnerInfo");
+        fireEvent.click(toggleOwner);
+        const ownerWindow = screen.getByRole("ownerWindow");
+        expect(ownerWindow).toBeDefined() ;
     })
 });
-
