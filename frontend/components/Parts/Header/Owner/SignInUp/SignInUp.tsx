@@ -64,7 +64,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
 
         if (type == "SignIn") {
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignIn", { email, password:"password" });
+            const res = await handleGQLRequest("SignIn", { email, password });
             let user:UserType = {} as UserType;
             
             if(res.SignIn?.token) {
@@ -104,7 +104,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 return;
             }
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignUp", { email:name, password:"password", name, image: imageUrl });
+            const res = await handleGQLRequest("SignUp", { email, password, name, image: imageUrl });
             
             if (!res.SignUp?.email) {
             
@@ -179,7 +179,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                         </Form.Item>
                         <Form.Item
                             className={styles.form_item}
-                            // rules={[{ required: true, min: 3 }]}
+                            rules={[{ required: true, min: 3 }]}
                             name="name" >
                             <Input
                                 placeholder="Name"
