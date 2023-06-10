@@ -10,4 +10,8 @@
    & article {
       color: $color4;
    }
+
+   @media screen and (max-width: 550px) {
+      padding: 0px 10px;
+   }
 }

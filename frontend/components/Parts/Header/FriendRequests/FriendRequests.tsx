@@ -1,5 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import { useOnClickOutside} from "usehooks-ts";
+import {Dispatch} from "@reduxjs/toolkit";
+import jwtDecode from "jwt-decode";
 
 import requestsStyles from "../../../../styles/Parts/Header/Requests/Requests.module.scss";
 import {IRootState} from "../../../../store/store";
@@ -7,9 +10,6 @@ import Loading from "../../../Custom/Loading/Loading";
 import handleGQLRequest from "../../../../request/handleGQLRequest";
 import UsersMapper from "../../../Custom/UsersMapper/UsersMapper";
 import {UserType} from "../../../../types/types";
-import { useOnClickOutside} from "usehooks-ts";
-import {Dispatch} from "@reduxjs/toolkit";
-import jwtDecode from "jwt-decode";
 import {setStoreUser} from "../../../../store/userSlice";
 import useOpenAlert from "../../../Tools/hooks/useOpenAlert";
 
@@ -18,7 +18,7 @@ const FriendRequests = ({clickOutside}: any) => {
     const [users, setUsers] = useState<any[]>([]);
 
     const requestsRef = useRef<any>(null);
-    const user: UserType = useSelector((state: IRootState) => state.user.user);
+    const user:UserType = useSelector((state: IRootState) => state.user.user);
     const dispatch:Dispatch = useDispatch();
     const { setMessageOptions } = useOpenAlert();
 
@@ -85,7 +85,13 @@ const FriendRequests = ({clickOutside}: any) => {
 
     useOnClickOutside( requestsRef, (e) => {
         clickOutside(e);
-    })
+    });
+
+    useEffect(() => {
+       if(loading.toString().startsWith("newPage")) {
+         getRequests();
+       }; 
+    }, [loading])
 
     return (
         <div
@@ -99,6 +105,7 @@ const FriendRequests = ({clickOutside}: any) => {
             {loading  && <Loading />}
             {user.friendRequests?.length ? 
              <UsersMapper 
+              setLoadingSearchType={setLoading}
               friendRequests={true}
               accept={accept} 
               friends={true} 

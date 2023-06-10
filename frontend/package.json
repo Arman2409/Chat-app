@@ -6,17 +6,22 @@
     "dev": "next dev -p 3003",
     "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
     "@babel/core": "^7.20.5",
+    "@babel/plugin-proposal-decorators": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.10.17",
     "@reduxjs/toolkit": "^1.9.1",
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.2",
     "@types/lodash": "^4.14.194",
     "@types/node": "18.11.12",
     "@types/react": "18.0.26",
@@ -50,5 +55,9 @@
       "json5@>=2.0.0 <2.2.2": ">=2.2.2",
       "webpack@>=5.0.0 <5.76.0": ">=5.76.0"
     }
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5"
   }
 }
