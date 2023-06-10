@@ -26,6 +26,7 @@ describe("<Home />", () => {
               }))
             });
           });
+    // can come handy for routing 
     // useRouter.mockReturnValue({ query: {}})
     test("", () => {
         render(<Provider store={store}><Header /></Provider>);
