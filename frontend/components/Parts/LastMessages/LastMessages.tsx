@@ -27,7 +27,7 @@ const LastMessages:React.FC = () => {
    const getInterlocutorData = useCallback((alreadyAdded:any) => {
       console.log(interlocutor.name);
       
-      if (alreadyAdded || !interlocutor.name) {
+      if (alreadyAdded || interlocutor.name) {
          return [];
       } else {
          return [{
@@ -48,9 +48,9 @@ const LastMessages:React.FC = () => {
          
          setLastMessages(curr => {
             if (!curr.length) {
-               return [...curr, ...users || []]
+               return [...users || []]
             }
-            return [getInterlocutorData(fetchedInterlocutor), ...curr, ...users || []]
+            return [...getInterlocutorData(fetchedInterlocutor), ...curr, ...users || []]
          });
          setTotal(lastMessagesData?.GetLastMessages?.total);
          isRequestingRef.current = false;

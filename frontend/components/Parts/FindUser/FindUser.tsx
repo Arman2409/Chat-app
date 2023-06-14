@@ -25,6 +25,7 @@ const SearchUser: React.FC = () => {
     const searchOptionsRef = useRef<any>({ type: searchType, name, page: 1, lastPage: 0});
     const user = useSelector((state: IRootState) => state.user.user);
     const listType = useMemo(() => searchType, [users])
+    const searchInput = useRef<any>(null);
     const [debouncedSearch] = useDebounce(loading, 1000);
 
     const isMedium = useMediaQuery({ query: "(max-width: 750px)" });
@@ -121,6 +122,11 @@ const SearchUser: React.FC = () => {
         setChildPage(1);
     }, [setUsers, setChildPage, setSearchType, setLoading, searchOptionsRef]);
 
+    const clickSearch = useCallback(() => {
+        setSearchOpened(true)
+        searchInput.current.focus();
+    }, [setSearchOpened, searchInput]);
+
     useEffect(() => {
         if (debouncedSearch || debouncedSearch === "") {
             if(debouncedSearch === "gotUsers") {
@@ -138,6 +144,7 @@ const SearchUser: React.FC = () => {
 
     useEffect(() => {
         setChildPage(1);
+        searchOptionsRef.current.page = 1;
         getSeachResults();
     }, [user]);
 
@@ -162,6 +169,7 @@ const SearchUser: React.FC = () => {
                     style={{
                         width: searchOpened ? "250px" : "0px",
                     }}
+                    ref={searchInput}
                     className={ searchOpened ? styles.user_search :  styles.user_search_closed }
                     placeholder={searchType == "friends" ? "Search in Friends" : "Search"}
                     onChange={(e) => searchChange(e)}
@@ -169,7 +177,7 @@ const SearchUser: React.FC = () => {
                 />
                  <Button
                 className={searchOpened ? styles.find_user_open_search_animation : styles.find_user_open_search_initial}
-                onClick={() => setSearchOpened(true)}
+                onClick={clickSearch}
                 style={{
                     width: searchOpened ? "0px" : "40px",
                 }}>
