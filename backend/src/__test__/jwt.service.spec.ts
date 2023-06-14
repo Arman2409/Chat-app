@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { JwtService } from './jwt.service';
+import { JwtService } from '../middlewares/jwt/jwt.service';
 import { ConfigModule } from '@nestjs/config';
 
 describe('JwtService', () => {

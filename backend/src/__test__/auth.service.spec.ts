@@ -3,10 +3,10 @@ import { PrismaService } from 'nestjs-prisma';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AuthService } from './auth.service';
-import { JwtService } from '../../middlewares/jwt/jwt.service';
-import { CloudinaryService } from '../../middlewares/cloudinary/cloudinary.service';
-import { getTestContext } from '../../functions/testFunctions';
+import { AuthService } from '../modules/auth/auth.service';
+import { JwtService } from '../middlewares/jwt/jwt.service';
+import { CloudinaryService } from '../middlewares/cloudinary/cloudinary.service';
+import { getTestContext } from '../functions/testFunctions';
 
 describe('AuthService', () => {
   let service: AuthService;

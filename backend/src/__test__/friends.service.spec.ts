@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'nestjs-prisma';
 
-import { FriendsService } from './friends.service';
-import { JwtService } from '../../middlewares/jwt/jwt.service';
-import { getTestContext } from '../../../src/functions/testFunctions';
+import { FriendsService } from '../modules/friends/friends.service';
+import { JwtService } from '../middlewares/jwt/jwt.service';
+import { getTestContext } from '../functions/testFunctions';
 
 describe('FriendsService', () => {
   let service: FriendsService;

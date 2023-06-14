@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'nestjs-prisma';
 
-import { MessagesService } from './messages.service';
-import { getTestContext } from '../../../src/functions/testFunctions';
+import { MessagesService } from '../modules/messages/messages.service';
+import { getTestContext } from '../functions/testFunctions';
 
 describe('MessagesService', () => {
   let service: MessagesService;

@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { RiMenu4Line } from "react-icons/ri";
 import { Dropdown } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
+import { useOnClickOutside } from "usehooks-ts";
 
 import styles from "../../../styles/Custom/UserDropdown.module.scss";
 import { getItems } from "./menuItems";
@@ -14,6 +15,7 @@ import { IRootState } from "../../../store/store";
 
 const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisabled, isBlocked, user }: UserDropDownProps) => {
     const [openState, setOpenState] = useState<boolean>(false);
+    const dropdownRef = useRef<any>();
     const dispatch = useDispatch();
     const socket = useSelector((state: IRootState) => {
         return state.socket.socket;
@@ -24,6 +26,7 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
 
     const items = getItems(isBlocked as boolean, isRequested as boolean);
 
+    // adding or removing a friend
     const handleAddRemoveFriend = useCallback((type: string) => {
         const { id } = { ...user };
         setButtonsDisabled && setButtonsDisabled(true);
@@ -137,26 +140,30 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
         }
     }, [openElement, user, openState]);
 
-    useEffect(() => { 
-       console.log(openState);
-       
-    }, [openState]);
+    useOnClickOutside(dropdownRef, () => {
+        if (openElement === user.email) {
+            setOpenState(false);
+        }
+    });
+
     return (
-        <Dropdown
-            trigger={["click"]}
-            open={openState}
-            menu={{
-                items: type === "friend" ? items.friends : items.all,
-                onClick: (event) => handleMenuClick({ ...event, id: user.id })
-            }}
-            overlayClassName={styles.list_item_actions_dropdown}
-            placement="bottomLeft">
-            <div
-                className={styles.list_item_actions_icon}
-                onClick={clickIcon as any}>
-                <RiMenu4Line />
-            </div>
-        </Dropdown>
+        <div ref={dropdownRef} className={styles.dropdown_main_cont}>
+            <Dropdown
+                trigger={["click"]}
+                open={openState}
+                menu={{
+                    items: type === "friend" ? items.friends : items.all,
+                    onClick: (event) => handleMenuClick({ ...event, id: user.id })
+                }}
+                overlayClassName={styles.list_item_actions_dropdown}
+                placement="bottomLeft">
+                <div
+                    className={styles.list_item_actions_icon}
+                    onClick={clickIcon as any}>
+                    <RiMenu4Line />
+                </div>
+            </Dropdown>
+        </div>
     )
 };
 

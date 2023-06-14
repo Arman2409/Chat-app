@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'nestjs-prisma';
 
-import { SocketsService } from './sockets.service';
+import { SocketsService } from '../modules/sockets/sockets.service';
 
 describe('SocketsService', () => {
   let service: SocketsService;
