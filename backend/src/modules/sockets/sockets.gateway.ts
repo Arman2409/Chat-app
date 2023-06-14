@@ -28,13 +28,17 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     async afterInit() {
         const messages = await this.service.getMessages();
         this.allMessages = messages;
-        this.previousAllMessages = messages;
-        setInterval( async () => {      
-            if (!isEqual(this.allMessages, this.previousAllMessages)) {
+        
+        setInterval( async () => {     
+             const isEqual = this.allMessages.length === this.previousAllMessages.length &&
+                this.allMessages.every((value, index) => value === this.previousAllMessages[index]);
+             if (!isEqual) {
+                console.log("update");
+                
                  await this.service.updateMessages(this.allMessages);
                  this.previousAllMessages = [...this.allMessages];
-            }
-        }, 500);
+             }
+        }, 5000);
     }
 
     handleConnection(): any {
@@ -58,20 +62,27 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         client.join(id?.toString());
         client.handshake.id = id;
         client.handshake.active = true;
-        const notSeenCount = this.allMessages.filter(message => {
-          const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
-          if(notSeenByUser) {
-            return  message?.notSeen?.count > 0;
-          } else {
-            return false;
-          }
-        })
         if (update) {
-            return {notSeenCount: notSeenCount.length};
+            return "Signed In";
         } else {
             return "Not Connected";
         }
     };
+
+    @SubscribeMessage("getNotSeenCount")
+    async getNotSeenCount(
+        @MessageBody("id") id: string,
+    ){
+        const notSeenCount = this.allMessages.filter(message => {
+            const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
+            if(notSeenByUser) {
+              return  message?.notSeen?.count > 0;
+            } else {
+              return false;
+            }
+          })
+        return {notSeenCount: notSeenCount?.length};
+    }
 
     @SubscribeMessage("message")
     handleMessage(@MessageBody("from") from: string,
@@ -81,7 +92,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData:MessageType = {} as MessageType;
         let previousMessaging:MessageType;
-
+        
         if (alreadyMessaged) {
             previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
             if(previousMessaging.blocked) {
@@ -106,19 +117,19 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                 lastDate: new Date().toString().slice(0, 10),
             }
         }
-        if(this.activeUsers.includes(to)) {
-            this.allMessages.push(
-                {
-                    ...messageData,
-                    notSeen:
-                    {
-                        count:0,
-                        by:0
-                    }
-                }
-            );
-        }
-        else {
+        // if(this.activeUsers.includes(to)) {
+        //     this.allMessages.push(
+        //         {
+        //             ...messageData,
+        //             notSeen:
+        //             {
+        //                 count:0,
+        //                 by:0
+        //             }
+        //         }
+        //     );
+        // }
+        // else {
             this.allMessages.push(
                 {
                     ...messageData,
@@ -129,7 +140,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                             }
                 }
             );
-        };
+        // };
         this.server.sockets.in(to).emit("message", messageData);
         return messageData;
     }
@@ -139,13 +150,23 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         const messaged = this.allMessages.filter(messages => messages.between.includes(currentId) && messages.between.includes(userId));
         
         if (messaged?.length){
+            console.log("messaged");
+            
             const previousMessaging = messaged[0];
+                        console.log(previousMessaging.notSeen);
             if (previousMessaging.notSeen?.by === previousMessaging?.between?.indexOf(currentId)) {
+                console.log("not seen by this");                 
+                
                 remove(this.allMessages,(messages) => {
-                    return messages === previousMessaging;
+                    return messages.between?.includes(currentId) && messages.between?.includes(userId);
                 });
+                
+                previousMessaging.notSeen.by = 0;
                 previousMessaging.notSeen.count = 0;
-                this.allMessages.push(previousMessaging);   
+                this.allMessages.push(previousMessaging); 
+                console.log(this.allMessages[this.allMessages.length - 1]);
+                console.log(this.previousAllMessages[this.previousAllMessages.length - 1]);
+                // writeFile("./arrays.json",JSON.stringify(this.allMessages ,this.previousAllMessages), "utf8", () => {});
             }
             return previousMessaging;
         } else {

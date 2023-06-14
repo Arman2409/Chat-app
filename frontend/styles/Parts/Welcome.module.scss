@@ -135,8 +135,12 @@
     color: $color3;
   }
 
-  &_desc {
-    font-size: 20px;
-    color: $color7;
+  &_desc_cont {
+    background-color: $color3;
+
+    &_text {
+      font-size: 20px;
+      color: $color7;
+    }
   }
 }

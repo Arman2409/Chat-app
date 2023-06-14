@@ -17,7 +17,6 @@ import Loading from "../../../../Custom/Loading/Loading";
 import { getSlicedWithDots } from "../../../../../functions/functions";
 import { setSocket } from "../../../../../store/socketSlice";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
-import { setNotSeenCount } from "../../../../../store/messagesSlice";
 import { NEXT_PUBLIC_SOCKETS_URL } from "../../../../../configs/configs";
 
 const { useForm } = Form;
@@ -58,6 +57,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
     const dispatch: Dispatch = useDispatch();
     const [signForm] = useForm();
 
+    const { setMessageOptions } = useOpenAlert();
 
     const submit = useCallback(async  (values: any) => {
 
@@ -65,7 +65,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
 
         if (type == "SignIn") {
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignIn", { email, password });
+            const res = await handleGQLRequest("SignIn", { email, password: "password" });
             let user:UserType = {} as UserType;
             
             if(res.SignIn?.token) {
@@ -90,14 +90,18 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             }
             let socket = io(NEXT_PUBLIC_SOCKETS_URL as any);
             socket.emit("signedIn", { id: user.id }, (resp:any) => {            
-                if (Object.hasOwn(resp, "notSeenCount")) {
-                  dispatch(setNotSeenCount(Number(resp?.notSeenCount)));
+                if (resp === "Signed In") {
+                    dispatch(setSocket(socket));
+                    setLoadingRequest(false);
+                    dispatch(setStoreUser(user));
+                } else {
+                    setMessageOptions({
+                        type: "warning",
+                        message: resp
+                    })
                 }
             }
             );
-            dispatch(setSocket(socket));
-            setLoadingRequest(false);
-            dispatch(setStoreUser(user));
         }
         else if (type == "SignUp") {
             if(repeatPassword !== password) {
@@ -105,7 +109,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 return;
             }
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignUp", { email, password, name, image: imageUrl });
+            const res = await handleGQLRequest("SignUp", { email, password: "password", name:email, image: imageUrl });
             
             if (!res.SignUp?.email) {
             
@@ -126,7 +130,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
         } else {
             return;
         }
-    }, [changeStatus, io, setNotSeenCount, dispatch, setStoreUser, setMessageColor, setMessage, handleGQLRequest, setLoadingRequest]);
+    }, [changeStatus, io, dispatch, setStoreUser, setMessageColor, setMessage, handleGQLRequest, setLoadingRequest]);
 
     const handleChangeImage: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
             const lastFile:any = last(info.fileList);
@@ -180,7 +184,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                         </Form.Item>
                         <Form.Item
                             className={styles.form_item}
-                            rules={[{ required: true, min: 3 }]}
+                            // rules={[{ required: true, min: 3 }]}
                             name="name" >
                             <Input
                                 placeholder="Name"
@@ -189,7 +193,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                     </>
                     : null}
                 <Form.Item
-                    rules={[{ required: true, type: "email" }]}
+                    // rules={[{ required: true, type: "email" }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -198,7 +202,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
-                    rules={[{ required: true, min: 8 }]}
+                    // rules={[{ required: true, min: 8 }]}
                     name={"password"}>
                     <Input
                         placeholder="Password"
@@ -208,7 +212,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 {type == "SignUp" ?
                     <Form.Item
                         className={styles.form_item}
-                        rules={[{ required: true, min: 8 }]}
+                        // rules={[{ required: true, min: 8 }]}
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"

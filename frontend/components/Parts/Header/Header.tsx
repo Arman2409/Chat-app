@@ -41,8 +41,10 @@ const AppHeader: React.FunctionComponent = () => {
     const userContRef = useRef<HTMLDivElement>(null);
 
     const router: any = useRouter();
-    const storeUser = useSelector<IRootState>((state) => state.user.user);
-    const storeNotSeen = useSelector<IRootState>((state) => state.messages.notSeenCount);
+    const socket = useSelector((state: IRootState) => {
+        return state.socket.socket;
+    });
+    const storeUser: UserType = useSelector((state:IRootState) => state.user.user);
     const userWindow: boolean = useSelector((state: IRootState) => state.window.userWindow);
     const dispatch: Dispatch = useDispatch();
 
@@ -107,9 +109,15 @@ const AppHeader: React.FunctionComponent = () => {
         setUser(storeUser as UserType);
     }, [storeUser]);
 
-    useEffect(() => { 
-        setNotSeenCount(storeNotSeen as any);
-    }, [storeNotSeen])
+    useEffect(() => {
+        if(router.pathname === "/") {
+            if (socket) {
+                    socket.emit("getNotSeenCount",{id: storeUser?.id}, (resp:any) => {
+                    setNotSeenCount(resp?.notSeenCount);
+                })
+            }
+        }
+    }, [user, storeUser, router.pathname])
 
     useEffect(() => {
         const token: string | null = localStorage.getItem("token");
@@ -121,12 +129,16 @@ const AppHeader: React.FunctionComponent = () => {
                     if (signedUser?.AlreadySigned?.email) { 
                         let socket = io(NEXT_PUBLIC_SOCKETS_URL as any);
                         socket.emit("signedIn", {id: signedUser?.AlreadySigned?.id}, (resp:any) => {   
-                            if (Object.hasOwn(resp, "notSeenCount")) {
-                              setNotSeenCount(resp?.notSeenCount);
-                            } 
+                            if (resp === "Signed In") {
+                                dispatch(setSocket(socket));
+                                dispatch(setStoreUser(signedUser?.AlreadySigned));
+                            } else {
+                                setMessageOptions({
+                                    type: "warning",
+                                    message: resp
+                                })
+                            }
                         });
-                        dispatch(setSocket(socket));
-                        dispatch(setStoreUser(signedUser?.AlreadySigned));
                     }
                     dispatch(setLoaded(true));
                 })()

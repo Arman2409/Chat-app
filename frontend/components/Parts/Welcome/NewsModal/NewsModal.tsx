@@ -12,9 +12,11 @@ const NewsModal:React.FC<NewsModalProps> = ({ news, toggleModal}) => {
               <h3 className={styles.welcome_modal_title}>
                   {news.title}
               </h3>
-               <p className={styles.welcome_modal_desc}>
+              <div className={styles.welcome_modal_desc_cont}>
+              <p className={styles.welcome_modal_desc_cont_text}>
                    {news.description}
                </p>
+              </div>
            </div>
         </div>
     )

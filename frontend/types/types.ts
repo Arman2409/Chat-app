@@ -29,7 +29,6 @@ export interface MessagesDataType {
 export interface  MessagesInitialState {
     interlocutor: UserType,
     messagesData: MessagesDataType,
-    notSeenCount: number,
     interlocutorMessages: MessagesDataType
 }
 
