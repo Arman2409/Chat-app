@@ -1,13 +1,14 @@
 module.exports = {
   moduleNameMapper: {
-     '^.+\\.(css|less)$': '<rootDir>/config/CSSStub.js'
+    "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/jest/jest-config/fileMock.js",
+    "\\.(css|less)$": "<rootDir>/jest/jest-config/fileMock.js"
   },
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   transform: {
     // '.(css|less,scss)$': '<rootDir>/jest-config/style-mock.js',
     '^.+\\.ts?$': 'ts-jest',
-     "^.+\\.scss$": 'jest-scss-transform',
+     "^.+\\.scss$": 'jest-scss-transform'
   },
   globals: {
     'ts-jest': {
@@ -22,6 +23,6 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: "coverage",
   setupFilesAfterEnv: [
-    "<rootDir>/setupTests.ts"
+    "<rootDir>/jest/setupTests.ts"
   ]
 }

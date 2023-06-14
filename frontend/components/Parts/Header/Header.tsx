@@ -151,7 +151,9 @@ const AppHeader: React.FunctionComponent = () => {
     }, []);
 
     return (
-        <Header className={styles.header_main}>
+        <Header 
+          className={styles.header_main}
+        >
             <Link href="/"  className={styles.header_logo_link}>
                 <div
                     className={styles.header_logo_cont}
@@ -184,7 +186,6 @@ const AppHeader: React.FunctionComponent = () => {
                     {user.name &&
                         <div ref={addRef}>
                             <HiOutlineUserAdd
-                                role="toggleOwnerInfo"
                                 onClick={() => {
                                     if (ownerState) setOwnerState(false);
                                     setWatchingRequests(current => !current)
@@ -199,6 +200,7 @@ const AppHeader: React.FunctionComponent = () => {
                     style={{
                         marginLeft: user.name ? "15px" : "auto"
                     }}
+                    data-testid="toggleOwnerWindow"
                     onClick={() => toggleUser()}>
                     <Typography className={styles.user_name}>
                         {user.name ? getSlicedWithDots(user.name, 15) : "Sign In"}

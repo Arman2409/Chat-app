@@ -5,33 +5,21 @@ import { Provider } from "react-redux";
 
 import Home from "../pages/index";
 import store from "../store/store";
+import { setWindowProperties } from "../functions/testFunctions";
 
 jest.mock('next/router', () => ({
     useRouter: jest.fn()
 }))
 
 describe("<Home />", () => {
-        beforeAll(() => {
-            Object.defineProperty(window, "matchMedia", {
-              writable: true,
-              value: jest.fn().mockImplementation(query => ({
-                matches: false,
-                media: query,
-                onchange: null,
-                addListener: jest.fn(), // Deprecated
-                removeListener: jest.fn(), // Deprecated
-                addEventListener: jest.fn(),
-                removeEventListener: jest.fn(),
-                dispatchEvent: jest.fn(),
-              }))
-            });
-          });
+        beforeAll(() => setWindowProperties(window, jest));
      //  can come handy for routing 
     // useRouter.mockReturnValue({ query: {}})
-    test("cd", () => {
+    
+    test("should have search input", () => {
         render(<Provider store={store}><Home /></Provider>);
-        const div = screen.findAllByText("p")
-        expect(true).toBeDefined();
+        const searchInput = screen.getByPlaceholderText("Search");
+        expect(searchInput).toBeDefined();
     })
 });
 

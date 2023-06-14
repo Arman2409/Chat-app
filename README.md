@@ -18,4 +18,4 @@ Than you will need to run frontend with command
 
 And run backend using command
 
->>> npm run start:dev
+>>> npm run dev

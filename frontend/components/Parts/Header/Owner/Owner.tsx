@@ -60,7 +60,7 @@ const Owner = ({userContRef}:any) => {
 
     return (
         <div
-        role="ownerWindow"
+        data-testid="ownerWindow"
         className={styles.owner_main}
         ref={ownerRef}>
             {user.name ?

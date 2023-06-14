@@ -1,4 +1,4 @@
-import { getStartEnd } from "./functions";
+import { getStartEnd } from "../functions/functions";
 
 describe("Test Functions", () => {
     it("Check the returning start and end index", () => {

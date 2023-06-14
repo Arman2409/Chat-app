@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'nestjs-prisma';
 import { randomBytes } from 'crypto';
 
-import { SearchService } from './search.service';
+import { SearchService } from '../modules/search/search.service';
 
 describe('SearchService', () => {
   let service: SearchService;

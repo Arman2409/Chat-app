@@ -46,7 +46,8 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
         accept ? await accept(item.id) : null;
     }, [accept, setButtonsDisabled]);
 
-    const handleScroll = (e:any, isTouchEvent?:boolean) => {        
+    const handleScroll = (e:any, isTouchEvent?:boolean) => {  
+        setOpenedDropdown(" ");      
         if (listRef.current?.contains(e.target) ||  listRef.current === e.target) {
             if(e.deltaY > 0 || isTouchEvent){    
                if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {     
@@ -153,6 +154,7 @@ const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingS
                     return (
                     <List.Item
                         onClick={() => newChat(item)}
+                        data-testid="listItem"
                         className={lastMessages ? isInterlocutor ? styles.list_item_message_interlocutor : styles.list_item_message : styles.list_item}
                     >
                         <Badge dot={item.active ? true : false}>
