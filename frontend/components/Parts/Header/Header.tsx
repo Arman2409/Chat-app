@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, lazy, Suspense } from "react";
 import { Layout, Typography, Row, Avatar, Badge } from "antd";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -12,10 +12,10 @@ import { IoPersonSharp } from "react-icons/io5";
 import Image from "next/image";
 import { io } from "socket.io-client";
 
+const Owner = lazy(() => import("./Owner/Owner"));
 import styles from "../../../styles/Parts/Header/Header.module.scss";
 import Logo from "../../../assests/logo-files/svg/logo-no-background-cropped.svg";
 import { IRootState } from "../../../store/store";
-import Owner from "./Owner/Owner";
 import { setUserWindow } from "../../../store/windowSlice";
 import { setStoreUser } from "../../../store/userSlice";
 import {UserType} from "../../../types/types";
@@ -218,7 +218,10 @@ const AppHeader: React.FunctionComponent = () => {
                 user.name && watchingRequests ?
                     <FriendRequests clickOutside={clickOutside}/> : null
             }
-            {ownerState && <Owner userContRef={userContRef}/>}
+            {ownerState && 
+                <Suspense fallback={""}>
+                  <Owner userContRef={userContRef}/>
+                </Suspense>}
         </Header>
     )
 }

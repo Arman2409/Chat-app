@@ -3,7 +3,8 @@ import { Button,Typography, Form, Input } from "antd";
 
 import styles from "../../../../../styles/Parts/Header/Owner/RecoverPassword/RecoverPassword.module.scss";
 import handleGQLRequest from "../../../../../request/handleGQLRequest";
-import { RecoverProps, TimeStampType } from "../../../../../types/types";
+import type { TimeStampType } from "../../../../../types/types";
+import type { RecoverProps } from "../../../../../types/propTypes";
 import { getTimeString } from "../../../../../functions/functions";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 import { recoverPasswordWaitTime } from "../../../../../configs/configs";

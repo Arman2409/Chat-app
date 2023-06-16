@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { Avatar, Badge, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -23,21 +23,21 @@ const MessagesChat: React.FC = () => {
     const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
-    const storeUser: UserType = useSelector((state: IRootState) => {
-        return state.user.user;
-    });
-    const [user, setUser] = useState<UserType>(storeUser);
-    const isBlocked = user.blockedUsers?.includes(interlocutor.id);
-    const isRequested = user.sentRequests?.includes(interlocutor.id) ||  user.friendRequests?.includes(interlocutor.id);
-    const isFriend = user.friends?.includes(interlocutor.id);
-    
     const storeInterlocutor = useSelector((state: IRootState) => {
         return state.messages.interlocutor;
     });
     const socket = useSelector((state: IRootState) => {
         return state.socket.socket;
     });
+    const storeUser: UserType = useSelector((state: IRootState) => {
+        return state.user.user;
+    });
+    const [user, setUser] = useState<UserType>(storeUser);
     const router: any = useRouter();
+    const isBlocked:boolean = useMemo(() => Boolean(user.blockedUsers?.includes(interlocutor.id)), [user, interlocutor]);
+    const isRequested = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) ||  user.friendRequests?.includes(interlocutor.id)), [user, interlocutor]);
+    const isFriend = useMemo(() => user.friends?.includes(interlocutor.id), [interlocutor, user]) ;
+
 
     useEffect(() => {
         if (!user.name) {
@@ -49,13 +49,6 @@ const MessagesChat: React.FC = () => {
 
     useEffect(() => { 
         setInterlocutor(storeInterlocutor);
-        if(storeInterlocutor?.name) {
-            if (socket) {
-                socket.emit("newInterlocutor", {id:user.id, userId: storeInterlocutor.id}, (resp:any) => {
-                  dispatch(setInterlocutorMessages(resp));
-                });
-            }
-        }
     }, [storeInterlocutor]);
 
     useEffect(() => {
@@ -81,6 +74,16 @@ const MessagesChat: React.FC = () => {
             messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
         }
     }, [messageData]);
+
+    useEffect(() => {
+        if(interlocutor?.name) {
+           if (socket) {
+               socket.emit("newInterlocutor", {id:user.id, userId: storeInterlocutor.id}, (resp:any) => {
+                 dispatch(setInterlocutorMessages(resp));
+               });
+           }
+       }
+     }, [interlocutor])
 
     useEffect(() => {
         setUser(storeUser);
@@ -139,7 +142,10 @@ const MessagesChat: React.FC = () => {
                                 )
                             })}
                         </div>
-                        <MessagesInput setMessageData={setMessageData} interlocutor={interlocutor} />
+                        <MessagesInput
+                         setMessageData={setMessageData}
+                         isBlocked={isBlocked} 
+                         interlocutor={interlocutor} />
                     </>
                     :
                     <div className={styles.choose_interlocutor_cont}>

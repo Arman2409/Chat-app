@@ -1,7 +1,7 @@
 import React from "react";
 
 import styles from "../../../../styles/Parts/Welcome.module.scss";
-import { NewsModalProps} from "../../../../types/types";
+import type { NewsModalProps} from "../../../../types/propTypes";
 import {CloseCircleFilled} from "@ant-design/icons";
 
 const NewsModal:React.FC<NewsModalProps> = ({ news, toggleModal}) => {

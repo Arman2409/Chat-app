@@ -1,11 +1,11 @@
 import {Typography} from "antd";
 import {useMediaQuery} from "react-responsive";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, lazy, Suspense} from "react";
 
+const NewsModal = lazy(() => import("./NewsModal/NewsModal"));
 import styles from "../../../styles/Parts/Welcome.module.scss";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import {getSlicedWithDots} from "../../../functions/functions";
-import NewsModal from "./NewsModal/NewsModal";
 import Loading from "../../Custom/Loading/Loading";
 
 const Welcome: React.FunctionComponent = () => {
@@ -48,7 +48,9 @@ const Welcome: React.FunctionComponent = () => {
             }}>
             {loading && <Loading/>}
             {modalData &&
+             <Suspense fallback={""}>
                 <NewsModal news={news[0]} toggleModal={toggleModal}/>
+             </Suspense>
             }
             <div className="border_div"></div>
             <div className={styles.welcome_content}>

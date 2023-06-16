@@ -3,7 +3,7 @@ import { Spin } from "antd";
 import { BoxLoading } from "react-loading-typescript"
 
 import styles from "../../../styles/Custom/Loading.module.scss";
-import { LoadingProps } from "../../../types/types";
+import type { LoadingProps } from "../../../types/propTypes";
 
 const Loading:React.FC<LoadingProps> = ({type}:LoadingProps) => {
    return (

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {lazy, useCallback, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {RiUser4Line, RiUserSearchFill} from "react-icons/ri";
 import {TbListSearch} from "react-icons/tb";
@@ -8,16 +8,16 @@ import {Dispatch} from "@reduxjs/toolkit";
 import {List, Avatar, Typography, Badge, Button} from "antd";
 import {last, remove} from "lodash";
 
+const UserDropdown = lazy(() => import("../UserDropdown/UserDropdown"));
 import styles from "../../../styles/Custom/UsersMapper.module.scss";
-import {MapperProps} from "../../../types/types";
 import {IRootState} from "../../../store/store";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
-import {UserType} from "../../../types/types";
+import type {MapperProps} from "../../../types/propTypes";
+import type {UserType} from "../../../types/types";
 import {setInterlocutor} from "../../../store/messagesSlice";
 import {getSlicedWithDots} from "../../../functions/functions";
 import {usersLoadWaitTime} from "../../../configs/configs";
 import {setMenuOption} from "../../../store/windowSlice";
-import UserDropdown from "../UserDropdown/UserDropdown";
 
 const UsersMapper: React.FC<MapperProps> = ({users: userItems, page, setLoadingSearchType, loadingSearchType, total = 0,  friends, friendRequests, lastMessages,  accept}: MapperProps) => {    
     const [emptyText, setEmptyText] = useState<string>("");

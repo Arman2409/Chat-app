@@ -8,7 +8,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import styles from "../../../styles/Custom/UserDropdown.module.scss";
 import { getItems } from "./menuItems";
 import handleGQLRequest from "../../../request/handleGQLRequest";
-import { UserDropDownProps } from "../../../types/types";
+import type { UserDropDownProps } from "../../../types/propTypes";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { setStoreUser } from "../../../store/userSlice";
 import { IRootState } from "../../../store/store";
@@ -140,10 +140,14 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
         }
     }, [openElement, user, openState]);
 
-    useOnClickOutside(dropdownRef, () => {
+    useOnClickOutside(dropdownRef, (e) => {
         if (openElement === user.email) {
+            const dropdownLayout = document.getElementsByClassName(`${styles.list_item_actions_dropdown}`);
+            if(dropdownLayout[0].contains(e.target as any)) {
+                return;
+            }
             setOpenState(false);
-        }
+        };
     });
 
     return (
@@ -151,12 +155,12 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
             <Dropdown
                 trigger={["click"]}
                 open={openState}
+                overlayClassName={styles.list_item_actions_dropdown}
+                placement="bottomLeft"
                 menu={{
                     items: type === "friend" ? items.friends : items.all,
                     onClick: (event) => handleMenuClick({ ...event, id: user.id })
-                }}
-                overlayClassName={styles.list_item_actions_dropdown}
-                placement="bottomLeft">
+                }}>
                 <div
                     className={styles.list_item_actions_icon}
                     onClick={clickIcon as any}>
