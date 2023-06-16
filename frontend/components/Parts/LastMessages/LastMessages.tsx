@@ -4,9 +4,9 @@ import { useMediaQuery } from "react-responsive";
 import { last, sortBy } from "lodash";
 import { useSelector } from "react-redux";
 
+import styles from "../../../styles/Parts/LastMessages.module.scss";
 import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
-import styles from "../../../styles/Parts/LastMessages.module.scss";
 import { IRootState } from "../../../store/store";
 
 const LastMessages:React.FC = () => {
@@ -19,14 +19,14 @@ const LastMessages:React.FC = () => {
    const isRequestingRef = useRef<boolean>(false);
    const isMedium: boolean = useMediaQuery({query: "(max-width: 750px)"});
    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+   const {messagesData}:any = useSelector((state: IRootState) => state.messages);
 
    const {interlocutor, interlocutorMessages} = useSelector((state: IRootState) => {
       return state.messages;
    });
+   const storeUser = useSelector((state:IRootState) => state.user.user);
 
    const getInterlocutorData = useCallback((alreadyAdded:any) => {
-      console.log(interlocutor.name);
-      
       if (alreadyAdded || interlocutor.name) {
          return [];
       } else {
@@ -72,9 +72,38 @@ const LastMessages:React.FC = () => {
    }, []);
 
    useEffect(() => {
-      console.log(lastMessages);
-      
-   }, [lastMessages])
+         setLastMessages(messages => messages.map((elem:any) => {     
+            if(messagesData.between?.includes(elem.id)){
+               const { id }:any = {...storeUser || {}}
+               const hasNotSeen = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
+               
+               return {
+                  ...elem,
+                  lastMessage: last(messagesData?.messages),
+                  notSeenCount: hasNotSeen ? messagesData.notSeen.count : 0,
+               };
+            }
+            return elem;
+         }));
+   }, [messagesData, setLastMessages]);
+
+   useEffect(() => {
+     setLastMessages(currents => currents.map((elem:any) => {
+        if (interlocutorMessages.between?.includes(elem.id)) {
+           if (interlocutorMessages.notSeen.count !== elem.notSeenCount) {
+             return {
+               ...elem,
+               notSeenCount: interlocutorMessages.notSeen.count
+             }
+           } else {
+            return elem;
+           }
+        } else {
+         return elem;
+        };
+     }))
+        
+   }, [interlocutorMessages, setLastMessages]);
    
     return (
        <div 

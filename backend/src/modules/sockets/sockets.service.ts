@@ -26,9 +26,10 @@ export class SocketsService {
     }
 
     async updateMessages(allMessages: MessageType[]) {
-        await this.prisma.messages.deleteMany();
         if (allMessages.length) {
-           await this.prisma.messages.createMany({ data: allMessages as any });
+            await this.prisma.messages.deleteMany().then(async () => {
+                await this.prisma.messages.createMany({ data: allMessages as any });            
+            });
         };
     };
 
