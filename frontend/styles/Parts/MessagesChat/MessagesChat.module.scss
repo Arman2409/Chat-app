@@ -74,18 +74,40 @@
       padding: 2px;
       color: $color3;
 
-      &_text_cont {
-        width: auto;
+      &_data {
         max-width: 49%;
-        line-break: anywhere;
+        width: auto;
         height: auto;
-        padding: 2px;
-        font-family: $mainFontFamily;
-        position: relative;
-        background-color: rgba($color4, 0.3);
-        border: 0.5px solid rgba(red, 0.35);
         border-radius: 5px;
+        align-items: flex-end ;
+        display: flex;
+        flex-direction: column;
+
+        &_text_cont {
+          line-break: anywhere;
+          padding: 2px;
+          border: 0.5px solid rgba(red, 0.35);
+          background-color: rgba($color4, 0.3);
+          width: auto;
+          max-height: 100%;
+          font-family: $mainFontFamily;
+        }
+  
+        &_file_cont {
+          cursor: pointer;
+          color: $color4;
+          border:  1px solid $color3;
+          display: flex;
+          align-items: center;
+          padding: 3px;
+          background-color: $color2;
+  
+          &_icon {
+            color: $color7;
+          }
+        }
       }
+      
     }
 
     .blocked_cont {

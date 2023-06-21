@@ -9,20 +9,20 @@ import {
 import {Server} from "socket.io";
 import {remove} from "lodash"
 
-import {SocketWIthHandshake} from "../../../types/types";
+import type {SocketWIthHandshake} from "../../../types/types";
+import type { MessageType } from "../../../types/graphqlTypes";
 import {SocketsService} from "./sockets.service";
-import { MessageType } from "../../../types/graphqlTypes";
 
 @WebSocketGateway({ cors: "*" },)
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
     @WebSocketServer() server: Server;
 
-    constructor(private readonly service: SocketsService) {}
+    constructor(private readonly service: SocketsService,
+                ) {}
 
     private activeUsers: string[] = [];
 
     private allMessages = [];
-
 
     async afterInit() {
         const messages = await this.service.getMessages();
@@ -76,11 +76,21 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     async handleMessage(@MessageBody("from") from: string,
         @MessageBody("to") to: string,
         @MessageBody("message") message: string,
+        @MessageBody("file") file: string,
+        @MessageBody("orgFile") originalFile: string,
     ) {
+        console.log({originalFile});
+        
+        if (file) {
+            message = `...(file)...${file}&&${originalFile}&&${message}`;
+            console.log(message);
+            
+        }
         let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData:MessageType = {} as MessageType;
         let previousMessaging:MessageType;
         
+
         if (alreadyMessaged) {
             previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
             if(previousMessaging.blocked) {
@@ -89,10 +99,9 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             remove(this.allMessages,(messages) => {
                 return messages === previousMessaging;
             });
-            
             messageData = {
                 between: previousMessaging.between || [from, to],
-                messages: [...previousMessaging.messages || [message], message],
+                messages: [...previousMessaging.messages || [], message],
                 sequence: [...previousMessaging.sequence || [0], previousMessaging.between?.indexOf(from)],
                 lastDate: new Date().toString().slice(0, 10),
             }
@@ -109,7 +118,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             ...messageData,
             notSeen:
                     {
-                        count: previousMessaging?.notSeen.count + 1 || 1,
+                        count: previousMessaging?.notSeen?.count + 1 || 1,
                         by: messageData?.between?.indexOf(to)
                     }
          }

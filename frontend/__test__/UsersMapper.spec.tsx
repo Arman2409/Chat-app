@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, render, fireEvent } from "@testing-library/react";
+import { screen, render } from "@testing-library/react";
 import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 
@@ -17,12 +17,13 @@ describe("<UsersMapper />", () => {
     (useRouter as jest.Mock).mockReturnValue({
       query: {}
     });
+
+    const testUsers = [{
+      name: "test",
+      email: "test@test"
+    }]
     
     test("should have one list item", () => {
-        const testUsers = [{
-            name: "test",
-            email: "test@test"
-        }]
         render(
            <Provider store={store}>
              <UsersMapper 

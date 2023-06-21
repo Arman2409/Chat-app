@@ -118,6 +118,24 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         fields = ["successMessage", "message"]
     }
 
+    if(operation == "UploadFile") {
+        const {name, base, type} = args;
+        variables = {
+            base: {type: "String!", value: base},
+            name: {type: "String!", value: name},
+            type: {type: "String!", value: type}
+        };
+        fields = ["name", "originalName"];
+    };
+
+    if(operation == "GetFile") {
+        const {name} = args;
+        variables = {
+            name: {type: "String!", value: name},
+        };
+        fields = ["data", "name", "originalName", "contentType"];
+    }
+
     return await axios.post("/graphql", query({
             operation,
             variables: variables,

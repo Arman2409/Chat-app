@@ -115,3 +115,27 @@ export class RecoverType {
     @Field({ nullable: true})
     message?: string
 }
+
+@ObjectType()
+export class UploadType {
+    @Field({nullable: true})
+    name: string
+
+    @Field({nullable: true})
+    originalName: string
+}
+
+@ObjectType()
+export class FileType {
+    @Field({nullable: true})
+    name: string
+
+    @Field({nullable: true})
+    originalName?: string
+
+    @Field()
+    data: string
+
+    @Field()
+    contentType?: string
+}

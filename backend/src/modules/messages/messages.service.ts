@@ -33,7 +33,11 @@ export class MessagesService {
     messages = messages.slice(startIndex, endIndex);
     
     const resp = {total: length, users: messages.map(async (message:any) => {
-        const lastMessage = message?.messages[message?.messages?.length - 1];
+        let lastMessage = message?.messages[message?.messages?.length - 1];
+        if(lastMessage?.startsWith("...(file)...")) {
+          lastMessage = lastMessage.slice(lastMessage.indexOf("&&") + 2);
+          lastMessage = lastMessage.slice(0, lastMessage.indexOf("&&"));
+        }
         const notSeenCount = (message.notSeen.by === message?.between?.indexOf(currentUser.id)) ?  message?.notSeen?.count : 0;
         const userId = message?.between?.filter((elem:any) => elem !== currentUser.id)[0];
         return await this.prisma.users.findUnique({

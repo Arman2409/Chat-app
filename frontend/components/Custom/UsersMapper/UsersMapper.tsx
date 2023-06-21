@@ -147,7 +147,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
                 {lastMessages ? <TbListSearch className={styles.empty_icon} /> : <RiUserSearchFill className={styles.empty_icon} />}
                 <p className={styles.empty_text}>{emptyText}</p>
             </div>}
-            {users.map((item) => {
+            {users.map((item, index) => {
                 const isInterlocutor = item.id === storeInterlocutor.id;
                 const isBlocked = user.blockedUsers?.includes(item.id);
                 const isRequested = user.sentRequests?.includes(item.id) || user.friendRequests?.includes(item.id);
@@ -176,6 +176,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
                                 <Suspense fallback={""}>
                                     <UserDropdown
                                         user={item}
+                                        index={index}
                                         onClick={openDropdown}
                                         openElement={openedDropdown}
                                         isRequested={isRequested}

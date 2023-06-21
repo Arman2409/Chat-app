@@ -69,7 +69,11 @@ const Welcome: React.FunctionComponent = () => {
                 </h5>
                 <div className={styles.news_cont}>
                     {news.map((e, index) => (
-                        <div key={index} className={styles.one_news_cont} onClick={() => toggleModal(e)}>
+                        <div
+                           data-testid="news-cont"
+                           key={index}
+                           className={styles.one_news_cont} 
+                           onClick={() => toggleModal(e)}>
                             <h3 className={styles.one_news_cont_title}>
                                 {getSlicedWithDots(e.title, 10)}
                             </h3>

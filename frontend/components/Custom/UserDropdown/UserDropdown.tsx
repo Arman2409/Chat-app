@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RiMenu4Line } from "react-icons/ri";
 import { Dropdown } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { setStoreUser } from "../../../store/userSlice";
 import { IRootState } from "../../../store/store";
 
-const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisabled, isBlocked, user }: UserDropDownProps) => {
+const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButtonsDisabled, isBlocked, user }: UserDropDownProps) => {
     const [openState, setOpenState] = useState<boolean>(false);
     const dropdownRef = useRef<any>();
     const dispatch = useDispatch();
@@ -23,8 +23,8 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
     const storeUser = useSelector<IRootState>((state) => state.user.user);
 
     const { setMessageOptions } = useOpenAlert();
-
-    const items = getItems(isBlocked as boolean, isRequested as boolean);
+    
+    const items = useMemo(() => getItems(isBlocked as boolean, isRequested as boolean), [isBlocked, isRequested, getItems]);
 
     // adding or removing a friend
     const handleAddRemoveFriend = useCallback((type: string) => {
@@ -120,8 +120,9 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
         })
     }, [storeUser, socket, setMessageOptions]);
 
+    // calling function depending on the event key 
     const handleMenuClick = useCallback((event: any) => {
-        event.domEvent?.stopPropagation();
+        event.domEvent?.stopPropagation();        
         if (event.key === "addFriend") {
             handleAddRemoveFriend("add");
         } else if (event.key === "blockUser") {
@@ -142,9 +143,11 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
 
     useOnClickOutside(dropdownRef, (e) => {
         if (openElement === user.email) {
-            const dropdownLayout = document.getElementsByClassName(`${styles.list_item_actions_dropdown}`);
-            if(dropdownLayout[0].contains(e.target as any)) {
-                return;
+            const dropdownLayout = document.getElementsByClassName(`list_item_actions_dropdown_${index}`);
+            if(dropdownLayout[0]){
+                if(dropdownLayout[0].contains(e.target as any)) {
+                    return;
+                }
             }
             setOpenState(false);
         };
@@ -155,7 +158,7 @@ const UserDropdown = ({ type, onClick, openElement, isRequested, setButtonsDisab
             <Dropdown
                 trigger={["click"]}
                 open={openState}
-                overlayClassName={styles.list_item_actions_dropdown}
+                overlayClassName={`${styles.list_item_actions_dropdown} list_item_actions_dropdown_${index}` }
                 placement="bottomLeft"
                 menu={{
                     items: type === "friend" ? items.friends : items.all,
