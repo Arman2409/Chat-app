@@ -15,19 +15,14 @@ import { setStoreUser } from "../../../../../store/userSlice";
 import type { UserType } from "../../../../../types/types";
 import type { SignProps } from "../../../../../types/propTypes";
 import Loading from "../../../../Custom/Loading/Loading";
-import { getSlicedWithDots } from "../../../../../functions/functions";
+import { getSlicedWithDots, getBase64 } from "../../../../../functions/functions";
 import { setSocket } from "../../../../../store/socketSlice";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 import { NEXT_PUBLIC_SOCKETS_URL } from "../../../../../configs/configs";
 
 const { useForm } = Form;
 
-// two functions for uploading image files 
-const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result as string));
-    reader.readAsDataURL(img);
-};
+// function for uploading image files 
 
 const beforeUpload = (file: RcFile) => {    
     const { setMessageOptions } = useOpenAlert();
@@ -178,7 +173,6 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                                 showUploadList={false}
                                 beforeUpload={beforeUpload}
                                 onChange={handleChangeImage}
-                                className={styles.image_input}
                             >
                                 {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                             </Upload>

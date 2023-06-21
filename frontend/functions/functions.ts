@@ -1,3 +1,4 @@
+import { RcFile } from "antd/es/upload";
 import { TimeStampType } from "../types/types";
 
 export const getSlicedWithDots = (word: string, lettersCount: number) => {
@@ -22,4 +23,15 @@ export const getTimeString = (timestamp:TimeStampType) => {
     seconds = timestamp.sec.toString()
   }
   return minutes + " : " + seconds;
+};
+
+export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result as string));
+  reader.readAsDataURL(img);
+};
+
+export const getFilesOriginalName = (message:string) => {
+   const fileName = message.slice(message.indexOf("&&") + 2);
+   return fileName.slice(0, fileName.indexOf("&&"));
 }

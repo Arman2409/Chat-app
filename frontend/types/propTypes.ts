@@ -37,6 +37,7 @@ export interface NewsModalProps {
 export interface UserDropDownProps {
     type: string,
     user:UserType,
+    index?: number,
     openElement?:string,
     onClick?: Function,
     setButtonsDisabled?: Function,

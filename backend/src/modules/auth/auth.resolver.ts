@@ -25,7 +25,6 @@ export class AuthResolver {
       @Args("password") password: string,
    ): Promise<any> {
       return await this.service.findUser(ctx, { email, password });
-      
    }
 
    @Query(() => String, { name: "SignOut" })

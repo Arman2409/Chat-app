@@ -43,3 +43,11 @@ model Messages {
   blocked Boolean @default(false)
   blockedBy Int @default(0)
 }
+
+model Files {
+  id String  @id  @default(auto()) @map("_id") @db.ObjectId
+  name String
+  data String
+  contentType String
+  originalName String
+}

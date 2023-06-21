@@ -15,6 +15,7 @@ import { FriendsModule } from './modules/friends/friends.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { SocketsModule } from './modules/sockets/sockets.module';
 import { WelcomeModule } from './modules/welcome/welcome.module';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { WelcomeModule } from './modules/welcome/welcome.module';
      FriendsModule,
      SocketsModule,
      MessagesModule,
-     WelcomeModule],
+     WelcomeModule,
+     FilesModule],
      providers: [PrismaService, JwtService, CloudinaryService],
 })
 export class AppModule {}
