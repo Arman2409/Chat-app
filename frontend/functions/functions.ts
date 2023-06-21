@@ -7,7 +7,7 @@ export const getSlicedWithDots = (word: string, lettersCount: number) => {
     return word?.slice(0, lettersCount) + "...";
   } else {
     return "...";
-  } 
+  }
 };
 
 export const getSendersId = (array: any[], userId:string) => {
