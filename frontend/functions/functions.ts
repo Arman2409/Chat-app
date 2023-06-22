@@ -6,7 +6,7 @@ export const getSlicedWithDots = (word: string, lettersCount: number) => {
   if (typeof word === "string") {
     return word?.slice(0, lettersCount) + "...";
   } else {
-    return "...";
+    return "";
   }
 };
 
