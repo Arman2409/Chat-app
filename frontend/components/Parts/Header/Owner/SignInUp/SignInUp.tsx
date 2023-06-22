@@ -86,18 +86,14 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
             }
             let socket = io(NEXT_PUBLIC_SOCKETS_URL as any);
             socket.emit("signedIn", { id: user.id }, (resp:any) => {            
-                if (resp === "Signed In") {
-                    dispatch(setSocket(socket));
-                    setLoadingRequest(false);
-                    dispatch(setStoreUser(user));
-                } else {
-                    setMessageOptions({
-                        type: "warning",
-                        message: resp
-                    })
-                }
-            }
-            );
+                if (Object.hasOwn(resp, "notSeenCount")) {
+                    dispatch(setNotSeenCount(Number(resp?.notSeenCount)));
+                  }
+              }
+              );
+              dispatch(setSocket(socket));
+              setLoadingRequest(false);
+              dispatch(setStoreUser(user));
         }
         else if (type == "SignUp") {
             if(repeatPassword !== password) {
