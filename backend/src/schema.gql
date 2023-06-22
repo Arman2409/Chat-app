@@ -14,7 +14,6 @@ type UserType {
   sentRequests: [String!]!
   notSeenCount: Float
   lastVisited: String!
-  blockedUsers: [String!]!
   lastMessage: String
 }
 
@@ -45,18 +44,6 @@ type RecoverType {
   message: String
 }
 
-type UploadType {
-  name: String
-  originalName: String
-}
-
-type FileType {
-  name: String
-  originalName: String
-  data: String!
-  contentType: String!
-}
-
 type Query {
   SignUp(name: String!, email: String!, image: String!, password: String!): UserType!
   SignIn(email: String!, password: String!): TokenType!
@@ -68,11 +55,8 @@ type Query {
   SearchInFriends(name: String!, page: Float!, perPage: Float!): SearchType!
   FindUserById(id: String!): UserType!
   AddFriend(id: String!): UserType!
-  RemoveFriend(friendId: String!): TokenType!
   GetFriendRequestsUsers(ids: [String!]!): [UserType!]!
   ConfirmFriend(friendId: String!): TokenType!
   GetLastMessages(page: Float!, perPage: Float!): SearchType!
   GetWelcomeNews: [NewsType!]!
-  UploadFile(base: String!, name: String!, type: String!): UploadType!
-  GetFile(name: String!): FileType!
 }
