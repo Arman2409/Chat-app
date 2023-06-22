@@ -41,6 +41,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         await this.service.updateUserStatus(id, false);
     }
 
+
     @SubscribeMessage("signedIn")
     async handleConnect(
         @MessageBody("id") id: string,
@@ -50,27 +51,49 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         client.join(id?.toString());
         client.handshake.id = id;
         client.handshake.active = true;
+        const notSeenCount = this.allMessages.filter(message => {
+          const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
+          if(notSeenByUser) {
+            return  message?.notSeen?.count > 0;
+          }
+        })
         if (update) {
-            return "Signed In";
+            return {notSeenCount: notSeenCount.length};
         } else {
             return "Not Connected";
         }
     };
 
-    @SubscribeMessage("getNotSeenCount")
-    async getNotSeenCount(
-        @MessageBody("id") id: string,
-    ){
-        const notSeenCount = this.allMessages.filter(message => {
-            const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
-            if(notSeenByUser) {
-              return  message?.notSeen?.count > 0;
-            } else {
-              return false;
-            }
-          })
-        return {notSeenCount: notSeenCount?.length};
-    }
+    // @SubscribeMessage("signedIn")
+    // async handleConnect(
+    //     @MessageBody("id") id: string,
+    //     @ConnectedSocket() client: SocketWIthHandshake) {            
+    //     this.activeUsers.push(id);
+    //     const update = this.service.updateUserStatus(id, true, true)
+    //     client.join(id?.toString());
+    //     client.handshake.id = id;
+    //     client.handshake.active = true;
+    //     if (update) {
+    //         return "Signed In";
+    //     } else {
+    //         return "Not Connected";
+    //     }
+    // };
+
+    // @SubscribeMessage("getNotSeenCount")
+    // async getNotSeenCount(
+    //     @MessageBody("id") id: string,
+    // ){
+    //     const notSeenCount = this.allMessages.filter(message => {
+    //         const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
+    //         if(notSeenByUser) {
+    //           return  message?.notSeen?.count > 0;
+    //         } else {
+    //           return false;
+    //         }
+    //       })
+    //     return {notSeenCount: notSeenCount?.length};
+    // }
 
     @SubscribeMessage("message")
     async handleMessage(@MessageBody("from") from: string,
