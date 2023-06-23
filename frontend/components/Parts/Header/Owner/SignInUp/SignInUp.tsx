@@ -54,7 +54,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
     const dispatch: Dispatch = useDispatch();
     const [signForm] = useForm();
 
-    const { setMessageOptions } = useOpenAlert();
+    // const { setMessageOptions } = useOpenAlert();
 
     const submit = useCallback(async  (values: any) => {
 
