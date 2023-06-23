@@ -12,14 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessagesService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_prisma_1 = require("nestjs-prisma");
+const graphql_1 = require("graphql");
 const functions_1 = require("../../functions/functions");
 let MessagesService = class MessagesService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async lastMessages(ctx, page, perPage) {
+    async getLastMessages(ctx, page, perPage) {
         const req = ctx.req;
         const currentUser = req.session.user;
+        if (!currentUser) {
+            throw new graphql_1.GraphQLError("Not Signed In");
+        }
         let messages = await this.prisma.messages.findMany({
             where: {
                 between: {
@@ -28,11 +32,15 @@ let MessagesService = class MessagesService {
             }
         });
         const length = messages.length;
-        const { startIndex, endIndex } = (0, functions_1.getStartEnd)(page, perPage, length);
+        const { startIndex, endIndex } = (0, functions_1.getStartEnd)(page, perPage);
         messages = messages.slice(startIndex, endIndex);
         const resp = { total: length, users: messages.map(async (message) => {
                 var _a, _b, _c, _d;
-                const lastMessage = message === null || message === void 0 ? void 0 : message.messages[((_a = message === null || message === void 0 ? void 0 : message.messages) === null || _a === void 0 ? void 0 : _a.length) - 1];
+                let lastMessage = message === null || message === void 0 ? void 0 : message.messages[((_a = message === null || message === void 0 ? void 0 : message.messages) === null || _a === void 0 ? void 0 : _a.length) - 1];
+                if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.startsWith("...(file)...")) {
+                    lastMessage = lastMessage.slice(lastMessage.indexOf("&&") + 2);
+                    lastMessage = lastMessage.slice(0, lastMessage.indexOf("&&"));
+                }
                 const notSeenCount = (message.notSeen.by === ((_b = message === null || message === void 0 ? void 0 : message.between) === null || _b === void 0 ? void 0 : _b.indexOf(currentUser.id))) ? (_c = message === null || message === void 0 ? void 0 : message.notSeen) === null || _c === void 0 ? void 0 : _c.count : 0;
                 const userId = (_d = message === null || message === void 0 ? void 0 : message.between) === null || _d === void 0 ? void 0 : _d.filter((elem) => elem !== currentUser.id)[0];
                 return await this.prisma.users.findUnique({

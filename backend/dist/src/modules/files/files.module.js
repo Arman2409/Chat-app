@@ -6,18 +6,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SocketsModule = void 0;
+exports.FilesModule = void 0;
 const common_1 = require("@nestjs/common");
-const sockets_gateway_1 = require("./sockets.gateway");
 const nestjs_prisma_1 = require("nestjs-prisma");
-const sockets_service_1 = require("./sockets.service");
-let SocketsModule = class SocketsModule {
+const files_resolver_1 = require("./files.resolver");
+const files_service_1 = require("./files.service");
+let FilesModule = class FilesModule {
 };
-SocketsModule = __decorate([
+FilesModule = __decorate([
     (0, common_1.Module)({
-        providers: [sockets_gateway_1.default, nestjs_prisma_1.PrismaService, sockets_service_1.SocketsService]
+        providers: [files_resolver_1.FilesResolver, nestjs_prisma_1.PrismaService, files_service_1.FilesService]
     })
-], SocketsModule);
-exports.SocketsModule = SocketsModule;
-;
-//# sourceMappingURL=sockets.module.js.map
+], FilesModule);
+exports.FilesModule = FilesModule;
+//# sourceMappingURL=files.module.js.map

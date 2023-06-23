@@ -10,6 +10,7 @@ export declare class UserType {
     sentRequests?: any[];
     notSeenCount?: number;
     lastVisited?: string;
+    blockedUsers?: any[];
     lastMessage?: string;
 }
 export declare class TokenType {
@@ -34,10 +35,21 @@ export declare class MessageType {
     messages: string[];
     lastDate: string;
     notSeen?: NotSeenType;
+    blocked?: boolean;
 }
 export declare class RecoverType {
     code?: number;
     successMessage?: string;
     id?: string;
     message?: string;
+}
+export declare class UploadType {
+    name: string;
+    originalName: string;
+}
+export declare class FileType {
+    name: string;
+    originalName?: string;
+    data: string;
+    contentType?: string;
 }

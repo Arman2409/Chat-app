@@ -13,7 +13,7 @@ const nestjs_request_context_1 = require("nestjs-request-context");
 const auth_resolver_1 = require("./auth.resolver");
 const auth_service_1 = require("./auth.service");
 const jwt_service_1 = require("../../middlewares/jwt/jwt.service");
-const cloudinary_service_1 = require("../../middlewares/cloudinary/cloudinary.service");
+const cloudinary_service_1 = require("../../../src/middlewares/cloudinary/cloudinary.service");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([

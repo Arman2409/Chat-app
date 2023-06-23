@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RecoverType = exports.MessageType = exports.NotSeenType = exports.NewsType = exports.SearchType = exports.TokenType = exports.UserType = void 0;
+exports.FileType = exports.UploadType = exports.RecoverType = exports.MessageType = exports.NotSeenType = exports.NewsType = exports.SearchType = exports.TokenType = exports.UserType = void 0;
 const graphql_1 = require("@nestjs/graphql");
 let UserType = class UserType {
 };
@@ -57,6 +57,10 @@ __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", String)
 ], UserType.prototype, "lastVisited", void 0);
+__decorate([
+    (0, graphql_1.Field)(type => [String]),
+    __metadata("design:type", Array)
+], UserType.prototype, "blockedUsers", void 0);
 __decorate([
     (0, graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
@@ -143,6 +147,10 @@ __decorate([
     (0, graphql_1.Field)(),
     __metadata("design:type", NotSeenType)
 ], MessageType.prototype, "notSeen", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", Boolean)
+], MessageType.prototype, "blocked", void 0);
 MessageType = __decorate([
     (0, graphql_1.ObjectType)()
 ], MessageType);
@@ -169,4 +177,40 @@ RecoverType = __decorate([
     (0, graphql_1.ObjectType)()
 ], RecoverType);
 exports.RecoverType = RecoverType;
+let UploadType = class UploadType {
+};
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], UploadType.prototype, "name", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], UploadType.prototype, "originalName", void 0);
+UploadType = __decorate([
+    (0, graphql_1.ObjectType)()
+], UploadType);
+exports.UploadType = UploadType;
+let FileType = class FileType {
+};
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], FileType.prototype, "name", void 0);
+__decorate([
+    (0, graphql_1.Field)({ nullable: true }),
+    __metadata("design:type", String)
+], FileType.prototype, "originalName", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], FileType.prototype, "data", void 0);
+__decorate([
+    (0, graphql_1.Field)(),
+    __metadata("design:type", String)
+], FileType.prototype, "contentType", void 0);
+FileType = __decorate([
+    (0, graphql_1.ObjectType)()
+], FileType);
+exports.FileType = FileType;
 //# sourceMappingURL=graphqlTypes.js.map

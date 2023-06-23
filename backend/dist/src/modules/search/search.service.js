@@ -18,6 +18,7 @@ let SearchService = class SearchService {
         this.prisma = prisma;
     }
     async searchInAll(ctx, name, page, perPage) {
+        var _a, _b, _c;
         let data;
         if (!name) {
             data = await this.prisma.users.findMany();
@@ -25,15 +26,34 @@ let SearchService = class SearchService {
         else {
             data = await this.prisma.users.findMany({
                 where: {
-                    name: {
-                        contains: name
-                    }
+                    OR: [
+                        {
+                            name: {
+                                contains: name
+                            }
+                        },
+                        {
+                            name: {
+                                contains: (0, functions_1.capitalizeFirstLetter)(name)
+                            }
+                        },
+                        {
+                            name: {
+                                contains: name.toUpperCase()
+                            }
+                        },
+                        {
+                            name: {
+                                contains: name.toLowerCase()
+                            }
+                        },
+                    ]
                 }
             });
         }
         const req = ctx.req;
-        if (req.session.user) {
-            if (req.session.user.friends) {
+        if ((_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user) {
+            if ((_c = (_b = req === null || req === void 0 ? void 0 : req.session) === null || _b === void 0 ? void 0 : _b.user) === null || _c === void 0 ? void 0 : _c.friends) {
                 data = data.filter((el) => {
                     if (req.session.user.friends.includes(el.id) || el.id == req.session.user.id) {
                         return false;
@@ -44,7 +64,7 @@ let SearchService = class SearchService {
         }
         ;
         const total = data.length;
-        const { startIndex, endIndex } = (0, functions_1.getStartEnd)(page, perPage, data.length);
+        const { startIndex, endIndex } = (0, functions_1.getStartEnd)(page, perPage);
         data = (0, functions_1.sortByActivesFirst)(data);
         data = data.slice(startIndex, endIndex);
         return { users: data, total };
@@ -68,16 +88,35 @@ let SearchService = class SearchService {
                             AND: [
                                 { id: { in: friendsArray } },
                                 {
-                                    name: {
-                                        contains: name
-                                    }
+                                    OR: [
+                                        {
+                                            name: {
+                                                contains: name
+                                            }
+                                        },
+                                        {
+                                            name: {
+                                                contains: (0, functions_1.capitalizeFirstLetter)(name)
+                                            }
+                                        },
+                                        {
+                                            name: {
+                                                contains: name.toUpperCase()
+                                            }
+                                        },
+                                        {
+                                            name: {
+                                                contains: name.toLowerCase()
+                                            }
+                                        },
+                                    ]
                                 }
                             ]
                         }
                     });
                 }
                 const total = friends.length;
-                const { startIndex, endIndex } = (0, functions_1.getStartEnd)(page, perPage, friends.length);
+                const { startIndex, endIndex } = (0, functions_1.getStartEnd)(page, perPage);
                 friends = (0, functions_1.sortByActivesFirst)(friends);
                 friends = friends.splice(startIndex, endIndex);
                 return { users: friends, total: total };

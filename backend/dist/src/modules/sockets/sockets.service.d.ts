@@ -5,4 +5,6 @@ export declare class SocketsService {
     constructor(prisma: PrismaService);
     updateUserStatus(id: string, status: boolean, lastVisited?: boolean): Promise<any>;
     updateMessages(allMessages: MessageType[]): Promise<void>;
+    getMessages(): Promise<any[]>;
+    addRemoveBlockedUser(byId: string, userId: string, type: string): Promise<any>;
 }

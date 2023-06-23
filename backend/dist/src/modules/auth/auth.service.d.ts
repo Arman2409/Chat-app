@@ -1,8 +1,8 @@
 import { PrismaService } from 'nestjs-prisma';
-import { UserType } from 'types/graphqlTypes';
-import { CloudinaryService } from 'src/middlewares/cloudinary/cloudinary.service';
-import { JwtService } from "../../middlewares/jwt/jwt.service";
 import { MailerService } from '@nestjs-modules/mailer';
+import { UserType } from '../../../types/graphqlTypes';
+import { JwtService } from "../../middlewares/jwt/jwt.service";
+import { CloudinaryService } from '../../middlewares/cloudinary/cloudinary.service';
 export declare class AuthService {
     private readonly prisma;
     private readonly jwt;
@@ -12,6 +12,7 @@ export declare class AuthService {
     addUser(user: Omit<UserType, "active">): Promise<any>;
     findUser(ctx: any, user: Omit<UserType, "active" | "name">): Promise<any>;
     setSession(ctx: any, token: string): Promise<any>;
+    signOut(ctx: any): string;
     recoverEmail(email: string): Promise<any>;
     confirmNewPassword(id: string, newPassword: string): Promise<{
         successMessage: string;

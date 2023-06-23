@@ -12,30 +12,41 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MessagesResolver = void 0;
+exports.FilesResolver = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const graphqlTypes_1 = require("../../../types/graphqlTypes");
-const messages_service_1 = require("./messages.service");
-let MessagesResolver = class MessagesResolver {
+const files_service_1 = require("./files.service");
+let FilesResolver = class FilesResolver {
     constructor(service) {
         this.service = service;
     }
-    async getLastMessages(ctx, page, perPage) {
-        return await this.service.getLastMessages(ctx, page, perPage);
+    ;
+    async uploadFile(base, name, type) {
+        return this.service.uploadFile(base, name, type);
+    }
+    async getFile(name) {
+        return this.service.getFile(name);
     }
 };
 __decorate([
-    (0, graphql_1.Query)(() => graphqlTypes_1.SearchType, { name: "GetLastMessages" }),
-    __param(0, (0, graphql_1.Context)()),
-    __param(1, (0, graphql_1.Args)("page")),
-    __param(2, (0, graphql_1.Args)("perPage")),
+    (0, graphql_1.Query)(() => graphqlTypes_1.UploadType, { name: "UploadFile" }),
+    __param(0, (0, graphql_1.Args)("base")),
+    __param(1, (0, graphql_1.Args)("name")),
+    __param(2, (0, graphql_1.Args)("type")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, Number]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
-], MessagesResolver.prototype, "getLastMessages", null);
-MessagesResolver = __decorate([
+], FilesResolver.prototype, "uploadFile", null);
+__decorate([
+    (0, graphql_1.Query)(() => graphqlTypes_1.FileType, { name: "GetFile" }),
+    __param(0, (0, graphql_1.Args)("name")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FilesResolver.prototype, "getFile", null);
+FilesResolver = __decorate([
     (0, graphql_1.Resolver)(),
-    __metadata("design:paramtypes", [messages_service_1.MessagesService])
-], MessagesResolver);
-exports.MessagesResolver = MessagesResolver;
-//# sourceMappingURL=messages.resolver.js.map
+    __metadata("design:paramtypes", [files_service_1.FilesService])
+], FilesResolver);
+exports.FilesResolver = FilesResolver;
+//# sourceMappingURL=files.resolver.js.map

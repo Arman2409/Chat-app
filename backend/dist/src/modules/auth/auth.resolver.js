@@ -17,29 +17,28 @@ const graphql_1 = require("@nestjs/graphql");
 const auth_service_1 = require("./auth.service");
 const graphqlTypes_1 = require("../../../types/graphqlTypes");
 let AuthResolver = class AuthResolver {
-    constructor(auth) {
-        this.auth = auth;
+    constructor(service) {
+        this.service = service;
     }
     ;
     async signUp(name, email, image, password) {
-        return await this.auth.addUser({ name, email, password, image });
+        return await this.service.addUser({ name, email, password, image });
     }
     async signIn(ctx, email, password) {
-        return await this.auth.findUser(ctx, { email, password });
+        return await this.service.findUser(ctx, { email, password });
     }
     signOut(ctx) {
-        const req = ctx.req;
-        req.session.user = null;
-        return "Signed Out";
+        return this.service.signOut(ctx);
+        ;
     }
     setSession(ctx, token) {
-        return this.auth.setSession(ctx, token);
+        return this.service.setSession(ctx, token);
     }
     recoverPassword(email) {
-        return this.auth.recoverEmail(email);
+        return this.service.recoverEmail(email);
     }
     changePassword(id, password) {
-        return this.auth.confirmNewPassword(id, password);
+        return this.service.confirmNewPassword(id, password);
     }
 };
 __decorate([

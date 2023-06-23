@@ -23,6 +23,9 @@ let FriendsResolver = class FriendsResolver {
     async addFriend(ctx, id) {
         return await this.service.addFriend(ctx, id);
     }
+    async removeFriend(ctx, id) {
+        return await this.service.removeFriend(ctx, id);
+    }
     async getRequests(ctx, arr) {
         return await this.service.findRequestUsers(ctx);
     }
@@ -38,6 +41,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], FriendsResolver.prototype, "addFriend", null);
+__decorate([
+    (0, graphql_1.Query)(() => graphqlTypes_1.TokenType, { name: 'RemoveFriend' }),
+    __param(0, (0, graphql_1.Context)()),
+    __param(1, (0, graphql_1.Args)('friendId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], FriendsResolver.prototype, "removeFriend", null);
 __decorate([
     (0, graphql_1.Query)(() => [graphqlTypes_1.UserType], { name: 'GetFriendRequestsUsers' }),
     __param(0, (0, graphql_1.Context)()),

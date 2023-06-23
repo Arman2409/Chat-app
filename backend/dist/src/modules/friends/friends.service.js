@@ -23,6 +23,9 @@ let FriendsService = class FriendsService {
     async addFriend(ctx, id) {
         const req = ctx.req;
         const currentUser = req.session.user;
+        if (!currentUser) {
+            throw new graphql_1.GraphQLError("Not Signed In");
+        }
         const requestingUser = await this.prisma.users.findUnique({
             where: {
                 id: id
@@ -66,6 +69,48 @@ let FriendsService = class FriendsService {
             throw { message: "Not Sent, Error Occured" };
         }
     }
+    async removeFriend(ctx, id) {
+        const req = ctx.req;
+        const currentUser = req.session.user;
+        if (!currentUser) {
+            throw new graphql_1.GraphQLError("Not Signed In");
+        }
+        const index = currentUser.friends.indexOf(id);
+        currentUser.friends.splice(index, 1);
+        const updating = await this.prisma.users.update({
+            where: {
+                id: currentUser.id
+            },
+            data: {
+                friends: currentUser.friends
+            }
+        });
+        if (!updating) {
+            throw new graphql_1.GraphQLError("Error Occured");
+        }
+        req.session.user = currentUser;
+        const friend = await this.prisma.users.findUnique({
+            where: {
+                id
+            }
+        });
+        const friendIndex = friend.friends.indexOf(currentUser.id);
+        friend.friends.splice(friendIndex, 1);
+        const updatingFriend = await this.prisma.users.update({
+            where: {
+                id
+            },
+            data: {
+                friends: friend.friends
+            }
+        });
+        if (updatingFriend) {
+            return { token: this.jwt.sign(currentUser) };
+        }
+        else {
+            return { message: "Not Removed, Error Occured" };
+        }
+    }
     async findRequestUsers(ctx) {
         var _a, _b;
         const req = ctx.req;
@@ -80,6 +125,9 @@ let FriendsService = class FriendsService {
         var _a;
         const req = ctx.req;
         const currentUser = req.session.user;
+        if (!currentUser) {
+            throw new graphql_1.GraphQLError("Not Signed In");
+        }
         currentUser.friends.push(id);
         const index = currentUser.friendRequests.indexOf(id);
         currentUser.friendRequests.splice(index, 1);

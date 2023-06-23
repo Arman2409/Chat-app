@@ -14,10 +14,10 @@ const common_1 = require("@nestjs/common");
 const nestjs_prisma_1 = require("nestjs-prisma");
 const bcrypt = require("bcrypt");
 const graphql_1 = require("graphql");
-const cloudinary_service_1 = require("../../middlewares/cloudinary/cloudinary.service");
-const jwt_service_1 = require("../../middlewares/jwt/jwt.service");
 const mailer_1 = require("@nestjs-modules/mailer");
 const lodash_1 = require("lodash");
+const jwt_service_1 = require("../../middlewares/jwt/jwt.service");
+const cloudinary_service_1 = require("../../middlewares/cloudinary/cloudinary.service");
 let AuthService = class AuthService {
     constructor(prisma, jwt, mailerService, cloudinary) {
         this.prisma = prisma;
@@ -116,6 +116,11 @@ let AuthService = class AuthService {
             return { message: e.message };
         });
     }
+    signOut(ctx) {
+        const req = ctx.req;
+        req.session.user = null;
+        return "Signed Out";
+    }
     async recoverEmail(email) {
         const recoverPassword = (0, lodash_1.random)(100000, 999999);
         const user = await this.prisma.users.findUnique({
@@ -155,7 +160,7 @@ let AuthService = class AuthService {
                 data: {
                     password: hashedPassword
                 }
-            }).then((res) => {
+            }).then(() => {
                 return { successMessage: "Password changed succesfully" };
             }).catch(() => {
                 return { message: "Failed" };

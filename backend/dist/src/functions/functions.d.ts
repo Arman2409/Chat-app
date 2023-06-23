@@ -1,6 +1,6 @@
-export declare const getStartEnd: (page: number, perPage: number, length: number) => {
+export declare const getStartEnd: (page: number, perPage: number) => {
     startIndex: number;
     endIndex: number;
 };
-export declare function capitalizeFirstLetter(str: string): string;
-export declare function sortByActivesFirst(data: any): any[];
+export declare const capitalizeFirstLetter: (str: string) => string;
+export declare const sortByActivesFirst: (data: any[]) => any[];

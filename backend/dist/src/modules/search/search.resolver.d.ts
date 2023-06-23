@@ -1,4 +1,4 @@
-import { SearchType, UserType } from "types/graphqlTypes";
+import { SearchType, UserType } from "../../../types/graphqlTypes";
 import { SearchService } from "./search.service";
 export declare class SearchResolver {
     private readonly search;

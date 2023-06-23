@@ -2,7 +2,7 @@ import { PrismaService } from 'nestjs-prisma';
 export declare class MessagesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    lastMessages(ctx: any, page: number, perPage: number): Promise<{
+    getLastMessages(ctx: any, page: number, perPage: number): Promise<{
         total: number;
         users: Promise<{
             lastMessage: any;
@@ -18,6 +18,7 @@ export declare class MessagesService {
             sentRequests: string[];
             lastVisited: string;
             lastMesage: string;
+            blockedUsers: string[];
         }>[];
     }>;
 }

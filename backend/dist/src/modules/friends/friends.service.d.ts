@@ -5,6 +5,7 @@ export declare class FriendsService {
     private readonly jwt;
     constructor(prisma: PrismaService, jwt: JwtService);
     addFriend(ctx: any, id: any): Promise<any>;
+    removeFriend(ctx: any, id: any): Promise<any>;
     findRequestUsers(ctx: any): Promise<any>;
     confirmFriend(ctx: any, id: any): Promise<{
         token: any;

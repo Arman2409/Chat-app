@@ -12,10 +12,9 @@ const config_1 = require("@nestjs/config");
 const graphql_1 = require("@nestjs/graphql");
 const apollo_1 = require("@nestjs/apollo");
 const nestjs_prisma_1 = require("nestjs-prisma");
-const path_1 = require("path");
 const mailer_1 = require("@nestjs-modules/mailer");
-const config_2 = require("@nestjs/config");
 const serve_static_1 = require("@nestjs/serve-static");
+const path_1 = require("path");
 const auth_module_1 = require("./modules/auth/auth.module");
 const jwt_service_1 = require("./middlewares/jwt/jwt.service");
 const cloudinary_service_1 = require("./middlewares/cloudinary/cloudinary.service");
@@ -24,6 +23,7 @@ const friends_module_1 = require("./modules/friends/friends.module");
 const messages_module_1 = require("./modules/messages/messages.module");
 const sockets_module_1 = require("./modules/sockets/sockets.module");
 const welcome_module_1 = require("./modules/welcome/welcome.module");
+const files_module_1 = require("./modules/files/files.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -54,14 +54,15 @@ AppModule = __decorate([
                         from: 'talkSpace'
                     },
                 }),
-                inject: [config_2.ConfigService]
+                inject: [config_1.ConfigService]
             }),
             auth_module_1.AuthModule,
             search_module_1.SearchModule,
             friends_module_1.FriendsModule,
             sockets_module_1.SocketsModule,
             messages_module_1.MessagesModule,
-            welcome_module_1.WelcomeModule
+            welcome_module_1.WelcomeModule,
+            files_module_1.FilesModule
         ],
         providers: [nestjs_prisma_1.PrismaService, jwt_service_1.JwtService, cloudinary_service_1.CloudinaryService],
     })
