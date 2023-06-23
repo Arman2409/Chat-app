@@ -19,6 +19,7 @@ import { getSlicedWithDots, getBase64 } from "../../../../../functions/functions
 import { setSocket } from "../../../../../store/socketSlice";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 import { NEXT_PUBLIC_SOCKETS_URL } from "../../../../../configs/configs";
+import { setNotSeenCount } from "../../../../../store/messagesSlice";
 
 const { useForm } = Form;
 

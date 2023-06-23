@@ -33,7 +33,6 @@ const AppHeader: React.FunctionComponent = () => {
     const [ownerState, setOwnerState] = useState<boolean>(false);
     const [user, setUser] = useState<UserType>({} as UserType);
     const [inPage, setInPage] = useState<boolean>(true);
-    const [notSeenCount, setNotSeenCount] = useState<number>(0);
     const [displayMessages, setDisplayMessages] = useState<Boolean>(false);
     const [watchingRequests, setWatchingRequests] = useState<boolean>(false);
 
@@ -41,11 +40,9 @@ const AppHeader: React.FunctionComponent = () => {
     const userContRef = useRef<HTMLDivElement>(null);
 
     const router: any = useRouter();
-    const socket = useSelector((state: IRootState) => {
-        return state.socket.socket;
-    });
     const storeUser: UserType = useSelector((state:IRootState) => state.user.user);
     const userWindow: boolean = useSelector((state: IRootState) => state.window.userWindow);
+    const notSeenCount: boolean = useSelector((state:IRootState) => state.messages.notSeenCount);
     const dispatch: Dispatch = useDispatch();
 
     const { setMessageOptions } = useOpenAlert();
@@ -108,16 +105,6 @@ const AppHeader: React.FunctionComponent = () => {
     useEffect(() => {
         setUser(storeUser as UserType);
     }, [storeUser]);
-
-    useEffect(() => {
-        if(router.pathname === "/") {
-            if (socket) {
-                    socket.emit("getNotSeenCount",{id: storeUser?.id}, (resp:any) => {
-                    setNotSeenCount(resp?.notSeenCount);
-                })
-            }
-        }
-    }, [user, storeUser, router.pathname])
 
     useEffect(() => {
         const token: string | null = localStorage.getItem("token");
