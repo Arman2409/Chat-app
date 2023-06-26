@@ -22,7 +22,7 @@
   }
 
   .chat_textarea {
-    width: calc(100% - 160px);
+    width: calc(100% - 190px);
     height: 100%;
     resize: none;
     background-color: rgba($color6, 0.5);
@@ -76,6 +76,13 @@
     font-size: 25px;
     z-index: 2;
     cursor: pointer;
+  }
+
+  .record_icon {
+    cursor: pointer;
+    font-size: 25px;
+    z-index: 2;
+    color: $color7;
   }
 
   .send_button {

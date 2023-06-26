@@ -4,7 +4,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { FileType } from '../../../types/graphqlTypes';
 
 @Injectable()
-export class FilesService {
+export class UploadService {
     constructor(private readonly prisma:PrismaService){}
 
     async uploadFile(base:string, name:string, type:string):Promise<any> {
@@ -38,5 +38,23 @@ export class FilesService {
           } as any
        });
        return resp;
+    }
+
+    async uploadAudio(base:string):Promise<any> {
+        const resp = await this.prisma.audioFiles.create({
+           data: {
+             data: base
+           }
+        });
+        return {id: resp.id}      
+    }
+
+    async getAudio(id:string):Promise<any> {
+        const resp = await this.prisma.audioFiles.findFirst({
+            where: {
+                id
+            }
+        });
+        return resp;      
     }
 }

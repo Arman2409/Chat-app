@@ -1,0 +1,43 @@
+@import "../../../../variables.scss";
+
+.uploads_cont {
+    width: auto;
+    position: absolute;
+    border: 1px solid $color2;
+
+    .file_cont {
+      height: 25px;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      
+      .file_data_cont {
+        cursor: pointer; 
+        align-items: center;
+        justify-content: center;
+        color: $color4;
+        display: flex;
+        padding: 5px;
+  
+        .file_icon {
+            font-size: 15px;
+            color: $color3;
+          }
+      }
+    }
+
+    .audio_cont {
+      height: 25px;
+        .audio_player {
+           height: 20px;
+        }
+    }
+
+    .delete_icon {
+        color: $color1;
+        font-size: 18px;
+        margin: 2px;
+        margin-left: auto;
+        cursor: pointer;
+    }
+}

@@ -50,11 +50,9 @@ type UploadType {
   originalName: String
 }
 
-type FileType {
-  name: String
-  originalName: String
+type UploadFileType {
+  id: String
   data: String!
-  contentType: String!
 }
 
 type Query {
@@ -74,5 +72,7 @@ type Query {
   GetLastMessages(page: Float!, perPage: Float!): SearchType!
   GetWelcomeNews: [NewsType!]!
   UploadFile(base: String!, name: String!, type: String!): UploadType!
-  GetFile(name: String!): FileType!
+  GetFile(name: String!): UploadFileType!
+  UploadAudio(base: String!): UploadFileType!
+  GetAudio(audioId: String!): UploadFileType!
 }

@@ -1,0 +1,30 @@
+@import "../../../variables.scss";
+
+.audio_cont {
+    width: 220px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $color2;
+    background-color: $color3;
+    cursor: pointer;
+    position: relative;
+    padding: 2px;
+
+    .audio_message_text {
+        margin: 0;
+        color: $color4;
+    }
+
+    .audio_message_icon {
+        color: $color7;
+    }
+
+    .audio_player {
+       height: 20px;
+       width: 100%;
+       background-color: $color3 !important;
+      
+   }
+}

@@ -50,3 +50,19 @@ export interface MessagesInputProps {
     isBlocked: boolean,
     interlocutor: UserType
 }
+
+export interface UploadsProps {
+    file: any,
+    audio: string,
+    setFile: Function,
+    setAudio: Function
+}
+
+export interface VoiceRecorderProps {
+    setAudioData: Function,
+    setIsRecordMode: Function
+}
+
+export interface AudioMessageProps {
+    audioId: string
+}

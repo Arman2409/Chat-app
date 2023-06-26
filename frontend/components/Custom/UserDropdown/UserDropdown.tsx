@@ -20,7 +20,7 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
     const socket = useSelector((state: IRootState) => {
         return state.socket.socket;
     });
-    const storeUser = useSelector<IRootState>((state) => state.user.user);
+    const storeUser = useSelector((state: IRootState) => state.user.user);
 
     const { setMessageOptions } = useOpenAlert();
     
@@ -141,6 +141,7 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
         }
     }, [openElement, user, openState]);
 
+    // closing the dropdown when clicked outside of it 
     useOnClickOutside(dropdownRef, (e) => {
         if (openElement === user.email) {
             const dropdownLayout = document.getElementsByClassName(`list_item_actions_dropdown_${index}`);

@@ -13,7 +13,7 @@ import type {SocketWIthHandshake} from "../../../types/types";
 import type { MessageType } from "../../../types/graphqlTypes";
 import {SocketsService} from "./sockets.service";
 
-@WebSocketGateway({ cors: "*" },)
+@WebSocketGateway({ cors: "*" })
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
     @WebSocketServer() server: Server;
 
@@ -64,52 +64,21 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         }
     };
 
-    // @SubscribeMessage("signedIn")
-    // async handleConnect(
-    //     @MessageBody("id") id: string,
-    //     @ConnectedSocket() client: SocketWIthHandshake) {            
-    //     this.activeUsers.push(id);
-    //     const update = this.service.updateUserStatus(id, true, true)
-    //     client.join(id?.toString());
-    //     client.handshake.id = id;
-    //     client.handshake.active = true;
-    //     if (update) {
-    //         return "Signed In";
-    //     } else {
-    //         return "Not Connected";
-    //     }
-    // };
-
-    // @SubscribeMessage("getNotSeenCount")
-    // async getNotSeenCount(
-    //     @MessageBody("id") id: string,
-    // ){
-    //     const notSeenCount = this.allMessages.filter(message => {
-    //         const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
-    //         if(notSeenByUser) {
-    //           return  message?.notSeen?.count > 0;
-    //         } else {
-    //           return false;
-    //         }
-    //       })
-    //     return {notSeenCount: notSeenCount?.length};
-    // }
-
     @SubscribeMessage("message")
     async handleMessage(@MessageBody("from") from: string,
         @MessageBody("to") to: string,
         @MessageBody("message") message: string,
         @MessageBody("file") file: string,
+        @MessageBody("audio") audio: string,
         @MessageBody("orgFile") originalFile: string,
     ) {
-        console.log({originalFile});
-        
         if (file) {
-            message = `...(file)...${file}&&${originalFile}&&${message}`;
-            console.log(message);
-            
+            message = `...(file)...${file}&&${originalFile}&&${message}`;    
         }
-        let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
+        if (audio) {
+            message = `...(audio)...${audio}&&${message}`;    
+        }
+        let alreadyMessaged = this.allMessages.filter(message => message.between?.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
         let messageData:MessageType = {} as MessageType;
         let previousMessaging:MessageType;
         
@@ -154,21 +123,25 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
     @SubscribeMessage("newInterlocutor")
     async handleNewInterlocuter(@MessageBody("id") currentId: string, @MessageBody("userId") userId: string) {
         const messaged = this.allMessages.filter(messages => messages.between.includes(currentId) && messages.between.includes(userId));
-        
         if (messaged?.length){
             const previousMessaging = messaged[0];
+            let updated = false;
             if (previousMessaging.notSeen?.by === previousMessaging?.between?.indexOf(currentId)) {
                 remove(this.allMessages,(messages) => {
                     return messages.between?.includes(currentId) && messages.between?.includes(userId);
                 });
                 
+                updated = previousMessaging.notSeen.count !== 0;
                 previousMessaging.notSeen.by = 0;
                 previousMessaging.notSeen.count = 0;
                 this.allMessages.push(previousMessaging); 
                 await this.service.updateMessages(this.allMessages);
             }
 
-            return previousMessaging;
+            return {
+                 ...previousMessaging,
+                  updated
+                };
         } else {
             return "Not messaged";
         }

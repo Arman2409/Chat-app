@@ -1,0 +1,17 @@
+@import "../../../../../styles/variables.scss";
+
+.chat_control {
+    position: relative;
+    width: calc(100% - 170px);
+    background-color: $color6;
+    padding: 0;
+
+      .recorder_close_cont_icon {
+         font-size: 10px;
+         position: absolute;
+         right: 0px;
+         z-index: 3;
+         color: $color5;
+         cursor: pointer;
+      }
+}

@@ -27,8 +27,8 @@ const LastMessages: React.FC = () => {
    });
    const storeUser = useSelector((state: IRootState) => state.user.user);
 
-   const getInterlocutorData = useCallback((alreadyAdded: any) => {
-      if (alreadyAdded || interlocutor.name) {
+   const getInterlocutorData = useCallback((alreadyAdded: any, add:boolean) => {
+      if (!add && alreadyAdded || interlocutor.name) {
          return [];
       } else {
          return [{
@@ -49,15 +49,15 @@ const LastMessages: React.FC = () => {
 
          setLastMessages(curr => {
             if (!curr.length) {
-               return [...users || []]
+               return [...users || []];
             }
-            return [...getInterlocutorData(fetchedInterlocutor), ...curr, ...users || []]
+            return [...getInterlocutorData(fetchedInterlocutor, false), ...curr, ...users || []]
          });
          setTotal(lastMessagesData?.GetLastMessages?.total);
          isRequestingRef.current = false;
          setPageState(pageRef.current)
       })();
-   }, [pageRef]);
+   }, [pageRef, setLastMessages]);
 
    useEffect(() => {
       if (isRequestingRef.current) return;
@@ -69,53 +69,69 @@ const LastMessages: React.FC = () => {
    }, [loadingType]);
 
    useEffect(() => {
-      getLastMessages();
-   }, []);
-
-   useEffect(() => {
       setLastMessages(messages => {
-         let newMessages = messages.map((elem: any) => {
-            if (messagesData.between?.includes(elem.id)) {
+        return messages.map((elem: any) => {
+            if (messagesData.between.includes(elem?.id)) {
                const { id }: any = { ...storeUser || {} }
                const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
                let lastMessage:any = last(messagesData?.messages);
                if(lastMessage.startsWith("...(file)...")){
                   getFilesOriginalName(lastMessage);
                }
-               return {
+               elem = {
                   ...elem,
                   lastMessage,
-                  notSeenCount: hasNotSeen ? messagesData.notSeen.count : 0,
-               };
+                  notSeenCount: hasNotSeen ? messagesData.notSeen.count : 0
+               }
             }
-            return elem;
-         });
-         newMessages = sortBy(newMessages, ({id}:any) => id === interlocutor.id ? 0 : 1);
-         return newMessages;
-      });
-   }, [messagesData, setLastMessages]);
+             return elem;
+         })}
+         );
+   }, [messagesData, setLastMessages, interlocutorMessages, storeUser]);
 
    useEffect(() => {
-      setLastMessages(currents => currents.map((elem: any) => {
-         if (interlocutorMessages.between?.includes(elem.id)) {
-            if (interlocutorMessages.notSeen.by === interlocutorMessages.between.indexOf(storeUser.id)) {
-               if (interlocutorMessages.notSeen.count !== elem.notSeenCount) {
-                  return {
-                     ...elem,
-                     notSeenCount: interlocutorMessages.notSeen.count
-                  }
-               } else {
-                  return elem;
-               }
-            } else {
-               return elem;
-            }
-         } else {
-            return elem;
-         };
-      }))
+     let hasFileMessage;
+     let hasAudioMessage;
+     lastMessages.map(elem => {
+        if(elem?.lastMessage?.startsWith("...(file)...")) {
+           hasFileMessage = true;
+        }
+        if(elem?.lastMessage?.startsWith("...(audio)...")) {
+          hasAudioMessage = true;
+        }
+     });
+     if (hasFileMessage || hasAudioMessage) {
+      setLastMessages(currents => currents.map(curr => {
+         let lastMessage = curr?.lastMessage || "";
+         if(lastMessage?.startsWith("...(file)...")) {
+            lastMessage = getFilesOriginalName(lastMessage);
+             return {
+               ...curr,
+               lastMessage
+             }
+         }
+         if(lastMessage?.startsWith("...(audio)...")) {
+            lastMessage = "(Voice Message)";
+            return {
+               ...curr,
+               lastMessage,
+             }
+         }
+         return curr;
+     }));
+     };
+   }, [lastMessages, setLastMessages]);
 
-   }, [interlocutorMessages, setLastMessages, storeUser]);
+   useEffect(() => {
+      if(interlocutorMessages.updated) {
+         setLastMessages([]);
+         getLastMessages();
+      }
+   }, [interlocutorMessages]);
+
+   useEffect(() => {
+      getLastMessages();
+   }, []);
 
    return (
       <div

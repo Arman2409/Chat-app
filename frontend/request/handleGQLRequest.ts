@@ -136,6 +136,22 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         fields = ["data", "name", "originalName", "contentType"];
     }
 
+    if(operation == "UploadAudio") {
+        const {base} = args;
+        variables = {
+            base: {type: "String!", value: base},
+        };
+        fields = ["id"];
+    }
+
+    if(operation === "GetAudio") {
+        const {audioId} = args;
+        variables = {
+            audioId: {type: "String!", value: audioId},
+        };
+        fields = ["data"];
+    }
+
     return await axios.post("/graphql", query({
             operation,
             variables: variables,

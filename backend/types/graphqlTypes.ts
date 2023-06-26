@@ -139,3 +139,13 @@ export class FileType {
     @Field()
     contentType?: string
 }
+
+@ObjectType()
+export class UploadFileType {
+    @Field({nullable: true})
+    id: string
+
+    @Field()
+    data?: string
+
+}

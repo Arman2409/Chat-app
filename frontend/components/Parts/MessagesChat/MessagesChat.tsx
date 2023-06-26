@@ -10,13 +10,14 @@ import { useMediaQuery } from "react-responsive";
 import styles from "../../../styles/Parts/MessagesChat/MessagesChat.module.scss";
 import { IRootState } from "../../../store/store";
 import { MessagesDataType, UserType } from "../../../types/types";
-import { getFilesOriginalName, getSendersId, getSlicedWithDots } from "../../../functions/functions";
+import { downloadBase64File, getFilesOriginalName, getSendersId, getSlicedWithDots } from "../../../functions/functions";
 import { setInterlocutorMessages, setMessagesData as setStoreMesaagesData } from "../../../store/messagesSlice";
 import MessagesInput from "./MessagesInput/MessagesInput";
 import UserDropdown from "../../Custom/UserDropdown/UserDropdown";
 import handleGQLRequest from "../../../request/handleGQLRequest";
+import AudioMessage from "./AudioMessage/AudioMessage";
 
-const getMessagesWithFiles = (messages: any[]) => {
+const getMessagesWithFilesAndAudio = (messages: any[]) => {
     const newData = messages?.map((msg: string) => {
         if (msg?.startsWith("...(file)...")) {
             const fileName = msg.slice(12, msg.indexOf("&&"));
@@ -28,6 +29,19 @@ const getMessagesWithFiles = (messages: any[]) => {
                 originalFileName,
                 message
             };
+        }
+        if (msg?.startsWith("...(audio)...")) {
+            const audioId = msg.slice(13, msg.indexOf("&&"));
+            const message = msg.slice(msg.indexOf("&&") + 2);
+            console.log({
+                message,
+                audioId
+            });
+            
+            return {
+                message,
+                audioId
+            }
         }
         return msg;
     });
@@ -52,7 +66,7 @@ const MessagesChat: React.FC = () => {
     const storeUser: UserType = useSelector((state: IRootState) => {
         return state.user.user;
     });
-    const [user, setUser] = useState<UserType>(storeUser);
+    const [user, setUser] = useState<UserType>(storeUser as any);
     const router: any = useRouter();
     const isBlocked: boolean = useMemo(() => Boolean(messageData.blocked || user.blockedUsers?.includes(interlocutor.id)), [messageData, user.blockedUsers]);
     const isRequested: boolean = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user.sentRequests, interlocutor]);
@@ -60,12 +74,7 @@ const MessagesChat: React.FC = () => {
 
     const downloadFile = useCallback(async (filename: string) => {
         let file = await handleGQLRequest("GetFile", { name: filename });
-        file = file.GetFile;
-        let link = document.createElement('a');
-        link.setAttribute('href', file.data);
-        link.setAttribute('download', file.originalName);
-        let event = new MouseEvent('click');
-        link.dispatchEvent(event);
+        downloadBase64File(file?.originalName, file?.GetFile?.data);
     }, [handleGQLRequest]);
 
     useEffect(() => {
@@ -84,7 +93,7 @@ const MessagesChat: React.FC = () => {
         setMessageData({ between: [], messages: [], sequence: [] });
         if (socket) {
             socket.emit("getMessages", { interlocuters: [user.id, interlocutor.id] }, (res: any) => {
-                const messages = getMessagesWithFiles(res.messages)
+                const messages = getMessagesWithFilesAndAudio(res.messages)
                 setMessageData({
                     ...res,
                     messages
@@ -93,7 +102,7 @@ const MessagesChat: React.FC = () => {
             socket.on("message", async (data: MessagesDataType) => {
                 const senderId = getSendersId(data?.between, user.id);
                 if (senderId == interlocutor.id) {
-                    const messages = getMessagesWithFiles(data.messages);
+                    const messages = getMessagesWithFilesAndAudio(data.messages);
                     setMessageData({
                         ...data,
                         messages
@@ -139,6 +148,7 @@ const MessagesChat: React.FC = () => {
                                 type={isFriend ? "friend" : "all"}
                                 isRequested={isRequested}
                                 isBlocked={isBlocked}
+                                openElement={interlocutor.email}
                                 user={interlocutor} />
                         </div>
                         {/* interlocutor data  */}
@@ -175,7 +185,7 @@ const MessagesChat: React.FC = () => {
                                         <div
                                             className={styles.message_cont_data}
                                         >
-                                            {msg?.fileName ? msg.message ? <div className={styles.message_cont_data_text_cont}>
+                                            {typeof msg === "object" ? msg.message ? <div className={styles.message_cont_data_text_cont}>
                                                 {msg?.message}
                                             </div> : "" : msg ? <div className={styles.message_cont_data_text_cont}>
                                                 {msg}
@@ -183,10 +193,10 @@ const MessagesChat: React.FC = () => {
                                             {msg?.fileName &&
                                                 <div className={styles.message_cont_data_file_cont}
                                                     onClick={() => downloadFile(msg.fileName)}>
-
-                                                    <MdOutlineFileDownload className={styles.message_cont_file_cont_icon} />
+                                                    <MdOutlineFileDownload className={styles.message_cont_data_file_cont_icon} />
                                                     {msg?.originalFileName || ""}
                                                 </div>}
+                                            {msg?.audioId && <AudioMessage audioId={msg.audioId} />  }
                                         </div>
                                     </div>
                                 )
@@ -195,7 +205,7 @@ const MessagesChat: React.FC = () => {
                     <MessagesInput
                         setMessageData={(data: any) => setMessageData({
                             ...data,
-                            messages: getMessagesWithFiles(data.messages)
+                            messages: getMessagesWithFilesAndAudio(data.messages)
                         })}
                         isBlocked={isBlocked}
                         interlocutor={interlocutor} />
