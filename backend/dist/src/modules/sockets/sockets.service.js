@@ -71,6 +71,16 @@ let SocketsService = class SocketsService {
             }
         });
     }
+    getNotSeenCount(messages, id) {
+        const notSeenCount = messages.filter(message => {
+            var _a, _b, _c;
+            const notSeenByUser = ((_a = message === null || message === void 0 ? void 0 : message.notSeen) === null || _a === void 0 ? void 0 : _a.by) === ((_b = message.between) === null || _b === void 0 ? void 0 : _b.indexOf(id));
+            if (notSeenByUser) {
+                return ((_c = message === null || message === void 0 ? void 0 : message.notSeen) === null || _c === void 0 ? void 0 : _c.count) > 0;
+            }
+        });
+        return notSeenCount.length;
+    }
 };
 SocketsService = __decorate([
     (0, common_1.Injectable)(),

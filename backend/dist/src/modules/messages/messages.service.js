@@ -37,9 +37,14 @@ let MessagesService = class MessagesService {
         const resp = { total: length, users: messages.map(async (message) => {
                 var _a, _b, _c, _d;
                 let lastMessage = message === null || message === void 0 ? void 0 : message.messages[((_a = message === null || message === void 0 ? void 0 : message.messages) === null || _a === void 0 ? void 0 : _a.length) - 1];
-                if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.startsWith("...(file)...")) {
-                    lastMessage = lastMessage.slice(lastMessage.indexOf("&&") + 2);
-                    lastMessage = lastMessage.slice(0, lastMessage.indexOf("&&"));
+                if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.audio) {
+                    lastMessage = "(Voice Message)";
+                }
+                else if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.file) {
+                    lastMessage = lastMessage.file.originalName;
+                }
+                else {
+                    lastMessage = lastMessage.text;
                 }
                 const notSeenCount = (message.notSeen.by === ((_b = message === null || message === void 0 ? void 0 : message.between) === null || _b === void 0 ? void 0 : _b.indexOf(currentUser.id))) ? (_c = message === null || message === void 0 ? void 0 : message.notSeen) === null || _c === void 0 ? void 0 : _c.count : 0;
                 const userId = (_d = message === null || message === void 0 ? void 0 : message.between) === null || _d === void 0 ? void 0 : _d.filter((elem) => elem !== currentUser.id)[0];

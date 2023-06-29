@@ -23,7 +23,7 @@ const friends_module_1 = require("./modules/friends/friends.module");
 const messages_module_1 = require("./modules/messages/messages.module");
 const sockets_module_1 = require("./modules/sockets/sockets.module");
 const welcome_module_1 = require("./modules/welcome/welcome.module");
-const files_module_1 = require("./modules/files/files.module");
+const upload_module_1 = require("./modules/upload/upload.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -62,7 +62,7 @@ AppModule = __decorate([
             sockets_module_1.SocketsModule,
             messages_module_1.MessagesModule,
             welcome_module_1.WelcomeModule,
-            files_module_1.FilesModule
+            upload_module_1.UploadModule
         ],
         providers: [nestjs_prisma_1.PrismaService, jwt_service_1.JwtService, cloudinary_service_1.CloudinaryService],
     })

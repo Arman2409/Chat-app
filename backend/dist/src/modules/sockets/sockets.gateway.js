@@ -43,33 +43,31 @@ let WebSocketsGateway = class WebSocketsGateway {
         client.join(id === null || id === void 0 ? void 0 : id.toString());
         client.handshake.id = id;
         client.handshake.active = true;
-        const notSeenCount = this.allMessages.filter(message => {
-            var _a, _b, _c;
-            const notSeenByUser = ((_a = message === null || message === void 0 ? void 0 : message.notSeen) === null || _a === void 0 ? void 0 : _a.by) === ((_b = message.between) === null || _b === void 0 ? void 0 : _b.indexOf(id));
-            if (notSeenByUser) {
-                return ((_c = message === null || message === void 0 ? void 0 : message.notSeen) === null || _c === void 0 ? void 0 : _c.count) > 0;
-            }
-        });
+        const notSeenCount = this.service.getNotSeenCount(this.allMessages, id);
         if (update) {
-            return { notSeenCount: notSeenCount.length };
+            return { notSeenCount: notSeenCount };
         }
         else {
             return "Not Connected";
         }
     }
     ;
-    async handleMessage(from, to, message, file, originalFile) {
+    async handleMessage(from, to, messageText, file, audio, originalFile) {
         var _a, _b, _c;
-        console.log({ originalFile });
-        if (file) {
-            message = `...(file)...${file}&&${originalFile}&&${message}`;
-            console.log(message);
-        }
-        let alreadyMessaged = this.allMessages.filter(message => message.between.every((elem) => [from, to].indexOf(elem) > -1))[0];
         let messageData = {};
-        let previousMessaging;
-        if (alreadyMessaged) {
-            previousMessaging = this.allMessages.filter(e => { var _a, _b; return (((_a = e.between) === null || _a === void 0 ? void 0 : _a.includes(from)) && ((_b = e.between) === null || _b === void 0 ? void 0 : _b.includes(to))); })[0] || {};
+        console.log(this.allMessages);
+        let previousMessaging = this.allMessages.filter(e => { var _a, _b; return (((_a = e.between) === null || _a === void 0 ? void 0 : _a.includes(from)) && ((_b = e.between) === null || _b === void 0 ? void 0 : _b.includes(to))); })[0] || null;
+        const message = {
+            text: messageText,
+            file: file && {
+                originalName: originalFile,
+                name: file
+            },
+            audio: audio && audio,
+            date: new Date().toString().slice(3, 21),
+            sentBy: previousMessaging ? (_a = previousMessaging === null || previousMessaging === void 0 ? void 0 : previousMessaging.between) === null || _a === void 0 ? void 0 : _a.indexOf(from) : 0,
+        };
+        if (previousMessaging) {
             if (previousMessaging.blocked) {
                 return previousMessaging;
             }
@@ -79,16 +77,12 @@ let WebSocketsGateway = class WebSocketsGateway {
             messageData = {
                 between: previousMessaging.between || [from, to],
                 messages: [...previousMessaging.messages || [], message],
-                sequence: [...previousMessaging.sequence || [0], (_a = previousMessaging.between) === null || _a === void 0 ? void 0 : _a.indexOf(from)],
-                lastDate: new Date().toString().slice(0, 10),
             };
         }
         else {
             messageData = {
                 between: [from, to],
-                sequence: [0],
                 messages: [message],
-                lastDate: new Date().toString().slice(0, 10),
             };
         }
         messageData = Object.assign(Object.assign({}, messageData), { notSeen: {
@@ -105,24 +99,23 @@ let WebSocketsGateway = class WebSocketsGateway {
         const messaged = this.allMessages.filter(messages => messages.between.includes(currentId) && messages.between.includes(userId));
         if (messaged === null || messaged === void 0 ? void 0 : messaged.length) {
             const previousMessaging = messaged[0];
+            let updated = false;
             if (((_a = previousMessaging.notSeen) === null || _a === void 0 ? void 0 : _a.by) === ((_b = previousMessaging === null || previousMessaging === void 0 ? void 0 : previousMessaging.between) === null || _b === void 0 ? void 0 : _b.indexOf(currentId))) {
                 (0, lodash_1.remove)(this.allMessages, (messages) => {
                     var _a, _b;
                     return ((_a = messages.between) === null || _a === void 0 ? void 0 : _a.includes(currentId)) && ((_b = messages.between) === null || _b === void 0 ? void 0 : _b.includes(userId));
                 });
+                updated = previousMessaging.notSeen.count !== 0;
                 previousMessaging.notSeen.by = 0;
                 previousMessaging.notSeen.count = 0;
                 this.allMessages.push(previousMessaging);
                 await this.service.updateMessages(this.allMessages);
             }
-            return previousMessaging;
+            return Object.assign(Object.assign({}, previousMessaging), { updated });
         }
         else {
             return "Not messaged";
         }
-    }
-    async handleGetMessages(interlocuters) {
-        return await this.allMessages.filter(messages => { var _a; return (_a = messages.between) === null || _a === void 0 ? void 0 : _a.every((id) => interlocuters.indexOf(id) > -1); })[0];
     }
     async blockUser(by, user) {
         var _a;
@@ -143,14 +136,12 @@ let WebSocketsGateway = class WebSocketsGateway {
             messageData = {
                 between: [by, user],
                 blocked: true,
-                sequence: [],
                 messages: [],
                 notSeen: {
                     count: 0,
                     by: 0
                 },
                 blockedBy: 0,
-                lastDate: new Date().toString().slice(0, 10),
             };
         }
         this.allMessages.push(messageData);
@@ -184,6 +175,11 @@ let WebSocketsGateway = class WebSocketsGateway {
             return "Not unblocked";
         }
     }
+    async getNotSeenCount(client) {
+        const id = client.handshake.id;
+        const notSeenCount = this.service.getNotSeenCount(this.allMessages, id);
+        return { notSeenCount };
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
@@ -203,26 +199,20 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)("to")),
     __param(2, (0, websockets_1.MessageBody)("message")),
     __param(3, (0, websockets_1.MessageBody)("file")),
-    __param(4, (0, websockets_1.MessageBody)("orgFile")),
+    __param(4, (0, websockets_1.MessageBody)("audio")),
+    __param(5, (0, websockets_1.MessageBody)("orgFile")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String, String, String]),
     __metadata("design:returntype", Promise)
 ], WebSocketsGateway.prototype, "handleMessage", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)("newInterlocutor"),
-    __param(0, (0, websockets_1.MessageBody)("id")),
+    (0, websockets_1.SubscribeMessage)("getInterlocutor"),
+    __param(0, (0, websockets_1.MessageBody)("currentId")),
     __param(1, (0, websockets_1.MessageBody)("userId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], WebSocketsGateway.prototype, "handleNewInterlocuter", null);
-__decorate([
-    (0, websockets_1.SubscribeMessage)("getMessages"),
-    __param(0, (0, websockets_1.MessageBody)("interlocuters")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
-    __metadata("design:returntype", Promise)
-], WebSocketsGateway.prototype, "handleGetMessages", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)("blockUser"),
     __param(0, (0, websockets_1.MessageBody)("by")),
@@ -239,6 +229,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], WebSocketsGateway.prototype, "unBlockUser", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)("getNotSeenCount"),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], WebSocketsGateway.prototype, "getNotSeenCount", null);
 WebSocketsGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: "*" }),
     __metadata("design:paramtypes", [sockets_service_1.SocketsService])

@@ -29,11 +29,20 @@ export declare class NotSeenType {
     count?: number;
     by: number;
 }
+export declare class MessageFileType {
+    name: string;
+    originalName: string;
+}
 export declare class MessageType {
+    text: string;
+    file: MessageFileType;
+    audio: string;
+    sentBy: number;
+    date: string;
+}
+export declare class MessagesType {
     between: string[];
-    sequence: number[];
-    messages: string[];
-    lastDate: string;
+    messages: MessageType[];
     notSeen?: NotSeenType;
     blocked?: boolean;
 }
@@ -52,4 +61,9 @@ export declare class FileType {
     originalName?: string;
     data: string;
     contentType?: string;
+}
+export declare class UploadFileType {
+    id: string;
+    data?: string;
+    originalName?: string;
 }
