@@ -133,7 +133,7 @@ const handleGQLRequest: Function = async (operation: string, args?: any) => {
         variables = {
             name: {type: "String!", value: name},
         };
-        fields = ["data", "name", "originalName", "contentType"];
+        fields = ["data", "originalName"];
     }
 
     if(operation == "UploadAudio") {

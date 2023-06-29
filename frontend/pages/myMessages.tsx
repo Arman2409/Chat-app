@@ -18,7 +18,7 @@ const MyMessages:React.FC = () => {
       return state.window.menuOption;
   });
 
-   const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+   const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
   
     useEffect(() => {
         const signed = localStorage.getItem("token")

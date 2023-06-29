@@ -183,7 +183,7 @@ const MessagesInput: React.FC<MessagesInputProps> = ({ setMessageData, isBlocked
                     style={{
                         width: "280px"
                     }}>
-                    <Suspense fallback={""}>
+                    <Suspense fallback={<>loading....</>}>
                         <EmojiPicker
                             dynamicWidth
                             theme="dark"

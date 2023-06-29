@@ -26,6 +26,7 @@ import useOpenAlert from "../../Tools/hooks/useOpenAlert";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { setLoaded } from "../../../store/windowSlice";
 import { NEXT_PUBLIC_SOCKETS_URL, windowLoadTime } from "../../../configs/configs";
+import { setNotSeenCount } from "../../../store/messagesSlice";
 
 const {Header} = Layout;
 
@@ -44,6 +45,9 @@ const AppHeader: React.FunctionComponent = () => {
     const userWindow: boolean = useSelector((state: IRootState) => state.window.userWindow);
     const notSeenCount: boolean = useSelector((state:IRootState) => state.messages.notSeenCount);
     const dispatch: Dispatch = useDispatch();
+    const socket = useSelector((state: IRootState) => {
+        return state.socket.socket;
+    });
 
     const { setMessageOptions } = useOpenAlert();
 
@@ -83,14 +87,20 @@ const AppHeader: React.FunctionComponent = () => {
     }, [userWindow])
 
     useEffect(() => {
-        if (router.pathname == "/myMessages" || router.pathname == "/404") {
+          if (router.pathname == "/myMessages" || router.pathname == "/404") {
            setDisplayMessages(false)
         } else {
           setDisplayMessages(true);
         }
-    }, [router.pathname])
-
-    useEffect(() => {
+        if(socket) {
+            if (router.pathname === "/") {
+                socket.emit("getNotSeenCount", (resp:any) => {
+                   if(Object.hasOwn(resp, "notSeenCount")) {
+                    dispatch(setNotSeenCount(resp.notSeenCount));
+                   }
+                });
+            }
+        }
         if (ownerState) {
             setOwnerState(false);
             dispatch(setUserWindow(false));

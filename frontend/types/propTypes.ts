@@ -64,5 +64,6 @@ export interface VoiceRecorderProps {
 }
 
 export interface AudioMessageProps {
-    audioId: string
+    audioId: string,
+    thisUser: boolean,
 }

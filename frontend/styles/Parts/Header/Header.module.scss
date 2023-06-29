@@ -37,11 +37,20 @@
     align-items: center;
     justify-content: center;
 
+    @media (max-width: 400px){
+      margin-left: 10px;
+     }
+
     &_icon {
       font-size: 35px;
       color: $color3;
       cursor: pointer;
       z-index: 3;
+
+      @media (max-width: 400px){
+        font-size: 25px;
+       }
+  
     }
   }
 
@@ -49,10 +58,16 @@
     margin-left: 10px;
 
     .requests_icon {
-      font-size: 20px;
+      font-size: 35px;
       color: $color3;
       cursor: pointer;
+      margin-left: 10px;
       text-shadow: 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #FFF, 0 0 25px #49ff18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49FF18, 0 0 25px #49ff18;
+
+      @media (max-width: 400px){
+       font-size: 25px;
+       }
+  
     }
   }
 
@@ -70,6 +85,10 @@
     align-items: center;
     justify-content: center;
     padding: 10px;
+
+    @media (max-width: 400px){
+      padding: 5px;
+     }
 
     .user_name {
       color: $color4;

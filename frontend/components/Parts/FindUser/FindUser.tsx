@@ -29,7 +29,7 @@ const SearchUser: React.FC = () => {
     const [debouncedSearch] = useDebounce(loading, 1000);
 
     const isMedium = useMediaQuery({ query: "(max-width: 750px)" });
-    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+    const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
 
     const getSeachResults = useCallback(() => {
         setLoading("");

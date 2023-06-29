@@ -27,7 +27,7 @@ const App: React.FC<Omit<AppProps, "router">> = ({Component, pageProps}:Omit<App
     return state.window.loaded;
    });
 
-  const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+  const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
   const isBig = useMediaQuery({query: '(min-width: 700px)'});  
 
   useEffect(() => {

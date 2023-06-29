@@ -6,26 +6,27 @@ import { AudioMessageProps } from "../../../../types/propTypes";
 import handleGQLRequest from "../../../../request/handleGQLRequest";
 import Loading from "../../../Custom/Loading/Loading";
 
-const AudioMessage = ({audioId}:AudioMessageProps) => {
+const AudioMessage = ({audioId, thisUser}:AudioMessageProps) => {
     const [listeningStatus, setListeningStatus] = useState<boolean>(false);
     const [audioData, setAudioData] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleVoiceMessage = useCallback(async () => {
-        console.log("handle");
         setLoading(true);
         const data = await handleGQLRequest("GetAudio", {audioId});
         setListeningStatus(true);
-        console.log(data);
-        
         setAudioData(data?.GetAudio?.data);
         setLoading(false);
-
-    }, [])
+    }, [setLoading, setListeningStatus, setAudioData, handleGQLRequest]);
 
     return (
        <div 
          className={styles.audio_cont}
+         style={thisUser ? {
+             borderBottomRightRadius: 0
+          } : {
+              borderTopLeftRadius: 0
+          }}
          onClick={handleVoiceMessage}>
           {loading ? <Loading /> : listeningStatus ?
             <audio 
@@ -42,7 +43,6 @@ const AudioMessage = ({audioId}:AudioMessageProps) => {
                </p>
             </>           
           }
-
        </div>
     )
 };

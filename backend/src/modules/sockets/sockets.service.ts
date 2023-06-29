@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
 import {PrismaService} from "nestjs-prisma";
-import { MessageType } from 'types/graphqlTypes';
+import { MessagesType } from '../../../types/graphqlTypes';
 
 @Injectable()
 export class SocketsService {
@@ -25,7 +25,7 @@ export class SocketsService {
         });
     }
 
-    async updateMessages(allMessages: MessageType[]) {
+    async updateMessages(allMessages: MessagesType[]) {
         if (allMessages.length) {
             await this.prisma.messages.deleteMany().then(async () => {
                 await this.prisma.messages.createMany({ data: allMessages as any });            
@@ -60,5 +60,15 @@ export class SocketsService {
                 blockedUsers,
             }
         });
+    }
+
+    getNotSeenCount (messages:any[] ,id:string) {
+        const notSeenCount = messages.filter(message => {
+            const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
+            if(notSeenByUser) {
+              return  message?.notSeen?.count > 0;
+            }
+          })
+        return notSeenCount.length;
     }
 }

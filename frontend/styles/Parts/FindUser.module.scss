@@ -64,10 +64,14 @@
 
     .user_search_closed {
         @extend .user_search;
+        height: 0px !important;
+        border: none !important;
+        position: relative;
+        left: 100%;
+
         button {
             display: none;
         }
-        border: none !important;
     }
 
      &_tools {

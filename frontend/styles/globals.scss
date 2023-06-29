@@ -52,6 +52,14 @@ a {
   @media screen and (max-width: 670px) {
     width: 280px !important;
   }
+
+  @media screen and (max-width: 600px) {
+    width: 380px !important;
+  }
+
+  @media screen and (max-width: 380px) {
+    width: 280px !important;
+  }
 }
 
 .error-cont {

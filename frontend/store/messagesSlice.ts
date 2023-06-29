@@ -3,8 +3,8 @@ import { MessagesInitialState,} from "../types/types";
 
 const initialState:MessagesInitialState = {
     interlocutor: {id: "" ,name: "", email: "", image: "", friendRequests: [], sentRequests: [], friends: [], active: false},
-    messagesData: {lastDate: "", between: [], sequence: [], messages: []},
-    interlocutorMessages:  {lastDate: "", between: [], sequence: [], messages: []},
+    messagesData: { between: [],  messages: []},
+    interlocutorMessages:  { between: [],  messages: []},
     notSeenCount: 0,
 }
 

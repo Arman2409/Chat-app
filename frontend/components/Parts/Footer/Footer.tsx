@@ -9,7 +9,7 @@ const { Footer } = Layout;
 
 const FooterComp: React.FC = () => {
 
-   const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+   const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
 
    return (
       <Footer 

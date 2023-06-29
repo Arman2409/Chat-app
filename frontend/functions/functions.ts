@@ -35,15 +35,6 @@ export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.readAsDataURL(img);
 };
 
-export const getFilesOriginalName = (message: string) => {
-  if (typeof message === "string") {
-    const fileName = message.slice(message.indexOf("&&") + 1);
-    return getSlicedWithDots(fileName.slice(0, fileName.indexOf("&&")), 20);
-  } else {
-    return "(file)";
-  }
-}
-
 export const downloadBase64File = (filename: string, data: string) => {
   if (!filename || !data) return;
   let link = document.createElement('a');

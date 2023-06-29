@@ -8,7 +8,6 @@ import styles from "../../../styles/Parts/LastMessages.module.scss";
 import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import { IRootState } from "../../../store/store";
-import { getFilesOriginalName } from "../../../functions/functions";
 
 const LastMessages: React.FC = () => {
    const [total, setTotal] = useState(100);
@@ -17,9 +16,9 @@ const LastMessages: React.FC = () => {
    const [pageState, setPageState] = useState<number>(1);
 
    const pageRef = useRef<number>(1);
-   const isRequestingRef = useRef<boolean>(false);
+   const isRequestingRef = useRef<boolean>(true);
    const isMedium: boolean = useMediaQuery({ query: "(max-width: 750px)" });
-   const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+   const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
    const { messagesData }: any = useSelector((state: IRootState) => state.messages);
 
    const { interlocutor, interlocutorMessages } = useSelector((state: IRootState) => {
@@ -27,18 +26,8 @@ const LastMessages: React.FC = () => {
    });
    const storeUser = useSelector((state: IRootState) => state.user.user);
 
-   const getInterlocutorData = useCallback((alreadyAdded: any, add:boolean) => {
-      if (!add && alreadyAdded || interlocutor.name) {
-         return [];
-      } else {
-         return [{
-            ...interlocutor,
-            lastMessage: last(interlocutorMessages.messages) || "",
-         }]
-      }
-   }, [interlocutor, interlocutorMessages])
-
    const getLastMessages = useCallback(() => {
+      isRequestingRef.current = true;
       (async function () {
          const lastMessagesData = await handleGQLRequest("GetLastMessages", { page: pageRef.current });
          let users = lastMessagesData?.GetLastMessages?.users || [];
@@ -51,33 +40,43 @@ const LastMessages: React.FC = () => {
             if (!curr.length) {
                return [...users || []];
             }
-            return [...getInterlocutorData(fetchedInterlocutor, false), ...curr, ...users || []]
+            if(loadingType === "getMissing") {
+               return [...users]
+            }
+            return [ ...curr, ...users || []]
          });
          setTotal(lastMessagesData?.GetLastMessages?.total);
          isRequestingRef.current = false;
          setPageState(pageRef.current)
       })();
-   }, [pageRef, setLastMessages]);
+   }, [pageRef, setLastMessages, loadingType]);
 
    useEffect(() => {
       if (isRequestingRef.current) return;
       if (loadingType.startsWith("newPage")) {
          pageRef.current = pageRef.current + 1;
-         getLastMessages();
-         isRequestingRef.current = true;
       };
+      getLastMessages();
    }, [loadingType]);
 
    useEffect(() => {
-      setLastMessages(messages => {
-        return messages.map((elem: any) => {
+      setLastMessages(lastMessages => {
+        let hasCurrent:boolean = false; 
+        const newLastMessages = lastMessages.map((elem: any) => {
+            if(elem.id === interlocutor.id) {
+               hasCurrent = true
+            };
             if (messagesData.between.includes(elem?.id)) {
                const { id }: any = { ...storeUser || {} }
                const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
                let lastMessage:any = last(messagesData?.messages);
-               if(lastMessage.startsWith("...(file)...")){
-                  getFilesOriginalName(lastMessage);
-               }
+               if(lastMessage?.audio) {
+                  lastMessage = "(Voice Message)";
+                } else if (lastMessage?.file) {
+                  lastMessage = lastMessage.file.originalName;
+                } else {
+                  lastMessage = lastMessage?.text || "..."
+                };
                elem = {
                   ...elem,
                   lastMessage,
@@ -85,42 +84,14 @@ const LastMessages: React.FC = () => {
                }
             }
              return elem;
-         })}
+         }) 
+          if(!hasCurrent && !isRequestingRef.current) {
+            setLoadingType("getMissing");
+          }
+         return newLastMessages;
+        }
          );
-   }, [messagesData, setLastMessages, interlocutorMessages, storeUser]);
-
-   useEffect(() => {
-     let hasFileMessage;
-     let hasAudioMessage;
-     lastMessages.map(elem => {
-        if(elem?.lastMessage?.startsWith("...(file)...")) {
-           hasFileMessage = true;
-        }
-        if(elem?.lastMessage?.startsWith("...(audio)...")) {
-          hasAudioMessage = true;
-        }
-     });
-     if (hasFileMessage || hasAudioMessage) {
-      setLastMessages(currents => currents.map(curr => {
-         let lastMessage = curr?.lastMessage || "";
-         if(lastMessage?.startsWith("...(file)...")) {
-            lastMessage = getFilesOriginalName(lastMessage);
-             return {
-               ...curr,
-               lastMessage
-             }
-         }
-         if(lastMessage?.startsWith("...(audio)...")) {
-            lastMessage = "(Voice Message)";
-            return {
-               ...curr,
-               lastMessage,
-             }
-         }
-         return curr;
-     }));
-     };
-   }, [lastMessages, setLastMessages]);
+   }, [messagesData, setLastMessages, isRequestingRef, interlocutorMessages, storeUser]);
 
    useEffect(() => {
       if(interlocutorMessages.updated) {

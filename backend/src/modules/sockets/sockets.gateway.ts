@@ -10,15 +10,14 @@ import {Server} from "socket.io";
 import {remove} from "lodash"
 
 import type {SocketWIthHandshake} from "../../../types/types";
-import type { MessageType } from "../../../types/graphqlTypes";
+import type { MessageType, MessagesType } from "../../../types/graphqlTypes";
 import {SocketsService} from "./sockets.service";
 
 @WebSocketGateway({ cors: "*" })
 export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, OnGatewayConnection {
     @WebSocketServer() server: Server;
 
-    constructor(private readonly service: SocketsService,
-                ) {}
+    constructor(private readonly service: SocketsService) {}
 
     private activeUsers: string[] = [];
 
@@ -51,40 +50,39 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         client.join(id?.toString());
         client.handshake.id = id;
         client.handshake.active = true;
-        const notSeenCount = this.allMessages.filter(message => {
-          const notSeenByUser = message?.notSeen?.by === message.between?.indexOf(id);
-          if(notSeenByUser) {
-            return  message?.notSeen?.count > 0;
-          }
-        })
+        const notSeenCount = this.service.getNotSeenCount(this.allMessages, id);
         if (update) {
-            return {notSeenCount: notSeenCount.length};
+            return {notSeenCount: notSeenCount};
         } else {
             return "Not Connected";
         }
     };
 
     @SubscribeMessage("message")
-    async handleMessage(@MessageBody("from") from: string,
+    async handleMessage(
+        @MessageBody("from") from: string,
         @MessageBody("to") to: string,
-        @MessageBody("message") message: string,
+        @MessageBody("message") messageText: string,
         @MessageBody("file") file: string,
         @MessageBody("audio") audio: string,
         @MessageBody("orgFile") originalFile: string,
     ) {
-        if (file) {
-            message = `...(file)...${file}&&${originalFile}&&${message}`;    
-        }
-        if (audio) {
-            message = `...(audio)...${audio}&&${message}`;    
-        }
-        let alreadyMessaged = this.allMessages.filter(message => message.between?.every((elem:string) => [from, to].indexOf(elem) > -1))[0];
-        let messageData:MessageType = {} as MessageType;
-        let previousMessaging:MessageType;
         
-
-        if (alreadyMessaged) {
-            previousMessaging = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || {};
+        let messageData:MessagesType = {} as MessagesType;
+        console.log(this.allMessages);
+        
+        let previousMessaging:MessagesType = this.allMessages.filter(e => (e.between?.includes(from) && e.between?.includes(to)))[0] || null;
+        const message: MessageType = {
+            text: messageText,
+            file: file && {
+                originalName: originalFile,
+                name: file
+                 },
+            audio: audio && audio,
+            date:  new Date().toString().slice(3, 21),
+            sentBy: previousMessaging ? previousMessaging?.between?.indexOf(from) : 0,
+        }
+        if (previousMessaging) {
             if(previousMessaging.blocked) {
                 return previousMessaging;
             }
@@ -94,16 +92,12 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             messageData = {
                 between: previousMessaging.between || [from, to],
                 messages: [...previousMessaging.messages || [], message],
-                sequence: [...previousMessaging.sequence || [0], previousMessaging.between?.indexOf(from)],
-                lastDate: new Date().toString().slice(0, 10),
             }
         }
         else {
             messageData = {
                 between: [from, to],
-                sequence: [0],
                 messages: [message],
-                lastDate: new Date().toString().slice(0, 10),
             }
         }
         messageData =  {
@@ -120,8 +114,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         return messageData;
     }
 
-    @SubscribeMessage("newInterlocutor")
-    async handleNewInterlocuter(@MessageBody("id") currentId: string, @MessageBody("userId") userId: string) {
+    @SubscribeMessage("getInterlocutor")
+    async handleNewInterlocuter(@MessageBody("currentId") currentId: string, @MessageBody("userId") userId: string) {
         const messaged = this.allMessages.filter(messages => messages.between.includes(currentId) && messages.between.includes(userId));
         if (messaged?.length){
             const previousMessaging = messaged[0];
@@ -137,7 +131,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
                 this.allMessages.push(previousMessaging); 
                 await this.service.updateMessages(this.allMessages);
             }
-
             return {
                  ...previousMessaging,
                   updated
@@ -146,12 +139,7 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
             return "Not messaged";
         }
     }
-
-    @SubscribeMessage("getMessages")
-    async handleGetMessages(@MessageBody("interlocuters") interlocuters: string[]) {
-        return await this.allMessages.filter(messages => messages.between?.every((id:string) => interlocuters.indexOf(id) > -1))[0];
-     }
-
+    
      @SubscribeMessage("blockUser")
      async blockUser(@MessageBody("by") by: string,
         @MessageBody("user") user: string,){
@@ -172,14 +160,12 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
            messageData  =  {
             between: [by, user],
             blocked: true,
-            sequence: [],
             messages: [],
             notSeen:  {
                 count:0,
                 by:0
             },
             blockedBy: 0,
-            lastDate: new Date().toString().slice(0, 10),
           }
         }
         this.allMessages.push(messageData);
@@ -214,6 +200,15 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         } else {
             return "Not unblocked";
         }
+     }
+
+     @SubscribeMessage("getNotSeenCount")
+     async getNotSeenCount(
+        @ConnectedSocket() client: SocketWIthHandshake
+     ) {
+         const id = client.handshake.id;
+         const notSeenCount = this.service.getNotSeenCount(this.allMessages, id);
+         return {notSeenCount};
      }
 }
 

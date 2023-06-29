@@ -21,9 +21,7 @@ export interface UserInitialState {
 
 export interface MessagesDataType {
     between: any[],
-    sequence: any[],
     messages: any[],
-    lastDate: string,
 }
 
 export interface  MessagesInitialState {

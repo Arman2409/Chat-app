@@ -10,42 +10,32 @@ import { useMediaQuery } from "react-responsive";
 import styles from "../../../styles/Parts/MessagesChat/MessagesChat.module.scss";
 import { IRootState } from "../../../store/store";
 import { MessagesDataType, UserType } from "../../../types/types";
-import { downloadBase64File, getFilesOriginalName, getSendersId, getSlicedWithDots } from "../../../functions/functions";
+import { downloadBase64File, getSendersId, getSlicedWithDots } from "../../../functions/functions";
 import { setInterlocutorMessages, setMessagesData as setStoreMesaagesData } from "../../../store/messagesSlice";
 import MessagesInput from "./MessagesInput/MessagesInput";
 import UserDropdown from "../../Custom/UserDropdown/UserDropdown";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import AudioMessage from "./AudioMessage/AudioMessage";
 
-const getMessagesWithFilesAndAudio = (messages: any[]) => {
-    const newData = messages?.map((msg: string) => {
-        if (msg?.startsWith("...(file)...")) {
-            const fileName = msg.slice(12, msg.indexOf("&&"));
-            let originalFileName = getFilesOriginalName(fileName);
-            let message = msg.slice(msg.indexOf("&&") + 2);
-            message = message.slice(message.indexOf("&&") + 2);
-            return {
-                fileName,
-                originalFileName,
-                message
-            };
-        }
-        if (msg?.startsWith("...(audio)...")) {
-            const audioId = msg.slice(13, msg.indexOf("&&"));
-            const message = msg.slice(msg.indexOf("&&") + 2);
-            console.log({
-                message,
-                audioId
-            });
-            
-            return {
-                message,
-                audioId
-            }
-        }
-        return msg;
-    });
-    return newData;
+const getCurrentTimeStamp = (messagedDate: string) => {
+    const currentDate = new Date().toString().slice(3, 21);
+    let displayDate:string = messagedDate.slice(13);
+    const currentDayMonth = currentDate.slice(1,7);
+    const messagedDayMonth  = messagedDate.slice(1,7);
+    if(currentDayMonth !== messagedDayMonth) {
+        displayDate = messagedDayMonth + " " + displayDate;
+    }
+    const currentYear = currentDate.slice(8,12);
+    const messagedYear = messagedDate.slice(8,12);    
+    if(currentYear !== messagedYear) {
+        displayDate = messagedYear + " " + displayDate;
+    };
+    return displayDate;
+}
+
+const downloadFile = async (filename: string) => {
+    let file = await handleGQLRequest("GetFile", { name: filename });
+    downloadBase64File(file?.GetFile?.originalName, file?.GetFile?.data);
 };
 
 const MessagesChat: React.FC = () => {
@@ -53,7 +43,7 @@ const MessagesChat: React.FC = () => {
     const [interlocutor, setInterlocutor] = useState<UserType>({} as UserType)
 
     const isMedium = useMediaQuery({ query: "(max-width: 750px)" });
-    const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+    const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
     const messagesRef = useRef<any>(null);
 
     const dispatch = useDispatch();
@@ -72,10 +62,6 @@ const MessagesChat: React.FC = () => {
     const isRequested: boolean = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user.sentRequests, interlocutor]);
     const isFriend: boolean = useMemo(() => Boolean(user.friends?.includes(interlocutor.id)), [interlocutor, user.friends]);
 
-    const downloadFile = useCallback(async (filename: string) => {
-        let file = await handleGQLRequest("GetFile", { name: filename });
-        downloadBase64File(file?.originalName, file?.GetFile?.data);
-    }, [handleGQLRequest]);
 
     useEffect(() => {
         if (!user.name) {
@@ -92,20 +78,19 @@ const MessagesChat: React.FC = () => {
     useEffect(() => {
         setMessageData({ between: [], messages: [], sequence: [] });
         if (socket) {
-            socket.emit("getMessages", { interlocuters: [user.id, interlocutor.id] }, (res: any) => {
-                const messages = getMessagesWithFilesAndAudio(res.messages)
+            socket.emit("getInterlocutor", { currentId: user.id, userId: interlocutor.id }, (res: any) => {
+                dispatch(setInterlocutorMessages({
+                    ...res
+                }));
                 setMessageData({
-                    ...res,
-                    messages
+                    ...res
                 });
             })
             socket.on("message", async (data: MessagesDataType) => {
                 const senderId = getSendersId(data?.between, user.id);
                 if (senderId == interlocutor.id) {
-                    const messages = getMessagesWithFilesAndAudio(data.messages);
                     setMessageData({
-                        ...data,
-                        messages
+                        ...data
                     });
                     return;
                 }
@@ -113,23 +98,13 @@ const MessagesChat: React.FC = () => {
             })
         }
         setInterlocutor(storeInterlocutor);
-    }, [interlocutor, socket])
+    }, [interlocutor, user.id, interlocutor.id,  socket])
 
     useEffect(() => {
         if (messagesRef.current) {
             messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
         }
     }, [messageData]);
-
-    useEffect(() => {
-        if (interlocutor?.name) {
-            if (socket) {
-                socket.emit("newInterlocutor", { id: user.id, userId: storeInterlocutor.id }, (resp: any) => {
-                    dispatch(setInterlocutorMessages(resp));
-                });
-            }
-        }
-    }, [interlocutor])
 
     useEffect(() => {
         setUser(storeUser);
@@ -143,6 +118,19 @@ const MessagesChat: React.FC = () => {
             {interlocutor.name ?
                 <>
                     <div className={styles.interlocutor_cont}>
+                        {/* interlocutor data  */}
+                        <div className={styles.interlocutor_cont_name}>
+                            <Badge dot={interlocutor.active ? true : false}>
+                                <Avatar
+                                    className={styles.interlocutor_avatar}
+                                    src={interlocutor.image} />
+                            </Badge>
+                            <h5 className={styles.interlocutor_name}>
+                                {interlocutor.name ?
+                                    interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
+                                    : ""}
+                            </h5>
+                        </div>
                         <div>
                             <UserDropdown
                                 type={isFriend ? "friend" : "all"}
@@ -150,19 +138,6 @@ const MessagesChat: React.FC = () => {
                                 isBlocked={isBlocked}
                                 openElement={interlocutor.email}
                                 user={interlocutor} />
-                        </div>
-                        {/* interlocutor data  */}
-                        <div className={styles.interlocutor_cont_name}>
-                            <h5 className={styles.interlocutor_name}>
-                                {interlocutor.name ?
-                                    interlocutor.name.length < 15 ? interlocutor.name : getSlicedWithDots(interlocutor.name, 15)
-                                    : ""}
-                            </h5>
-                            <Badge dot={interlocutor.active ? true : false}>
-                                <Avatar
-                                    className={styles.interlocutor_avatar}
-                                    src={interlocutor.image} />
-                            </Badge>
                         </div>
                     </div>
                     <div className={styles.messages_cont} ref={messagesRef}>
@@ -174,39 +149,79 @@ const MessagesChat: React.FC = () => {
                         {/* maping the messages  */}
                         {messageData.messages &&
                             messageData.messages?.map((msg: any, index: number) => {
-                                const order: number = messageData.between.indexOf(user.id);
+                                const fromThisUser: boolean = msg.sentBy === messageData.between.indexOf(user.id);
+                                const timeStamp = getCurrentTimeStamp(msg.date);
+                                 
                                 return (
-                                    <div
-                                        key={index}
+                                    <div  key={index}>
+                                    {msg.text && <div
                                         className={styles.message_cont}
                                         style={{
-                                            justifyContent: messageData.sequence[index] == order ? "flex-end" : "flex-start",
+                                            justifyContent:fromThisUser  ? "flex-end" : "flex-start",
                                         }}>
+                                            {fromThisUser && <p className={styles.messages_cont_date}>
+                                                {timeStamp}
+                                            </p>}
                                         <div
-                                            className={styles.message_cont_data}
+                                            className={`${styles.message_cont_data}`}
+                                            style={fromThisUser ? {
+                                                 borderBottomRightRadius: 0
+                                                } : {
+                                                    borderTopLeftRadius: 0
+                                                }}
                                         >
-                                            {typeof msg === "object" ? msg.message ? <div className={styles.message_cont_data_text_cont}>
-                                                {msg?.message}
-                                            </div> : "" : msg ? <div className={styles.message_cont_data_text_cont}>
-                                                {msg}
-                                            </div> : ""}
-                                            {msg?.fileName &&
-                                                <div className={styles.message_cont_data_file_cont}
-                                                    onClick={() => downloadFile(msg.fileName)}>
-                                                    <MdOutlineFileDownload className={styles.message_cont_data_file_cont_icon} />
-                                                    {msg?.originalFileName || ""}
-                                                </div>}
-                                            {msg?.audioId && <AudioMessage audioId={msg.audioId} />  }
+                                            {msg.text ? 
+                                                <div className={styles.message_cont_data_text_cont}>
+                                                    {msg.text}
+                                                </div> : "" }
                                         </div>
+                                        {!fromThisUser && <p className={styles.messages_cont_date}>
+                                                {timeStamp}
+                                         </p>}
+                                    </div>}
+                                    {msg?.file && <div
+                                        className={styles.message_cont}
+                                        style={{
+                                            justifyContent:fromThisUser  ? "flex-end" : "flex-start",
+                                        }}
+                                        >
+                                            {fromThisUser && <p className={styles.messages_cont_date}>
+                                                        {timeStamp}
+                                                    </p>}
+                                                <div className={styles.message_cont_data_file_cont}
+                                                    style={fromThisUser ? {
+                                                        borderBottomRightRadius: 0
+                                                    } : {
+                                                        borderTopLeftRadius: 0
+                                                    }}
+                                                    onClick={() => downloadFile(msg.file?.name)}>
+                                                    <MdOutlineFileDownload className={styles.message_cont_data_file_cont_icon} />
+                                                    {msg.file?.originalName || ""}
+                                                </div>
+                                                {!fromThisUser && <p className={styles.messages_cont_date}>
+                                                {timeStamp}
+                                         </p>}
+                                    </div>}
+                                        {msg?.audio && <div
+                                            className={styles.message_cont}
+                                            style={{
+                                                justifyContent:fromThisUser  ? "flex-end" : "flex-start",
+                                            }}>
+                                            {fromThisUser && <p className={styles.messages_cont_date}>
+                                                {timeStamp}
+                                             </p>}
+                                            <AudioMessage thisUser={fromThisUser} audioId={msg.audio} /> 
+                                            {!fromThisUser && <p className={styles.messages_cont_date}>
+                                                {timeStamp}
+                                             </p>} 
+                                        </div> }
                                     </div>
+                                    
                                 )
                             })}
                     </div>
                     <MessagesInput
-                        setMessageData={(data: any) => setMessageData({
-                            ...data,
-                            messages: getMessagesWithFilesAndAudio(data.messages)
-                        })}
+                        setMessageData={setMessageData}
                         isBlocked={isBlocked}
                         interlocutor={interlocutor} />
                 </>

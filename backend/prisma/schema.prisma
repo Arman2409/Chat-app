@@ -36,9 +36,7 @@ model News {
 model Messages {
   id String  @id  @default(auto()) @map("_id") @db.ObjectId
   between String[]  @default([])
-  sequence Int[] @default([])
-  messages String[] @default([])
-  lastDate String @default("")
+  messages Json[] @default([])
   notSeen Json
   blocked Boolean @default(false)
   blockedBy Int @default(0)

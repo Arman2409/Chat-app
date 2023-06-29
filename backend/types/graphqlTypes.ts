@@ -78,20 +78,40 @@ export class NotSeenType {
      by: number
 }
 
+@ObjectType()
+export class MessageFileType {
+    @Field({nullable: true})  
+    name: string
+
+    @Field({nullable: true})  
+    originalName: string
+}
+
+@ObjectType() 
+export class MessageType {
+    @Field()  
+    text: string
+
+    @Field()
+    file: MessageFileType
+
+    @Field()
+    audio: string
+
+    @Field()
+    sentBy:number
+
+    @Field()
+    date: string
+}
 
 @ObjectType()
-export class  MessageType {
+export class  MessagesType {
     @Field(type => [String])
     between: string[]
 
-    @Field(type => [Number])
-    sequence:number[]
-
     @Field(type => [String])
-    messages:string[]
-
-    @Field()
-    lastDate:string
+    messages: MessageType[]
 
     @Field()
     notSeen?: NotSeenType
@@ -147,5 +167,8 @@ export class UploadFileType {
 
     @Field()
     data?: string
+
+    @Field()
+    originalName?: string
 
 }

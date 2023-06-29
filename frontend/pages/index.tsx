@@ -21,7 +21,7 @@ export default function Home() {
     const user = useSelector((state: IRootState) => {
         return state.user.user;
     });
-   const isSmall: boolean = useMediaQuery({ query: "(max-width: 500px)" });
+   const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
 
     useEffect(() => {
         if (user.name) {

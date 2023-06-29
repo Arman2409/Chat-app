@@ -30,23 +30,26 @@
    background-color: $color3;
    border-radius: 5px;
    width: 50%;
+   position: absolute;
+   top: 0;
    
    ul {
-     background-color: $color3 !important;
      padding: 0 !important;
 
      & > li {
-      background-color: $color3 ;
-      color: $color2 !important;
+      background-color: rgba($color7, 0.5);
+      color: $color1 !important;
       border: 1px solid $color6;
+      padding: 10px 5px !important;
+      font-weight: 900;
      
        &:hover {
           background-color: $color5 !important;
        }
       }
 
-      .ant-dropdown-menu-item-selected {
-         background-color: $color1 !important;
-      }
+      // .ant-dropdown-menu-item-selected {
+      //    background-color: $color1 !important;
+      // }
    }
 }

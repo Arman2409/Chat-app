@@ -14,7 +14,7 @@ const Welcome: React.FunctionComponent = () => {
     const [modalData, setModalData] = useState<any>();
 
     const isMedium = useMediaQuery({query: "(max-width: 750px)"});
-    const isSmall = useMediaQuery({query: "(max-width: 500px)"});
+    const isSmall = useMediaQuery({query: "(max-width: 600px)"});
 
     const toggleModal: Function = (news: any) => {
         setModalData(news);

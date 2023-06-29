@@ -38,6 +38,11 @@ type NotSeenType {
   by: Float!
 }
 
+type MessageFileType {
+  name: String
+  originalName: String
+}
+
 type RecoverType {
   code: Float
   successMessage: String
@@ -53,6 +58,7 @@ type UploadType {
 type UploadFileType {
   id: String
   data: String!
+  originalName: String!
 }
 
 type Query {
