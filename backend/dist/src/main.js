@@ -21,4 +21,5 @@ async function bootstrap() {
     await app.listen(process.env.PORT);
 }
 bootstrap();
+exports.default = bootstrap;
 //# sourceMappingURL=main.js.map

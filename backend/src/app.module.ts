@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from "@nestjs/graphql";
-import { ApolloDriver, ApolloDriverConfig,} from "@nestjs/apollo";
+import { ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
 import { PrismaService } from "nestjs-prisma"
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ServeStaticModule } from '@nestjs/serve-static';
