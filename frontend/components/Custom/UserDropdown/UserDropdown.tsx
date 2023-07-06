@@ -81,10 +81,6 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
     const handleBlockUser = useCallback(() => {
         const { id }: any = { ...storeUser || {} };
         socket.emit("blockUser", { by: id, user: user.id }, (res: any) => {
-            console.log("blocked", res);
-            console.log("blocked by ", id, "blocked user", user.email);
-            
-            
             if (res.email) {
                 setMessageOptions({
                     type: "success",
@@ -109,9 +105,6 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
     const handleUnblockUser = useCallback(() => {
         const { id }: any = { ...storeUser || {} };
         socket.emit("unBlockUser", { by: id, user: user.id }, (res: any) => {
-            console.log("unblocked", res);
-            console.log("unblocked by ", id, "unblocked user", user.email);
-           
             if (res.email) {
                 setMessageOptions({
                     type: "success",

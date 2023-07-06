@@ -49,13 +49,10 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
     const handleScroll = (e: any, isTouchEvent?: boolean) => {
         setOpenedDropdown(" ");
         let parentContains = false;
-        console.log(parentElementRef);
 
         if(parentElementRef) {
-            console.log(parentElementRef);
             
              parentContains = parentElementRef.current?.contains(e.target);
-             console.log({parentContains});
         }
         if (listRef.current?.contains(e.target) || listRef.current === e.target || parentContains) {
             if (e.deltaY > 0 || isTouchEvent) {
@@ -148,8 +145,6 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
         window.addEventListener("touchmove", (e) => handleScroll(e, true))
     }, []);
 
-    console.log(users.length , {loading} , {loadingSearchType});
-    
 
     return (
         <div ref={listRef}

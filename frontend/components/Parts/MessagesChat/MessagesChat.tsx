@@ -58,21 +58,10 @@ const MessagesChat: React.FC = () => {
         return state.user.user;
     });
     const [user, setUser] = useState<UserType>(storeUser as any);
-    const router: any = useRouter();
+    const router = useRouter();
     // const isBlocked = useState(() => Boolean(user.blockedUsers?.includes(interlocutor.id)), [user]);
-    const isRequested: boolean = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user, interlocutor]);
-    const isFriend: boolean = useMemo(() => Boolean(user.friends?.includes(interlocutor.id)), [interlocutor, user.friends]);
-
-    console.log({
-        // isBlocked,
-        blockedUsers: user.blockedUsers,
-        intelocutor: storeInterlocutor.id,
-        currentId: user.id,
-        includes: user.blockedUsers?.includes(interlocutor.id),
-        isRequested,
-        isFriend
-    });
-    
+    const isRequested = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user, interlocutor]);
+    const isFriend = useMemo(() => Boolean(user.friends?.includes(interlocutor.id)), [interlocutor, user.friends]);
 
     useEffect(() => {
         if (!user.name) {
@@ -81,8 +70,6 @@ const MessagesChat: React.FC = () => {
     }, [user])
 
     useEffect(() => {
-        console.log({storeInterlocutor});
-
         setInterlocutor(storeInterlocutor);
     }, [storeInterlocutor]);
 
@@ -117,27 +104,11 @@ const MessagesChat: React.FC = () => {
     }, [messageData]);
 
     useEffect(() => {
-        console.log({storeUser});
-        
         setUser(storeUser);
     }, [storeUser]);
 
-    // useEffect(() => {
-    //     console.log({storeInterlocutor});
-        
-    //   setInterlocutor(storeInterlocutor);
-    // }, [storeInterlocutor])
-
     useEffect(() => {
-        console.log({interlocutor});
-        
-    }, [interlocutor])
-
-    useEffect(() => {
-        //  console.log("is blocked", );
          setIsBlocked(Boolean(user.blockedUsers?.includes(interlocutor.id)));
-         console.log("changed blocked ", Boolean(user.blockedUsers?.includes(interlocutor.id)));
-         
     }, [user])
 
     return (

@@ -11,8 +11,6 @@ const useOpenAlert = () => {
        if (!string) return;
        if (isOpen) message.destroy();
        setIsOpen(true);
-       console.log(string);
-       
        string =  getSlicedWithDots(string, 25);
        if(type == "error") {
           message.error(string, 1)
