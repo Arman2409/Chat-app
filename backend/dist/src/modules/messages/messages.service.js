@@ -43,8 +43,11 @@ let MessagesService = class MessagesService {
                 else if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.file) {
                     lastMessage = lastMessage.file.originalName;
                 }
+                else if (lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.text) {
+                    lastMessage = lastMessage === null || lastMessage === void 0 ? void 0 : lastMessage.text;
+                }
                 else {
-                    lastMessage = lastMessage.text;
+                    lastMessage = "";
                 }
                 const notSeenCount = (message.notSeen.by === ((_b = message === null || message === void 0 ? void 0 : message.between) === null || _b === void 0 ? void 0 : _b.indexOf(currentUser.id))) ? (_c = message === null || message === void 0 ? void 0 : message.notSeen) === null || _c === void 0 ? void 0 : _c.count : 0;
                 const userId = (_d = message === null || message === void 0 ? void 0 : message.between) === null || _d === void 0 ? void 0 : _d.filter((elem) => elem !== currentUser.id)[0];

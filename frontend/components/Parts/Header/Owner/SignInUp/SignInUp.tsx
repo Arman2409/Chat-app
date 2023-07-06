@@ -18,7 +18,6 @@ import Loading from "../../../../Custom/Loading/Loading";
 import { getSlicedWithDots, getBase64 } from "../../../../../functions/functions";
 import { setSocket } from "../../../../../store/socketSlice";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
-import { NEXT_PUBLIC_SOCKETS_URL } from "../../../../../configs/configs";
 import { setNotSeenCount } from "../../../../../store/messagesSlice";
 
 const { useForm } = Form;
@@ -60,7 +59,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
 
         if (type == "SignIn") {
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignIn", { email, password});
+            const res = await handleGQLRequest("SignIn", { email, password:"password"});
             let user:UserType = {} as UserType;
             
             if(res.SignIn?.token) {
@@ -83,7 +82,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 setLoadingRequest(false);
                 return;
             }
-            let socket = io(NEXT_PUBLIC_SOCKETS_URL as any);
+            let socket = io(process.env.NEXT_PUBLIC_SOCKETS_URL as any);
             socket.emit("signedIn", { id: user.id }, (resp:any) => {            
                 if (Object.hasOwn(resp, "notSeenCount")) {
                     dispatch(setNotSeenCount(Number(resp?.notSeenCount)));
@@ -95,12 +94,12 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
               dispatch(setStoreUser(user));
         }
         else if (type == "SignUp") {
-            if(repeatPassword !== password) {
-                setMessage("Password must be repeated")
-                return;
-            }
+            // if(repeatPassword !== password) {
+            //     setMessage("Password must be repeated")
+            //     return;
+            // }
             setLoadingRequest(true)
-            const res = await handleGQLRequest("SignUp", { email, password, name, image: imageUrl });
+            const res = await handleGQLRequest("SignUp", { email:name, password:"password", name, image: imageUrl });
             
             if (!res.SignUp?.email) {
             
@@ -174,7 +173,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                         </Form.Item>
                         <Form.Item
                             className={styles.form_item}
-                            rules={[{ required: true, min: 3 }]}
+                            // rules={[{ required: true, min: 3 }]}
                             name="name" >
                             <Input
                                 placeholder="Name"
@@ -183,7 +182,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                     </>
                     : null}
                 <Form.Item
-                    rules={[{ required: true, type: "email" }]}
+                    // rules={[{ required: true, type: "email" }]}
                     className={styles.form_item}
                     name="email">
                     <Input
@@ -192,7 +191,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 </Form.Item>
                 <Form.Item
                     className={styles.form_item}
-                    rules={[{ required: true, min: 8 }]}
+                    // rules={[{ required: true, min: 8 }]}
                     name={"password"}>
                     <Input
                         placeholder="Password"
@@ -202,7 +201,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                 {type == "SignUp" ?
                     <Form.Item
                         className={styles.form_item}
-                        rules={[{ required: true, min: 8 }]}
+                        // rules={[{ required: true, min: 8 }]}
                         name="repeatPassword" >
                         <Input
                             placeholder="Repeat Password"

@@ -13,16 +13,17 @@ export interface LoadingProps {
     type?: string  
 }
 
-export interface MapperProps {
+export interface UsersMapperProps {
     friends?: boolean,
     page? : number,
     getUsers?: Function,
     loadingSearchType?: string|boolean,
     total?: number,
     friendRequests?: boolean,
-    lastMessages?: boolean
+    lastMessages?: boolean,
     accept?:Function,
     users: any[],
+    parentElementRef?: any,
     setLoadingSearchType: Function
 };
 

@@ -24,9 +24,10 @@ const SearchUser: React.FC = () => {
 
     const searchOptionsRef = useRef<any>({ type: searchType, name, page: 1, lastPage: 0});
     const user = useSelector((state: IRootState) => state.user.user);
-    const listType = useMemo(() => searchType, [users])
     const searchInput = useRef<any>(null);
+    const findUserRef = useRef<any>(null);
     const [debouncedSearch] = useDebounce(loading, 1000);
+    const listType = useMemo(() => searchType, [users]);
 
     const isMedium = useMediaQuery({ query: "(max-width: 750px)" });
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
@@ -157,6 +158,7 @@ const SearchUser: React.FC = () => {
             style={{
                 width: isSmall ? "100%" : isMedium ? "60%" : "50%",
             }}
+            ref={findUserRef}
             className={styles.find_user_container}
         >
             <div 
@@ -199,6 +201,7 @@ const SearchUser: React.FC = () => {
                     getUsers={() => {}}
                     total={total}
                     users={users}
+                    parentElementRef={findUserRef}
                     page={childPage}
                     loadingSearchType={loading}
                     setLoadingSearchType={setLoading}

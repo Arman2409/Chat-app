@@ -41,6 +41,7 @@ const downloadFile = async (filename: string) => {
 const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
     const [interlocutor, setInterlocutor] = useState<UserType>({} as UserType)
+    const [isBlocked, setIsBlocked] = useState<boolean>(false);
 
     const isMedium = useMediaQuery({ query: "(max-width: 750px)" });
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
@@ -58,20 +59,30 @@ const MessagesChat: React.FC = () => {
     });
     const [user, setUser] = useState<UserType>(storeUser as any);
     const router: any = useRouter();
-    const isBlocked: boolean = useMemo(() => Boolean(messageData.blocked || user.blockedUsers?.includes(interlocutor.id)), [messageData, user.blockedUsers]);
-    const isRequested: boolean = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user.sentRequests, interlocutor]);
+    // const isBlocked = useState(() => Boolean(user.blockedUsers?.includes(interlocutor.id)), [user]);
+    const isRequested: boolean = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user, interlocutor]);
     const isFriend: boolean = useMemo(() => Boolean(user.friends?.includes(interlocutor.id)), [interlocutor, user.friends]);
 
+    console.log({
+        // isBlocked,
+        blockedUsers: user.blockedUsers,
+        intelocutor: storeInterlocutor.id,
+        currentId: user.id,
+        includes: user.blockedUsers?.includes(interlocutor.id),
+        isRequested,
+        isFriend
+    });
+    
 
     useEffect(() => {
         if (!user.name) {
             router.replace("/");
-        } else {
-            setInterlocutor({} as UserType);
         }
     }, [user])
 
     useEffect(() => {
+        console.log({storeInterlocutor});
+
         setInterlocutor(storeInterlocutor);
     }, [storeInterlocutor]);
 
@@ -97,7 +108,6 @@ const MessagesChat: React.FC = () => {
                 dispatch(setStoreMesaagesData(data));
             })
         }
-        setInterlocutor(storeInterlocutor);
     }, [interlocutor, user.id, interlocutor.id,  socket])
 
     useEffect(() => {
@@ -107,8 +117,28 @@ const MessagesChat: React.FC = () => {
     }, [messageData]);
 
     useEffect(() => {
+        console.log({storeUser});
+        
         setUser(storeUser);
     }, [storeUser]);
+
+    // useEffect(() => {
+    //     console.log({storeInterlocutor});
+        
+    //   setInterlocutor(storeInterlocutor);
+    // }, [storeInterlocutor])
+
+    useEffect(() => {
+        console.log({interlocutor});
+        
+    }, [interlocutor])
+
+    useEffect(() => {
+        //  console.log("is blocked", );
+         setIsBlocked(Boolean(user.blockedUsers?.includes(interlocutor.id)));
+         console.log("changed blocked ", Boolean(user.blockedUsers?.includes(interlocutor.id)));
+         
+    }, [user])
 
     return (
         <div className={styles.chat_cont}
@@ -142,7 +172,7 @@ const MessagesChat: React.FC = () => {
                     </div>
                     <div className={styles.messages_cont} ref={messagesRef}>
                         {/* add blocked alert  */}
-                        {messageData.blocked &&
+                        {isBlocked &&
                             <div className={styles.blocked_cont}>
                                 {messageData.blockedBy === messageData.between.indexOf(user.id) ? "Blocked by you" : "You were blocked"}
                             </div>}

@@ -12,9 +12,7 @@ export declare class WebSocketsGateway implements OnGatewayInit, OnGatewayDiscon
     afterInit(): Promise<void>;
     handleConnection(): any;
     handleDisconnect(client: SocketWIthHandshake): Promise<any>;
-    handleConnect(id: string, client: SocketWIthHandshake): Promise<"Not Connected" | {
-        notSeenCount: number;
-    }>;
+    handleConnect(id: string, client: SocketWIthHandshake): Promise<"Signed In" | "Not Connected">;
     handleMessage(from: string, to: string, messageText: string, file: string, audio: string, originalFile: string): Promise<MessagesType>;
     handleNewInterlocuter(currentId: string, userId: string): Promise<any>;
     blockUser(by: string, user: string): Promise<any>;

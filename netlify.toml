@@ -1,4 +1,0 @@
-[deploy]
-  functions = "functions"
-  dir = "frontend/out"
-  publish = "frontend/out"

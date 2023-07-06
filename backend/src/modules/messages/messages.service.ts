@@ -38,8 +38,10 @@ export class MessagesService {
           lastMessage = "(Voice Message)";
         } else if (lastMessage?.file) {
           lastMessage = lastMessage.file.originalName;
+        } else if (lastMessage?.text){
+          lastMessage = lastMessage?.text
         } else {
-          lastMessage = lastMessage.text
+          lastMessage = "";
         }
         const notSeenCount = (message.notSeen.by === message?.between?.indexOf(currentUser.id)) ?  message?.notSeen?.count : 0;
         const userId = message?.between?.filter((elem:any) => elem !== currentUser.id)[0];

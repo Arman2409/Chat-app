@@ -10,6 +10,7 @@ export interface UserType {
     sentRequests: any[],
     friends: any[],
     active: boolean,
+    lastVisited?:  string,
     lastMessage?: string,
     notSeenCount?: number,
     blockedUsers?: string[],

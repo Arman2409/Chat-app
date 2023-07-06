@@ -7,18 +7,18 @@ export declare class MessagesResolver {
         users: Promise<{
             lastMessage: any;
             notSeenCount: any;
-            id: string;
-            email: string;
-            name: string;
             password: string;
+            id: string;
+            name: string;
+            email: string;
             image: string;
             friends: string[];
             active: boolean;
             friendRequests: string[];
             sentRequests: string[];
             lastVisited: string;
-            lastMesage: string;
             blockedUsers: string[];
+            lastMesage: string;
         }>[];
     }>;
 }

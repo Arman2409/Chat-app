@@ -43,9 +43,8 @@ let WebSocketsGateway = class WebSocketsGateway {
         client.join(id === null || id === void 0 ? void 0 : id.toString());
         client.handshake.id = id;
         client.handshake.active = true;
-        const notSeenCount = this.service.getNotSeenCount(this.allMessages, id);
         if (update) {
-            return { notSeenCount: notSeenCount };
+            return "Signed In";
         }
         else {
             return "Not Connected";
@@ -118,34 +117,6 @@ let WebSocketsGateway = class WebSocketsGateway {
         }
     }
     async blockUser(by, user) {
-        var _a;
-        const messaged = this.allMessages.filter(messages => messages.between.includes(by) && messages.between.includes(user));
-        let messageData;
-        if (messaged === null || messaged === void 0 ? void 0 : messaged.length) {
-            messageData = messaged[0];
-            if (messageData.blocked) {
-                return "Already blocked";
-            }
-            (0, lodash_1.remove)(this.allMessages, (messages) => {
-                return messages === messageData;
-            });
-            messageData.blocked = true;
-            messageData.blockedBy = (_a = messageData.between) === null || _a === void 0 ? void 0 : _a.indexOf(by);
-        }
-        else {
-            messageData = {
-                between: [by, user],
-                blocked: true,
-                messages: [],
-                notSeen: {
-                    count: 0,
-                    by: 0
-                },
-                blockedBy: 0,
-            };
-        }
-        this.allMessages.push(messageData);
-        await this.service.updateMessages(this.allMessages);
         const addBlocked = await this.service.addRemoveBlockedUser(by, user, "block");
         if (addBlocked) {
             return addBlocked;
@@ -155,18 +126,6 @@ let WebSocketsGateway = class WebSocketsGateway {
         }
     }
     async unBlockUser(by, user) {
-        const messaged = this.allMessages.filter(messages => messages.between.includes(by) && messages.between.includes(user));
-        let messageData;
-        if (messaged === null || messaged === void 0 ? void 0 : messaged.length) {
-            messageData = messaged[0];
-            (0, lodash_1.remove)(this.allMessages, (messages) => {
-                return messages === messageData;
-            });
-            messageData.blocked = false;
-            messageData.blockedBy = 0;
-        }
-        this.allMessages.push(messageData);
-        await this.service.updateMessages(this.allMessages);
         const removeBlocked = await this.service.addRemoveBlockedUser(by, user, "unblock");
         if (removeBlocked) {
             return removeBlocked;

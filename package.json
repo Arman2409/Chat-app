@@ -4,9 +4,10 @@
   "description": "",
   "main": "./backend/src/main.ts",
   "scripts": {
+    "install": "cd frontend && npm install && cd ../backend && npm install",
     "deploy": "NODE_VERSION=18 NPM_VERSION=8 netlify deploy",
-    "start": "node ./server.js",
-    "build": "",
+    "start": "npm run start",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
     "global-start": "npm run install && npm run build && npm run start"
   },
   "keywords": [],

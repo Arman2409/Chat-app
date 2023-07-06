@@ -12,14 +12,14 @@ const UserDropdown = lazy(() => import("../UserDropdown/UserDropdown"));
 import styles from "../../../styles/Custom/UsersMapper.module.scss";
 import { IRootState } from "../../../store/store";
 import useOpenAlert from "../../Tools/hooks/useOpenAlert";
-import type { MapperProps } from "../../../types/propTypes";
+import type { UsersMapperProps } from "../../../types/propTypes";
 import type { UserType } from "../../../types/types";
 import { setInterlocutor } from "../../../store/messagesSlice";
 import { getSlicedWithDots } from "../../../functions/functions";
 import { usersLoadWaitTime } from "../../../configs/configs";
 import { setMenuOption } from "../../../store/windowSlice";
 
-const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoadingSearchType, loadingSearchType, total = 0, friends, friendRequests, lastMessages, accept }: MapperProps) => {
+const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentElementRef, page, setLoadingSearchType, loadingSearchType, total = 0, friends, friendRequests, lastMessages, accept }: UsersMapperProps) => {
     const [emptyText, setEmptyText] = useState<string>("");
     const [users, setUsers] = useState(userItems)
     const [loading, setLoading] = useState<boolean>(false);
@@ -28,7 +28,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
     const gettingUsersRef = useRef(false);
     const acceptLink = useRef<any>(null);
     const listRef = useRef<any>(null);
-    const router: any = useRouter();
+    const router = useRouter();
     const dispatch: Dispatch = useDispatch();
 
     const user = useSelector((state: IRootState) => {
@@ -48,7 +48,16 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
 
     const handleScroll = (e: any, isTouchEvent?: boolean) => {
         setOpenedDropdown(" ");
-        if (listRef.current?.contains(e.target) || listRef.current === e.target) {
+        let parentContains = false;
+        console.log(parentElementRef);
+
+        if(parentElementRef) {
+            console.log(parentElementRef);
+            
+             parentContains = parentElementRef.current?.contains(e.target);
+             console.log({parentContains});
+        }
+        if (listRef.current?.contains(e.target) || listRef.current === e.target || parentContains) {
             if (e.deltaY > 0 || isTouchEvent) {
                 if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {
                     if (loading) {
@@ -84,11 +93,11 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
     const changeInterlocutorMessage = useCallback(() => {
         setLoading(false);
         setLoadingSearchType("");
-        const interlocutor: any = users.find(e => e.id === storeInterlocutor.id);
+        const interlocutor = users.find((e:any) => e.id === storeInterlocutor.id);
         if (!interlocutor?.id) {
-            setUsers(currents => [{ ...storeInterlocutor, lastMessage: last(messagesData?.messages) || "" }, ...currents]);
+            setUsers((currents:any[]) => [{ ...storeInterlocutor, lastMessage: last(messagesData?.messages) || "" }, ...currents]);
         } else {
-            setUsers(currents => {
+            setUsers((currents:any[]) => {
                 remove(currents, (user) => storeInterlocutor.id === user.id);
                 const newInterlocutor = { ...interlocutor, lastMessage: last(messagesData?.messages) || "" };
                 currents.unshift(newInterlocutor);
@@ -137,7 +146,10 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
 
     useEffect(() => {
         window.addEventListener("touchmove", (e) => handleScroll(e, true))
-    }, [])
+    }, []);
+
+    console.log(users.length , {loading} , {loadingSearchType});
+    
 
     return (
         <div ref={listRef}
@@ -147,7 +159,7 @@ const UsersMapper: React.FC<MapperProps> = ({ users: userItems, page, setLoading
                 {lastMessages ? <TbListSearch className={styles.empty_icon} /> : <RiUserSearchFill className={styles.empty_icon} />}
                 <p className={styles.empty_text}>{emptyText}</p>
             </div>}
-            {users.map((item, index) => {
+            {users.map((item:UserType, index:number) => {
                 const isInterlocutor = item.id === storeInterlocutor.id;
                 const isBlocked = user.blockedUsers?.includes(item.id);
                 const isRequested = user.sentRequests?.includes(item.id) || user.friendRequests?.includes(item.id);

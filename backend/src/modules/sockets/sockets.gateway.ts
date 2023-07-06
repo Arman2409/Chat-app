@@ -50,9 +50,8 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         client.join(id?.toString());
         client.handshake.id = id;
         client.handshake.active = true;
-        const notSeenCount = this.service.getNotSeenCount(this.allMessages, id);
         if (update) {
-            return {notSeenCount: notSeenCount};
+            return "Signed In";
         } else {
             return "Not Connected";
         }
@@ -143,33 +142,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
      @SubscribeMessage("blockUser")
      async blockUser(@MessageBody("by") by: string,
         @MessageBody("user") user: string,){
-            
-        const messaged = this.allMessages.filter(messages => messages.between.includes(by) && messages.between.includes(user));
-        let messageData:any;
-        if (messaged?.length){
-            messageData = messaged[0];
-            if(messageData.blocked) {
-                return "Already blocked";
-            }
-            remove(this.allMessages,(messages) => {
-                return messages === messageData;
-            });
-            messageData.blocked = true;
-            messageData.blockedBy = messageData.between?.indexOf(by);
-        } else {
-           messageData  =  {
-            between: [by, user],
-            blocked: true,
-            messages: [],
-            notSeen:  {
-                count:0,
-                by:0
-            },
-            blockedBy: 0,
-          }
-        }
-        this.allMessages.push(messageData);
-        await this.service.updateMessages(this.allMessages);
         const addBlocked = await this.service.addRemoveBlockedUser(by, user, "block");
         if(addBlocked) {
           return addBlocked;
@@ -181,19 +153,6 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
      @SubscribeMessage("unBlockUser")
      async unBlockUser(@MessageBody("by") by: string,
         @MessageBody("user") user: string,){
-            
-        const messaged = this.allMessages.filter(messages => messages.between.includes(by) && messages.between.includes(user));
-        let messageData:any;
-        if (messaged?.length){
-            messageData = messaged[0];
-            remove(this.allMessages,(messages) => {
-                return messages === messageData;
-            });
-            messageData.blocked = false;
-            messageData.blockedBy = 0;
-        }
-        this.allMessages.push(messageData);
-        await  this.service.updateMessages(this.allMessages);
         const removeBlocked = await this.service.addRemoveBlockedUser(by, user, "unblock");
         if(removeBlocked) {
          return removeBlocked;
