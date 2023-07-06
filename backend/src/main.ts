@@ -21,10 +21,7 @@ async function bootstrap() {
     resave: false,
     saveUninitialized: false
   }));
-  console.log(process.env);
-  
-  
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.MY_PORT);
 }
 bootstrap();
 
