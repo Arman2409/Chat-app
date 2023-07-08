@@ -16,7 +16,7 @@ const LastMessages: React.FC = () => {
    const [pageState, setPageState] = useState<number>(1);
 
    const pageRef = useRef<number>(1);
-   const isRequestingRef = useRef<boolean>(true);
+   const isRequestingRef: any = useRef<boolean>(true);
    const isMedium: boolean = useMediaQuery({ query: "(max-width: 750px)" });
    const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
    const { messagesData }: any = useSelector((state: IRootState) => state.messages);
@@ -35,7 +35,38 @@ const LastMessages: React.FC = () => {
          if (fetchedInterlocutor) {
             users = sortBy(users, ({ id }) => id === fetchedInterlocutor.id ? 0 : 1);
          };
-
+         let hasCurrent:boolean = false; 
+         users = users.map((elem: any) => {
+             if(elem.id === interlocutor.id) {
+                hasCurrent = true
+             };
+             if (messagesData.between.includes(elem?.id)) {
+                const { id }: any = { ...storeUser || {} }
+                const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
+                let lastMessage:any = last(messagesData?.messages);
+                console.log({
+                  lastMessage,
+                  messages: messagesData.messages
+                });
+                
+                if(lastMessage?.audio) {
+                   lastMessage = "(Voice Message)";
+                 } else if (lastMessage?.file) {
+                   lastMessage = lastMessage.file.originalName;
+                 } else {
+                   lastMessage = lastMessage?.text || "..."
+                 };
+                elem = {
+                   ...elem,
+                   lastMessage,
+                   notSeenCount: hasNotSeen ? messagesData.notSeen.count : 0
+                }
+             }
+              return elem;
+          }) 
+           if(!hasCurrent && !isRequestingRef.current) {
+             setLoadingType("getMissing");
+           }
          setLastMessages(curr => {
             if (!curr.length) {
                return [...users || []];
@@ -49,7 +80,7 @@ const LastMessages: React.FC = () => {
          isRequestingRef.current = false;
          setPageState(pageRef.current)
       })();
-   }, [pageRef, setLastMessages, loadingType]);
+   }, [pageRef, interlocutor, setLastMessages, lastMessages, loadingType]);
 
    useEffect(() => {
       if (isRequestingRef.current) return;
@@ -60,16 +91,19 @@ const LastMessages: React.FC = () => {
    }, [loadingType]);
 
    useEffect(() => {
-      setLastMessages(lastMessages => {
-        let hasCurrent:boolean = false; 
-        const newLastMessages = lastMessages.map((elem: any) => {
-            if(elem.id === interlocutor.id) {
-               hasCurrent = true
-            };
+      setLastMessages(currentMessages => {
+          let includes = false;
+          const newLastMessages = currentMessages.map((elem: any) => {;
             if (messagesData.between.includes(elem?.id)) {
+               includes = true;
+               console.log("change includes");
+               
                const { id }: any = { ...storeUser || {} }
                const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
                let lastMessage:any = last(messagesData?.messages);
+               
+               console.log(lastMessage);
+               
                if(lastMessage?.audio) {
                   lastMessage = "(Voice Message)";
                 } else if (lastMessage?.file) {
@@ -85,24 +119,39 @@ const LastMessages: React.FC = () => {
             }
              return elem;
          }) 
-          if(!hasCurrent && !isRequestingRef.current) {
-            setLoadingType("getMissing");
-          }
+         console.log(includes);
+         console.log(newLastMessages);
+         
+         if(!includes && messagesData?.messages?.length && !isRequestingRef) {
+            isRequestingRef.current = true;
+            setLastMessages([]);
+            getLastMessages();
+         };
          return newLastMessages;
         }
          );
    }, [messagesData, setLastMessages, isRequestingRef, interlocutorMessages, storeUser]);
 
    useEffect(() => {
+      
       if(interlocutorMessages.updated) {
+         console.log("get 2");
+         isRequestingRef.current = true;
          setLastMessages([]);
          getLastMessages();
       }
-   }, [interlocutorMessages]);
+   }, [interlocutorMessages, setLastMessages, messagesData]);
 
    useEffect(() => {
+      console.log("get 3");
+      isRequestingRef.current = true;
       getLastMessages();
    }, []);
+
+   useEffect(() => {
+      console.log(lastMessages);
+      
+   }, [lastMessages])
 
    return (
       <div

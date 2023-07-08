@@ -109,7 +109,7 @@ const MessagesChat: React.FC = () => {
 
     useEffect(() => {
          setIsBlocked(Boolean(user.blockedUsers?.includes(interlocutor.id)));
-    }, [user])
+    }, [user, interlocutor])
 
     return (
         <div className={styles.chat_cont}
