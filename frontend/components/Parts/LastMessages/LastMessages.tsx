@@ -96,14 +96,9 @@ const LastMessages: React.FC = () => {
           const newLastMessages = currentMessages.map((elem: any) => {;
             if (messagesData.between.includes(elem?.id)) {
                includes = true;
-               console.log("change includes");
-               
                const { id }: any = { ...storeUser || {} }
                const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
-               let lastMessage:any = last(messagesData?.messages);
-               
-               console.log(lastMessage);
-               
+               let lastMessage:any = last(messagesData?.messages);               
                if(lastMessage?.audio) {
                   lastMessage = "(Voice Message)";
                 } else if (lastMessage?.file) {
@@ -118,11 +113,8 @@ const LastMessages: React.FC = () => {
                }
             }
              return elem;
-         }) 
-         console.log(includes);
-         console.log(newLastMessages);
-         
-         if(!includes && messagesData?.messages?.length && !isRequestingRef) {
+         })  
+         if(!includes && messagesData?.messages?.length && !isRequestingRef.current) {  
             isRequestingRef.current = true;
             setLastMessages([]);
             getLastMessages();

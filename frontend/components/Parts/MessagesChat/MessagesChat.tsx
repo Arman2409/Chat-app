@@ -145,7 +145,7 @@ const MessagesChat: React.FC = () => {
                         {/* add blocked alert  */}
                         {isBlocked &&
                             <div className={styles.blocked_cont}>
-                                {messageData.blockedBy === messageData.between.indexOf(user.id) ? "Blocked by you" : "You were blocked"}
+                                {messageData.blockedBy === messageData.between?.indexOf(user.id) ? "Blocked by you" : "You were blocked"}
                             </div>}
                         {/* maping the messages  */}
                         {messageData.messages &&
