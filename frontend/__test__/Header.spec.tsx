@@ -1,5 +1,6 @@
+import "@testing-library/jest-dom";
 import React from 'react';
-import { screen, render, fireEvent } from "@testing-library/react";
+import { screen, render, fireEvent, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { useRouter } from 'next/router';
 
@@ -16,16 +17,18 @@ describe("<Home />", () => {
     (useRouter as jest.Mock).mockReturnValue({
       query: {}
     })
-    test("", () => {
-        render(
-           <Provider store={store}>
-             <Header />
-            </Provider>
-            );
+
+    test("Open owner window",async  () => {
+      await act( async () =>  render(
+        <Provider store={store}>
+          <Header />
+        </Provider>
+      ));
         
-        const toggleOwner = screen.getByTestId("toggleOwnerWindow");
-        fireEvent.click(toggleOwner);
+        
+        const toggleOwner = screen.getByTestId("toggleOwner");
+        await act(() => fireEvent.click(toggleOwner));
         const ownerWindow = screen.getByTestId("ownerWindow");
-        expect(ownerWindow).toBeDefined() ;
+        expect(ownerWindow).toBeDefined();
     })
 });

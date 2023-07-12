@@ -1,5 +1,5 @@
 import { createSlice, Slice } from "@reduxjs/toolkit";
-import { WindowInitialState,} from "../types/types";
+import type { WindowInitialState} from "../types/storeTypes";
 
 const initialState:WindowInitialState = {
     loaded: false,

@@ -5,13 +5,14 @@ import { getSlicedWithDots } from "../../../functions/functions";
 const useOpenAlert = () => {
     const [messageOptions, setMessageOptions] = useState<any>({});
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    
     const timeoutRef = useRef<any>(null);
     
     const openMessage = ({message: string, type}:any) => {
        if (!string) return;
        if (isOpen) message.destroy();
        setIsOpen(true);
-       string =  getSlicedWithDots(string, 25);
+       string = getSlicedWithDots(string, 25);
        if(type == "error") {
           message.error(string, 1)
        }

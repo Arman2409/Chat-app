@@ -43,3 +43,15 @@ export const downloadBase64File = (filename: string, data: string) => {
   let event = new MouseEvent('click');
   link.dispatchEvent(event);
 }
+
+export const getMessageString = (messageObject:any) => {
+  if(messageObject?.audio) {
+    return "(Voice Message)";
+  } else if (messageObject?.file) {
+    return `(${messageObject.file?.originalName})`;
+  } else if (messageObject?.text) {
+    return messageObject.text;
+  } else {
+    return "..."  
+  };
+}

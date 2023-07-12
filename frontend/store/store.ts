@@ -1,8 +1,8 @@
 import { configureStore, Store} from "@reduxjs/toolkit";
 
+import type {Reducers} from "../types/storeTypes";
 import userReducer from "./userSlice";
 import messagesSlice from "./messagesSlice";
-import {Reducers} from "../types/types";
 import socketSlice from "./socketSlice";
 import windowSlice from "./windowSlice";
 

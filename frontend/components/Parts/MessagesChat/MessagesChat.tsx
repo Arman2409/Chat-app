@@ -11,11 +11,12 @@ import styles from "../../../styles/Parts/MessagesChat/MessagesChat.module.scss"
 import { IRootState } from "../../../store/store";
 import { MessagesDataType, UserType } from "../../../types/types";
 import { downloadBase64File, getSendersId, getSlicedWithDots } from "../../../functions/functions";
-import { setInterlocutorMessages, setMessagesData as setStoreMesaagesData } from "../../../store/messagesSlice";
+import { setMessagesData as setStoreMesagesData, setUpdated } from "../../../store/messagesSlice";
 import MessagesInput from "./MessagesInput/MessagesInput";
 import UserDropdown from "../../Custom/UserDropdown/UserDropdown";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import AudioMessage from "./AudioMessage/AudioMessage";
+import Loading from "../../Custom/Loading/Loading";
 
 const getCurrentTimeStamp = (messagedDate: string) => {
     const currentDate = new Date().toString().slice(3, 21);
@@ -42,6 +43,7 @@ const MessagesChat: React.FC = () => {
     const [messageData, setMessageData] = useState<any>({ between: [], messages: [], sequence: [] });
     const [interlocutor, setInterlocutor] = useState<UserType>({} as UserType)
     const [isBlocked, setIsBlocked] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const isMedium = useMediaQuery({ query: "(max-width: 750px)" });
     const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
@@ -59,14 +61,11 @@ const MessagesChat: React.FC = () => {
     });
     const [user, setUser] = useState<UserType>(storeUser as any);
     const router = useRouter();
-    // const isBlocked = useState(() => Boolean(user.blockedUsers?.includes(interlocutor.id)), [user]);
     const isRequested = useMemo(() => Boolean(user.sentRequests?.includes(interlocutor.id) || user.friendRequests?.includes(interlocutor.id)), [user, interlocutor]);
     const isFriend = useMemo(() => Boolean(user.friends?.includes(interlocutor.id)), [interlocutor, user.friends]);
 
     useEffect(() => {
-        if (!user.name) {
-            router.replace("/");
-        }
+        if (!user.name) router.replace("/");
     }, [user])
 
     useEffect(() => {
@@ -76,13 +75,21 @@ const MessagesChat: React.FC = () => {
     useEffect(() => {
         setMessageData({ between: [], messages: [], sequence: [] });
         if (socket) {
+            setLoading(true)
             socket.emit("getInterlocutor", { currentId: user.id, userId: interlocutor.id }, (res: any) => {
-                dispatch(setInterlocutorMessages({
-                    ...res
-                }));
-                setMessageData({
-                    ...res
-                });
+                let messages:MessagesDataType;
+                if(Object.hasOwn(res, "between")){
+                    messages = res;
+                } else {
+                    messages = {
+                        between: [],
+                        messages: []
+                    };
+                } 
+                dispatch(setStoreMesagesData(messages));
+                dispatch(setUpdated(messages.updated));
+                setMessageData(messages);
+                setLoading(false)
             })
             socket.on("message", async (data: MessagesDataType) => {
                 const senderId = getSendersId(data?.between, user.id);
@@ -91,8 +98,8 @@ const MessagesChat: React.FC = () => {
                         ...data
                     });
                     return;
-                }
-                dispatch(setStoreMesaagesData(data));
+                }   
+                dispatch(setStoreMesagesData(data));
             })
         }
     }, [interlocutor, user.id, interlocutor.id,  socket])
@@ -148,7 +155,7 @@ const MessagesChat: React.FC = () => {
                                 {messageData.blockedBy === messageData.between?.indexOf(user.id) ? "Blocked by you" : "You were blocked"}
                             </div>}
                         {/* maping the messages  */}
-                        {messageData.messages &&
+                        {messageData.messages.length ?
                             messageData.messages?.map((msg: any, index: number) => {
                                 const fromThisUser: boolean = msg.sentBy === messageData.between.indexOf(user.id);
                                 const timeStamp = getCurrentTimeStamp(msg.date);
@@ -219,7 +226,7 @@ const MessagesChat: React.FC = () => {
                                     </div>
                                     
                                 )
-                            })}
+                            }) : loading && <Loading />}
                     </div>
                     <MessagesInput
                         setMessageData={setMessageData}

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { GraphQLError } from 'graphql';
 
-import { UserReq } from 'types/types';
-import { getStartEnd } from '../../functions/functions';
+import { UserReq } from '../../../types/types';
+import { getMessageString, getStartEnd } from '../../functions/functions';
 
 
 @Injectable()
@@ -31,18 +31,11 @@ export class MessagesService {
     const length = messages.length;
     const { startIndex, endIndex } = getStartEnd(page, perPage);
     messages = messages.slice(startIndex, endIndex);
-    
-    const resp = {total: length, users: messages.map(async (message:any) => {
+    messages = messages.reverse();
+    const responseArray = {total: length, users: messages.map(async (message:any) => {
         let lastMessage = message?.messages[message?.messages?.length - 1];
-        if(lastMessage?.audio) {
-          lastMessage = "(Voice Message)";
-        } else if (lastMessage?.file) {
-          lastMessage = lastMessage.file.originalName;
-        } else if (lastMessage?.text){
-          lastMessage = lastMessage?.text
-        } else {
-          lastMessage = "";
-        }
+        lastMessage = getMessageString(lastMessage);
+
         const notSeenCount = (message.notSeen.by === message?.between?.indexOf(currentUser.id)) ?  message?.notSeen?.count : 0;
         const userId = message?.between?.filter((elem:any) => elem !== currentUser.id)[0];
         return await this.prisma.users.findUnique({
@@ -56,7 +49,7 @@ export class MessagesService {
         }))
       }) || []
     }
-    return resp;
+    return responseArray;
     
   }
 }

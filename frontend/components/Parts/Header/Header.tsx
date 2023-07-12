@@ -197,7 +197,7 @@ const AppHeader: React.FunctionComponent = () => {
                     style={{
                         marginLeft: user.name ? "15px" : "auto"
                     }}
-                    data-testid="toggleOwnerWindow"
+                    data-testid="toggleOwner"
                     onClick={() => toggleUser()}>
                     <Typography className={styles.user_name}>
                         {user.name ? getSlicedWithDots(user.name, 15) : "Sign In"}

@@ -8,6 +8,7 @@ import styles from "../../../styles/Parts/LastMessages.module.scss";
 import UsersMapper from "../../Custom/UsersMapper/UsersMapper";
 import handleGQLRequest from "../../../request/handleGQLRequest";
 import { IRootState } from "../../../store/store";
+import { getMessageString } from "../../../functions/functions";
 
 const LastMessages: React.FC = () => {
    const [total, setTotal] = useState(100);
@@ -21,7 +22,7 @@ const LastMessages: React.FC = () => {
    const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
    const { messagesData }: any = useSelector((state: IRootState) => state.messages);
 
-   const { interlocutor, interlocutorMessages } = useSelector((state: IRootState) => {
+   const { interlocutor } = useSelector((state: IRootState) => {
       return state.messages;
    });
    const storeUser = useSelector((state: IRootState) => state.user.user);
@@ -31,10 +32,7 @@ const LastMessages: React.FC = () => {
       (async function () {
          const lastMessagesData = await handleGQLRequest("GetLastMessages", { page: pageRef.current });
          let users = lastMessagesData?.GetLastMessages?.users || [];
-         const fetchedInterlocutor = users.filter((elem: any) => elem.email === interlocutor.email)[0];
-         if (fetchedInterlocutor) {
-            users = sortBy(users, ({ id }) => id === fetchedInterlocutor.id ? 0 : 1);
-         };
+         users = sortBy(users, ({ id }) => id === interlocutor.id ? 0 : 1);
          let hasCurrent:boolean = false; 
          users = users.map((elem: any) => {
              if(elem.id === interlocutor.id) {
@@ -44,10 +42,6 @@ const LastMessages: React.FC = () => {
                 const { id }: any = { ...storeUser || {} }
                 const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
                 let lastMessage:any = last(messagesData?.messages);
-                console.log({
-                  lastMessage,
-                  messages: messagesData.messages
-                });
                 
                 if(lastMessage?.audio) {
                    lastMessage = "(Voice Message)";
@@ -87,24 +81,25 @@ const LastMessages: React.FC = () => {
       if (loadingType.startsWith("newPage")) {
          pageRef.current = pageRef.current + 1;
       };
+      isRequestingRef.current = true;
       getLastMessages();
    }, [loadingType]);
 
    useEffect(() => {
       setLastMessages(currentMessages => {
           let includes = false;
-          const newLastMessages = currentMessages.map((elem: any) => {;
+          let messageChanged = false;
+          let newLastMessages = currentMessages.map((elem: any) => {;
             if (messagesData.between.includes(elem?.id)) {
                includes = true;
                const { id }: any = { ...storeUser || {} }
                const hasNotSeen:boolean = messagesData.between?.indexOf(id) === messagesData?.notSeen?.by;
+               const currentLastMessage = elem.lastMessage;
                let lastMessage:any = last(messagesData?.messages);               
-               if(lastMessage?.audio) {
-                  lastMessage = "(Voice Message)";
-                } else if (lastMessage?.file) {
-                  lastMessage = lastMessage.file.originalName;
-                } else {
-                  lastMessage = lastMessage?.text || "..."
+               lastMessage = getMessageString(lastMessage);
+               const notSeenCount =  hasNotSeen ? messagesData.notSeen.count : 0;
+                if(lastMessage !== currentLastMessage || notSeenCount !== elem.notSeenCount) {
+                   messageChanged = true;
                 };
                elem = {
                   ...elem,
@@ -119,29 +114,24 @@ const LastMessages: React.FC = () => {
             setLastMessages([]);
             getLastMessages();
          };
-         return newLastMessages;
+         
+         if(messageChanged) {
+            newLastMessages = sortBy(newLastMessages, ({ id }) => id === interlocutor.id ? 0 : 1);
+            return newLastMessages;
+         } else {
+            return currentMessages;
+         }
         }
-         );
-   }, [messagesData, setLastMessages, isRequestingRef, interlocutorMessages, storeUser]);
+      );
+   }, [messagesData, setLastMessages, isRequestingRef, storeUser]);
 
    useEffect(() => {
-      
-      if(interlocutorMessages.updated) {
-         console.log("get 2");
-         isRequestingRef.current = true;
-         setLastMessages([]);
-         getLastMessages();
-      }
-   }, [interlocutorMessages, setLastMessages, messagesData]);
-
-   useEffect(() => {
-      console.log("get 3");
       isRequestingRef.current = true;
       getLastMessages();
    }, []);
 
    useEffect(() => {
-      console.log(lastMessages);
+      console.log({lastMessages});
       
    }, [lastMessages])
 

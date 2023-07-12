@@ -6,7 +6,6 @@ import { WaveLoading } from "react-loading-typescript";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "@reduxjs/toolkit";
 import { List, Avatar, Typography, Badge, Button } from "antd";
-import { last, remove } from "lodash";
 
 const UserDropdown = lazy(() => import("../UserDropdown/UserDropdown"));
 import styles from "../../../styles/Custom/UsersMapper.module.scss";
@@ -49,9 +48,7 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
     const handleScroll = (e: any, isTouchEvent?: boolean) => {
         setOpenedDropdown(" ");
         let parentContains = false;
-
         if(parentElementRef) {
-            
              parentContains = parentElementRef.current?.contains(e.target);
         }
         if (listRef.current?.contains(e.target) || listRef.current === e.target || parentContains) {
@@ -87,22 +84,6 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
         router.push("/myMessages");
     }, [dispatch, setMessageOptions, router, user, setMenuOption, setInterlocutor]);
 
-    const changeInterlocutorMessage = useCallback(() => {
-        setLoading(false);
-        setLoadingSearchType("");
-        const interlocutor = users.find((e:any) => e.id === storeInterlocutor.id);
-        if (!interlocutor?.id) {
-            setUsers((currents:any[]) => [{ ...storeInterlocutor, lastMessage: last(messagesData?.messages) || "" }, ...currents]);
-        } else {
-            setUsers((currents:any[]) => {
-                remove(currents, (user) => storeInterlocutor.id === user.id);
-                const newInterlocutor = { ...interlocutor, lastMessage: last(messagesData?.messages) || "" };
-                currents.unshift(newInterlocutor);
-                return [...currents];
-            });
-        }
-    }, [setUsers, users, messagesData, storeInterlocutor]);
-
     const openDropdown = useCallback((email: string) => {
         setOpenedDropdown(email);
     }, [setOpenedDropdown]);
@@ -137,14 +118,12 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
             if (messagesData.blocked) {
                 return;
             }
-            changeInterlocutorMessage();
         }
     }, [messagesData, setUsers]);
 
     useEffect(() => {
         window.addEventListener("touchmove", (e) => handleScroll(e, true))
     }, []);
-
 
     return (
         <div ref={listRef}
@@ -160,6 +139,7 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
                 const isRequested = user.sentRequests?.includes(item.id) || user.friendRequests?.includes(item.id);
                 return (
                     <List.Item
+                        key={index}
                         onClick={() => newChat(item)}
                         data-testid="listItem"
                         className={lastMessages ? isInterlocutor ? styles.list_item_message_interlocutor : styles.list_item_message : styles.list_item}

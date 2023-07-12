@@ -7,15 +7,11 @@ module.exports = {
   testEnvironment: 'jsdom',
   transform: {
     // '.(css|less,scss)$': '<rootDir>/jest-config/style-mock.js',
-    '^.+\\.ts?$': 'ts-jest',
-     "^.+\\.scss$": 'jest-scss-transform'
-  },
-  globals: {
-    'ts-jest': {
+    '^.+\\.tsx?$': ['ts-jest', {
       tsConfig: {
         jsx: "react-jsx"
-      }
-    }
+      }}],
+     "^.+\\.scss$": 'jest-scss-transform',
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
   moduleFileExtensions: ['tsx', 'ts', 'js', 'scss', 'json', 'node'],

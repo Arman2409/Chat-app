@@ -4,7 +4,9 @@ import {
     OnGatewayInit,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    SubscribeMessage, MessageBody, ConnectedSocket
+    SubscribeMessage, 
+    MessageBody, 
+    ConnectedSocket
 } from "@nestjs/websockets";
 import {Server} from "socket.io";
 import {remove} from "lodash"
@@ -118,22 +120,17 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayDisconnect, On
         const messaged = this.allMessages.filter(messages => messages.between.includes(currentId) && messages.between.includes(userId));
         if (messaged?.length){
             const previousMessaging = messaged[0];
-            let updated = false;
             if (previousMessaging.notSeen?.by === previousMessaging?.between?.indexOf(currentId)) {
                 remove(this.allMessages,(messages) => {
                     return messages.between?.includes(currentId) && messages.between?.includes(userId);
                 });
-                
-                updated = previousMessaging.notSeen.count !== 0;
+                     
                 previousMessaging.notSeen.by = 0;
                 previousMessaging.notSeen.count = 0;
                 this.allMessages.push(previousMessaging); 
                 await this.service.updateMessages(this.allMessages);
             }
-            return {
-                 ...previousMessaging,
-                  updated
-                };
+            return previousMessaging;
         } else {
             return "Not messaged";
         }

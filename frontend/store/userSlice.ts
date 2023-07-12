@@ -1,5 +1,5 @@
 import { createSlice, Slice } from "@reduxjs/toolkit";
-import {  UserInitialState } from "../types/types";
+import type {  UserInitialState } from "../types/storeTypes";
 
 const initialState:UserInitialState = {
     user: {id: "", name: "", email: "", sentRequests: [], image: "", friendRequests: [], friends: [], active: false}

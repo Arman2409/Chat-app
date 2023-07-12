@@ -5,10 +5,10 @@ import router from "next/router";
 import {Dispatch} from "@reduxjs/toolkit";
 import {CloseCircleFilled} from "@ant-design/icons";
 
-import {UserType} from "../../../types/types";
+import styles from "../../../styles/Tools/MessageAlert.module.scss";
+import type {UserType} from "../../../types/types";
 import {IRootState} from "../../../store/store";
 import handleGQLRequest from "../../../request/handleGQLRequest";
-import styles from "../../../styles/Tools/MessageAlert.module.scss";
 import {getSendersId, getSlicedWithDots} from "../../../functions/functions";
 import {setInterlocutor} from "../../../store/messagesSlice";
 
@@ -17,8 +17,9 @@ const MessageAlert = () => {
     const storeUser: UserType = useSelector((state: IRootState) => state.user.user);
     const [fromUser, setFromUser] = useState<UserType>({} as UserType);
     const [loading, setLoading] = useState<boolean>(false);
-    const dispatch: Dispatch = useDispatch();
     const [open, setOpen] = useState<boolean>(false);
+
+    const dispatch: Dispatch = useDispatch();
     const {messagesData: data , interlocutor}:any = useSelector((state: IRootState) => state.messages);
 
     const watchMessage = useCallback(() => {
@@ -52,7 +53,7 @@ const MessageAlert = () => {
                             <CloseCircleFilled />
                         </div>
                 </Card>
-                : null}
+            : null}
         </>
 
     );
@@ -72,20 +73,16 @@ const MessageAlert = () => {
     useEffect(() => {
         messageApi.destroy(fromUser.name);
         setOpen(false);
-        if (!data.between.length) {
-            return;
-        }
-        
+        if (!data.between.length) return;        
         const fromId = getSendersId(data.between, storeUser.id);
-        if(fromId === interlocutor.id) {
-            return;
-        }
+        if(fromId === interlocutor.id) return;
         setLoading(true);
         (async function () {
             const response = await handleGQLRequest("FindUserById", {id: fromId});
             setFromUser(response.FindUserById ? response.FindUserById : {});
             setLoading(false);
         })();
+        
         return () => {
             messageApi.destroy(fromUser.name);
             setOpen(false);

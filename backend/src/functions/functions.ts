@@ -16,3 +16,15 @@ export const sortByActivesFirst = (data:any[]):any[] => {
         return 1;
     });
 };
+
+export const getMessageString = (messageObject:any) => {
+    if(messageObject?.audio) {
+      return "(Voice Message)";
+    } else if (messageObject?.file) {
+      return `(${messageObject.file?.originalName})`;
+    } else if (messageObject?.text) {
+      return messageObject.text;
+    } else {
+      return "..."  
+    };
+  }

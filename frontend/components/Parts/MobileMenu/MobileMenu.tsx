@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Dropdown } from "antd";
-import { BiMenuAltRight } from "react-icons/bi"
+import { HiOutlineMenuAlt4 } from "react-icons/hi"
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 
@@ -43,7 +43,7 @@ const MobileMenu = () => {
         >
          <div className={styles.menu_cont}>
            <div className={styles.menu_cont_icon}>
-             <BiMenuAltRight />
+             <HiOutlineMenuAlt4 />
            </div>
          </div>
        </Dropdown>

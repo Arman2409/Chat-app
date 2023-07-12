@@ -20,12 +20,11 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
     const socket = useSelector((state: IRootState) => {
         return state.socket.socket;
     });
+    const [items, setItems] = useState<any[]>([]);
     const storeUser = useSelector((state: IRootState) => state.user.user);
 
     const { setMessageOptions } = useOpenAlert();
     
-    const items = useMemo(() => getItems(isBlocked as boolean, isRequested as boolean), [isBlocked, isRequested, getItems]);
-
     // adding or removing a friend
     const handleAddRemoveFriend = useCallback((type: string) => {
         const { id } = { ...user };
@@ -94,7 +93,7 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
                 })
             }
         })
-    }, [storeUser, socket, setMessageOptions]);
+    }, [storeUser, user, socket, setMessageOptions]);
 
     const clickIcon = useCallback((e: Event) => {
         e.stopPropagation();
@@ -118,7 +117,7 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
                 })
             }
         })
-    }, [storeUser, socket, setMessageOptions]);
+    }, [storeUser, user, socket, setMessageOptions]);
 
     // calling function depending on the event key 
     const handleMenuClick = useCallback((event: any) => {
@@ -132,7 +131,7 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
         } else if (event.key === "unBlockUser") {
             handleUnblockUser();
         }
-    }, [handleBlockUser, handleAddRemoveFriend]);
+    }, [handleBlockUser, handleAddRemoveFriend, handleUnblockUser]);
 
     //closing the dropdown if any other is being opened
     useEffect(() => {
@@ -140,6 +139,11 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
             setOpenState(false);
         }
     }, [openElement, user, openState]);
+
+    useEffect(() => { 
+       const items = getItems(isBlocked as boolean, isRequested as boolean)
+       setItems(type === "friend" ? items.friends : items.all);
+    }, [isBlocked, isRequested, getItems, user])
 
     // closing the dropdown when clicked outside of it 
     useOnClickOutside(dropdownRef, (e) => {
@@ -162,7 +166,7 @@ const UserDropdown = ({ type, onClick, openElement, index, isRequested, setButto
                 overlayClassName={`${styles.list_item_actions_dropdown} list_item_actions_dropdown_${index}` }
                 placement="bottomLeft"
                 menu={{
-                    items: type === "friend" ? items.friends : items.all,
+                    items,
                     onClick: (event) => handleMenuClick({ ...event, id: user.id })
                 }}>
                 <div

@@ -1,5 +1,6 @@
 import { createSlice, Slice } from "@reduxjs/toolkit";
-import { SocketInitialState } from "../types/types";
+
+import type { SocketInitialState } from "../types/storeTypes";
 
 const initialState:SocketInitialState = {
     socket: null

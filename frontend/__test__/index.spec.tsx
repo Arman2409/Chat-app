@@ -13,8 +13,6 @@ jest.mock('next/router', () => ({
 
 describe("<Home />", () => {
         beforeAll(() => setWindowProperties(window, jest));
-     //  can come handy for routing 
-    // useRouter.mockReturnValue({ query: {}})
     
     test("should have search input", () => {
         render(<Provider store={store}><Home /></Provider>);
