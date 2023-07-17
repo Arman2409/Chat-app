@@ -9,8 +9,7 @@ import { UserReq } from '../../../types/types';
 @Injectable()
 export class FriendsService {
   constructor(private readonly prisma: PrismaService,
-              private readonly jwt:JwtService) {
-  };
+              private readonly jwt:JwtService) {};
 
   async addFriend(ctx:any , id: any):Promise<any> {
     const req: UserReq = ctx.req;

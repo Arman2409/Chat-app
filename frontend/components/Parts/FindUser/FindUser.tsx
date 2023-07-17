@@ -34,7 +34,6 @@ const SearchUser: React.FC = () => {
 
     const getSeachResults = useCallback(() => {
         setLoading("");
-        
         const {page, lastPage} = searchOptionsRef.current;
         if(debouncedSearch.toString().startsWith("newPage") && page === lastPage){
             return;

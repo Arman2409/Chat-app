@@ -11,7 +11,8 @@ async function bootstrap() {
   // Middlewares 
   app.use(bodyParser.json({limit: '50mb'}));
   app.use((req:any, res:any, next:any) => {
-    console.log(req.body);
+    // console.log(req.body);
+    
     next();
   })
   app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));

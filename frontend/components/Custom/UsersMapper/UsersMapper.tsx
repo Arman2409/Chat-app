@@ -24,16 +24,17 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
     const [loading, setLoading] = useState<boolean>(false);
     const [openedDropdown, setOpenedDropdown] = useState<string>("");
     const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
-    const gettingUsersRef = useRef(false);
+    const gettingUsersRef = useRef<boolean>(false);
     const acceptLink = useRef<any>(null);
     const listRef = useRef<any>(null);
+
     const router = useRouter();
     const dispatch: Dispatch = useDispatch();
 
     const user = useSelector((state: IRootState) => {
         return state.user.user
     });
-    const { interlocutor: storeInterlocutor, messagesData } = useSelector((state: IRootState) => {
+    const { interlocutor:storeInterlocutor , messagesData } = useSelector((state: IRootState) => {
         return state.messages;
     });
 
