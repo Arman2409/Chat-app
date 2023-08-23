@@ -105,7 +105,6 @@ const FriendRequests = ({clickOutside}: any) => {
             {loading  && <Loading />}
             {user.friendRequests?.length ? 
              <UsersMapper 
-              setLoadingSearchType={setLoading}
               friendRequests={true}
               accept={accept} 
               friends={true} 

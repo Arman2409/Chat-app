@@ -39,29 +39,6 @@ a {
   max-width: 60px;
 }
 
-.centered_users_cont {
-  width: 450px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  @media screen and (max-width: 890px) {
-    width: 380px !important;
-  }
-
-  @media screen and (max-width: 670px) {
-    width: 280px !important;
-  }
-
-  @media screen and (max-width: 600px) {
-    width: 380px !important;
-  }
-
-  @media screen and (max-width: 380px) {
-    width: 280px !important;
-  }
-}
-
 .error-cont {
   width: 100%;
   height: calc(100vh - 160px);

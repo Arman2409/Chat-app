@@ -7,8 +7,7 @@ import { topCopyright, bottomCopyright } from "../../../configs/textConfigs";
 
 const { Footer } = Layout;
 
-const FooterComp: React.FC = () => {
-
+const FooterComponent = () => {
    const isSmall: boolean = useMediaQuery({ query: "(max-width: 600px)" });
 
    return (
@@ -29,4 +28,4 @@ const FooterComp: React.FC = () => {
    )
 };
 
-export default FooterComp;
+export default FooterComponent;

@@ -18,7 +18,7 @@ import { getSlicedWithDots } from "../../../functions/functions";
 import { usersLoadWaitTime } from "../../../configs/configs";
 import { setMenuOption } from "../../../store/windowSlice";
 
-const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentElementRef, page, setLoadingSearchType, loadingSearchType, total = 0, friends, friendRequests, lastMessages, accept }: UsersMapperProps) => {
+const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, getUsers, parentElementRef, total = 0, friends, friendRequests, lastMessages, accept }: UsersMapperProps) => {
     const [emptyText, setEmptyText] = useState<string>("");
     const [users, setUsers] = useState(userItems)
     const [loading, setLoading] = useState<boolean>(false);
@@ -27,6 +27,7 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
     const gettingUsersRef = useRef<boolean>(false);
     const acceptLink = useRef<any>(null);
     const listRef = useRef<any>(null);
+    const page = useRef<number>(1);
 
     const router = useRouter();
     const dispatch: Dispatch = useDispatch();
@@ -46,7 +47,9 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
         accept ? await accept(item.id) : null;
     }, [accept, setButtonsDisabled]);
 
-    const handleScroll = (e: any, isTouchEvent?: boolean) => {
+    const handleScroll = useCallback((e: any, isTouchEvent?: boolean) => {
+        
+        if (total <= users.length || loading || gettingUsersRef.current) return;
         setOpenedDropdown(" ");
         let parentContains = false;
         if(parentElementRef) {
@@ -55,22 +58,14 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
         if (listRef.current?.contains(e.target) || listRef.current === e.target || parentContains) {
             if (e.deltaY > 0 || isTouchEvent) {
                 if (listRef.current.scrollTop >= (listRef.current.scrollHeight - listRef.current.clientHeight)) {
-                    if (loading) {
-                        return;
-                    };
-                    if (gettingUsersRef.current) {
-                        return;
-                    }
-                    if (total <= users.length) {
-                        return;
-                    };
                     gettingUsersRef.current = true;
                     setLoading(true);
-                    setLoadingSearchType("newPage" + page);
+                    page.current = page.current + 1;
+                    getUsers && getUsers(page.current);
                 }
             };
         }
-    };
+    }, [page, users, loading, total, getUsers, userItems, parentElementRef, setLoading, gettingUsersRef, listRef]);
 
     const newChat = useCallback((e: UserType) => {
         if (!user.name) {
@@ -85,10 +80,6 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
         router.push("/myMessages");
     }, [dispatch, setMessageOptions, router, user, setMenuOption, setInterlocutor]);
 
-    const openDropdown = useCallback((email: string) => {
-        setOpenedDropdown(email);
-    }, [setOpenedDropdown]);
-
     useEffect(() => {
         setEmptyText(friends ? "No Friends Found" : lastMessages ? "No Messages Found" : "No Users Found");
         setButtonsDisabled(false);
@@ -102,15 +93,14 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
             setTimeout(() => {
                 if (loading) {
                     setLoading(false);
-                    setLoadingSearchType("gotUsers")
                 }
             }, usersLoadWaitTime);
         } else {
             window.addEventListener("wheel", handleScroll, true);
         }
-    }, [loading]);
+    }, [loading, handleScroll]);
 
-    useEffect(() => {
+    useEffect(() => {        
         setUsers(userItems);
     }, [userItems]);
 
@@ -130,7 +120,7 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
         <div ref={listRef}
             className={`${styles.list}`}
         >
-            {users.length === 0 && !loading && !loadingSearchType && <div className={styles.empty_cont}>
+            {users.length === 0 && !loading && <div className={styles.empty_cont}>
                 {lastMessages ? <TbListSearch className={styles.empty_icon} /> : <RiUserSearchFill className={styles.empty_icon} />}
                 <p className={styles.empty_text}>{emptyText}</p>
             </div>}
@@ -165,7 +155,7 @@ const UsersMapper: React.FC<UsersMapperProps> = ({ users: userItems, parentEleme
                                     <UserDropdown
                                         user={item}
                                         index={index}
-                                        onClick={openDropdown}
+                                        onClick={(email:string) => setOpenedDropdown(email)}
                                         openElement={openedDropdown}
                                         isRequested={isRequested}
                                         isBlocked={isBlocked}

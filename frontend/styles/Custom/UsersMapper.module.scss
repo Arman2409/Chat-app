@@ -2,19 +2,19 @@
 
 .list {
   width: 100%;
+  height: 100%;
   max-height: 500px;
-  height: 100%;
-  height: 100%;
-  padding: 5px 0;
+  padding: 5px 10px;
   overflow-y: scroll;
   max-width: 550px;
 
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  @include scrollStyle (
+    $size: 10px,
+    $thumb: none,
+    $thumb-color: $color4,
+    $thumb-radius: 5px,
+    $track-color: transparent,
+    $track-radius: 5px);
 
   .empty_cont {
     margin: 50px 0;
@@ -49,7 +49,7 @@
     box-shadow: 0px 0px 9px 2px #000000;
     box-sizing: border-box;
     margin: 10px 0;
-    height: 80px;
+    height: 100px;
     font-weight: 900;
     background-color: rgba($color1, 0.5);
     opacity: 0.65;
@@ -72,20 +72,20 @@
     }
 
     &_message {
-       @extend  .list_item;
-       background-color: $color6;
-       display: flex;
+      @extend .list_item;
+      background-color: $color6;
+      display: flex;
 
-        &_interlocutor {
-          @extend .list_item_message;
-           background-color: $color7;
-        }
+      &_interlocutor {
+        @extend .list_item_message;
+        background-color: $color7;
+      }
 
-       & article:nth-child(1) {
+      & article:nth-child(1) {
         margin-left: 15px;
         color: $color3;
       }
-  
+
       & article:nth-child(2) {
         margin-left: 15px;
         color: $color4;
@@ -97,12 +97,12 @@
       right: 10px;
 
       &_disabled {
-          @extend .list_item_action;
-          color: $color5;
-          pointer-events: none;
+        @extend .list_item_action;
+        color: $color5;
+        pointer-events: none;
       }
 
-      &_button { 
+      &_button {
         @extend .list_item_action;
         @include gradientButton($color2, $color4, $color5);
       }
@@ -136,6 +136,4 @@
       box-shadow: none;
     }
   }
-
-
 }

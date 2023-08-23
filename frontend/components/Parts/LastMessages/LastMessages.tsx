@@ -130,11 +130,6 @@ const LastMessages: React.FC = () => {
       getLastMessages();
    }, []);
 
-   useEffect(() => {
-      console.log({lastMessages});
-      
-   }, [lastMessages])
-
    return (
       <div
          className={styles.lastMessages_cont}
@@ -144,15 +139,11 @@ const LastMessages: React.FC = () => {
          <Typography className={styles.lastMessages_cont_title}>
             Last Messages
          </Typography>
-         <div className="centered_users_cont">
             <UsersMapper
                lastMessages={true}
                total={total}
                page={pageState}
-               loadingSearchType={loadingType}
-               setLoadingSearchType={setLoadingType}
                users={lastMessages} />
-         </div>
       </div>
    )
 };

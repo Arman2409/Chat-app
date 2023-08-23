@@ -16,7 +16,7 @@ import type { UserType } from "../../../../../types/types";
 import type { SignProps } from "../../../../../types/propTypes";
 import Loading from "../../../../Custom/Loading/Loading";
 import { getSlicedWithDots, getBase64 } from "../../../../../functions/functions";
-import { setSocket } from "../../../../../store/socketSlice";
+import { setSocket as setStoreSocket } from "../../../../../store/socketSlice";
 import useOpenAlert from "../../../../Tools/hooks/useOpenAlert";
 import { setNotSeenCount } from "../../../../../store/messagesSlice";
 
@@ -31,14 +31,14 @@ const beforeUpload = (file: RcFile) => {
     if (!isJpgOrPng) {
         setMessageOptions({
             message:'You can only upload JPG/PNG file!',
-            type: "error"
+            type: 'error'
         });
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
         setMessageOptions({
-            message:'Image must smaller than 2MB!',
-            type: "error"
+            message: 'Image must smaller than 2MB!',
+            type: 'error'
         });
     }
     return isJpgOrPng && isLt2M;
@@ -89,7 +89,7 @@ const SignInUp: React.FC<SignProps> = ({ type, changeStatus }: SignProps) => {
                   }
               }
               );
-              dispatch(setSocket(socket));
+              dispatch(setStoreSocket(socket));
               setLoadingRequest(false);
               dispatch(setStoreUser(user));
         }
