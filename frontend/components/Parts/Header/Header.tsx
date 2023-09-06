@@ -14,7 +14,7 @@ import { io } from "socket.io-client";
 
 const Owner = lazy(() => import("./Owner/Owner"));
 import styles from "../../../styles/Parts/Header/Header.module.scss";
-import Logo from "../../../assests/logo-files/svg/logo-no-background-cropped.svg";
+import Logo from "../../../assets/logo-files/svg/logo-no-background-cropped.svg";
 import { IRootState } from "../../../store/store";
 import { setUserWindow } from "../../../store/windowSlice";
 import { setStoreUser } from "../../../store/userSlice";
